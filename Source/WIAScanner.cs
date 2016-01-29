@@ -6,7 +6,7 @@ using System.Drawing.Imaging;
 using System.Windows.Forms;
 using WIA;
 
-namespace WIATest
+namespace PDFScanningApp
 {
     class WIAScanner
     {

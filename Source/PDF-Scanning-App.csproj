@@ -8,7 +8,7 @@
     <ProjectGuid>{C73E0A45-92D6-4A30-A245-AB5FBA2A0252}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>WIATest</RootNamespace>
+    <RootNamespace>PDFScanningApp</RootNamespace>
     <AssemblyName>PDF-Scanning-App</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <TargetFrameworkProfile>
@@ -43,7 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="ImageContainer.cs" />
+    <Compile Include="Document.cs" />
+    <Compile Include="Page.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

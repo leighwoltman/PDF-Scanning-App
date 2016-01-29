@@ -1,4 +1,4 @@
-﻿namespace WIATest
+﻿namespace PDFScanningApp
 {
     partial class MainForm
     {

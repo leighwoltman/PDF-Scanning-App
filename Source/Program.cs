@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Forms;
 
-namespace WIATest
+namespace PDFScanningApp
 {
     static class Program
     {
@@ -19,7 +19,7 @@ namespace WIATest
           // first get the settings
           Settings settings = Settings.GetSettings();
 
-          bool found = false;
+          bool found = true;
 
           WIA.DeviceManager manager = new WIA.DeviceManager();
           WIA.Device device = null;

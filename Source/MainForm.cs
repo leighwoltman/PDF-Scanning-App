@@ -8,14 +8,10 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing.Imaging;
-using PdfSharp;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
 using System.Threading;
 
 
-namespace WIATest
+namespace PDFScanningApp
 {
     public partial class MainForm : Form
     {
@@ -23,11 +19,14 @@ namespace WIATest
 
       const int none_selected = 5000;
       int selected_index = none_selected;
+      Document myDocument;
 
         public MainForm(Settings settings)
         {
           this.settings = settings;
           InitializeComponent();
+
+          myDocument = new Document();
 
           moveLeftButton.Enabled = false;
           moveRightButton.Enabled = false;
@@ -133,8 +132,11 @@ namespace WIATest
               // use max as the filename
               images[i].Save(fileName, jgpEncoder, myEncoderParameters);
 
-              ImageContainer myImage = new ImageContainer(fileName, true, height == 14 ? ScanPageSize.Legal : ScanPageSize.Letter);
-              Control picBox = myImage.getPictureBox();
+              Page myPage = new Page(fileName, true, height == 14 ? ScanPageSize.Legal : ScanPageSize.Letter);
+              
+              myDocument.AddPage(myPage);
+              
+              Control picBox = myPage.getPictureBox();
               picBox.Click += picBox_Click;
               imagePanel.Controls.Add(picBox);
 
@@ -202,7 +204,11 @@ namespace WIATest
 
         private void moveLeftButton_Click(object sender, EventArgs e)
         {
+          Page pageToMove = (Page)imagePanel.Controls[selected_index].Tag;
+          myDocument.MovePageUp(pageToMove);
+
           imagePanel.Controls.SetChildIndex(imagePanel.Controls[selected_index], selected_index-1);
+          
           selected_index--;
 
           if(selected_index == 0)
@@ -215,6 +221,9 @@ namespace WIATest
 
         private void moveRightButton_Click(object sender, EventArgs e)
         {
+          Page pageToMove = (Page)imagePanel.Controls[selected_index].Tag;
+          myDocument.MovePageDown(pageToMove);
+
           imagePanel.Controls.SetChildIndex(imagePanel.Controls[selected_index], selected_index + 1);
           selected_index++;
 
@@ -231,8 +240,10 @@ namespace WIATest
         {
           if(DialogResult.OK == MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButtons.OKCancel))
           {
-            ImageContainer imgContainer = (ImageContainer)imagePanel.Controls[selected_index].Tag;
-            
+            Page pageToDelete = (Page)imagePanel.Controls[selected_index].Tag;
+
+            myDocument.DeletePage(pageToDelete);
+
             imagePanel.Controls.RemoveAt(selected_index);
             selected_index = none_selected;
 
@@ -243,7 +254,7 @@ namespace WIATest
             buttonLandscape.Enabled = false;
             checkSided2ButtonStatus();
 
-            imgContainer.cleanUp();
+            pageToDelete.cleanUp();
 
             if(imagePanel.Controls.Count == 0)
             {
@@ -269,113 +280,10 @@ namespace WIATest
           {
             string fileName = saveFileDialog1.FileName;
 
-            PdfDocument document = new PdfDocument();
-            document.Info.Title = "Created with PDFsharp";
-
-            for (int i = 0; i < imagePanel.Controls.Count; i++)
-            {
-              ImageContainer imgContainer = (ImageContainer)imagePanel.Controls[i].Tag;
-
-              // Create an empty page
-              PdfPage page = document.AddPage();
-              if(imgContainer.getScanPageSize() == ScanPageSize.Legal)
-              {
-                page.Size = PageSize.Legal;
-              }
-              else
-              {
-                page.Size = PageSize.Letter;
-              }
-
-              // we need to swap the height and the width if this is a landscape image
-              double aspect_ratio = ((double)imgContainer.getWidth()) / ((double)imgContainer.getHeight());
-
-              if(imgContainer.isLandscape())
-              {
-                page.Orientation = PageOrientation.Landscape;
-              }
-              else
-              {
-                page.Orientation = PageOrientation.Portrait;
-              }
-
-              // Get an XGraphics object for drawing
-              XGraphics gfx = XGraphics.FromPdfPage(page);
-              // Create a font
-              XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-
-              int draw_point_x = 0;
-              int draw_point_y = 0;
-              int draw_point_width = 0;
-              int draw_point_height = 0;
-
-              if(imgContainer.isLandscape())
-              {
-                // these are swapped
-                draw_point_width = (int)page.Height;
-                draw_point_height = (int)page.Width;
-
-                if (aspect_ratio > ((double)draw_point_width / (double)draw_point_height))
-                {
-                  // means our image has the width as the maximum dimension
-                  draw_point_height = (int)((double)draw_point_width / aspect_ratio);
-                  draw_point_y = ((int)page.Height - draw_point_height) / 2;
-                  draw_point_x = ((int)page.Width - draw_point_width) / 2;
-                }
-                else
-                {
-                  // means our image has the height as the maximum dimension
-                  draw_point_width = (int)(aspect_ratio * (double)draw_point_height);
-                  draw_point_x = ((int)page.Width - draw_point_width) / 2;
-                  draw_point_y = ((int)page.Height - draw_point_height) / 2;
-                }
-              }
-              else
-              {
-                draw_point_width = (int)page.Width;
-                draw_point_height = (int)page.Height;
-
-                if (aspect_ratio > ((double)draw_point_width / (double)draw_point_height))
-                {
-                  // means our image has the width as the maximum dimension
-                  draw_point_height = (int)((double)draw_point_width / aspect_ratio);
-                  draw_point_y = ((int)page.Height - draw_point_height) / 2;
-                }
-                else
-                {
-                  // means our image has the height as the maximum dimension
-                  draw_point_width = (int)(aspect_ratio * (double)draw_point_height);
-                  draw_point_x = ((int)page.Width - draw_point_width) / 2;
-                }
-              }
-              
-
-              XImage image = XImage.FromFile(imgContainer.getFileName());
-
-              if (imgContainer.isRotated())
-              {
-                // rotate around the center of the page
-                gfx.RotateAtTransform(-180, new XPoint(page.Width / 2, page.Height / 2));
-              }
-
-              if( imgContainer.isLandscape() )
-              {
-                // rotate around the center of the page
-                gfx.RotateAtTransform(90, new XPoint(page.Width / 2, page.Height / 2));
-              }              
-
-              gfx.DrawImage(image, draw_point_x, draw_point_y, draw_point_width, draw_point_height);
-              image.Dispose();
-            }
-
-            // Save the document...
-            document.Save(fileName);
-
+            myDocument.Save(fileName);
+            
             // first copy the controls to another croup;
             int count = imagePanel.Controls.Count;
-
-            Control[] ctrls = new Control[count];
-            imagePanel.Controls.CopyTo(ctrls, 0);
 
             for (int i = 0; i < count; i++)
             {
@@ -384,12 +292,7 @@ namespace WIATest
 
             Thread.Sleep(5000);
 
-            // remove all the files
-            for (int i = 0; i < ctrls.Length; i++)
-            {
-              ImageContainer imgContainer = (ImageContainer)ctrls[i].Tag;
-              imgContainer.cleanUp();
-            }
+            myDocument.RemoveAll();
 
             settings.LastDirectory = Path.GetDirectoryName(fileName);
             settings.SaveSettings();
@@ -424,8 +327,10 @@ namespace WIATest
             // load the files
             for (int i = 0; i < openFileDialog1.FileNames.Length; i++)
             {
-              ImageContainer myImage = new ImageContainer(openFileDialog1.FileNames[i]);
-              Control picBox = myImage.getPictureBox();
+              Page myPage = new Page(openFileDialog1.FileNames[i]);
+              myDocument.AddPage(myPage);
+
+              Control picBox = myPage.getPictureBox();
               picBox.Click += picBox_Click;
               imagePanel.Controls.Add(picBox);
 
@@ -443,7 +348,7 @@ namespace WIATest
 
         private void rotateButton_Click(object sender, EventArgs e)
         {
-          ImageContainer imgContainer = (ImageContainer)imagePanel.Controls[selected_index].Tag;
+          Page imgContainer = (Page)imagePanel.Controls[selected_index].Tag;
           imgContainer.rotate();
         }
 
@@ -453,6 +358,9 @@ namespace WIATest
           int loc_of_next = 1;
           while(loc_of_next < imagePanel.Controls.Count - 1 )
           {
+            Page pageToMove = (Page)imagePanel.Controls[imagePanel.Controls.Count-1].Tag;
+            myDocument.MovePageTo(pageToMove, loc_of_next);
+
             // keep moving the last page into position
             imagePanel.Controls.SetChildIndex(imagePanel.Controls[imagePanel.Controls.Count-1], loc_of_next);
             loc_of_next += 2;
@@ -461,7 +369,7 @@ namespace WIATest
 
         private void buttonLandscape_Click(object sender, EventArgs e)
         {
-          ImageContainer imgContainer = (ImageContainer)imagePanel.Controls[selected_index].Tag;
+          Page imgContainer = (Page)imagePanel.Controls[selected_index].Tag;
           imgContainer.makeLandscape();
         }
     }

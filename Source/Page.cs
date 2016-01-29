@@ -6,11 +6,11 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 
-namespace WIATest
+namespace PDFScanningApp
 {
   public enum ScanPageSize { Letter, Legal };
 
-  class ImageContainer
+  class Page
   {
     private string fileName;
     private Image myThumbnail;
@@ -22,13 +22,13 @@ namespace WIATest
     private bool landscape = false;
     private ScanPageSize size;
 
-    public ImageContainer(string fileName)
+    public Page(string fileName)
       : this(fileName, false, ScanPageSize.Letter)
     {
       // nothing extra
     }
 
-    public ImageContainer(string fileName, bool temporary_file, ScanPageSize size)
+    public Page(string fileName, bool temporary_file, ScanPageSize size)
     {
       this.tempFile = temporary_file;
       this.fileName = fileName;
