@@ -14,7 +14,6 @@ namespace PDFScanningApp
   {
     private string fileName;
     private Image myThumbnail;
-    private PictureBox myPictureBox;
     private int height;
     private int width;
     private bool tempFile;
@@ -54,17 +53,14 @@ namespace PDFScanningApp
         Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
         myThumbnail = myBitmap.GetThumbnailImage(thumbnail_width, thumbnail_height, myCallback, IntPtr.Zero);
       }
-      myPictureBox = new PictureBox();
-      myPictureBox.Image = myThumbnail;
-      myPictureBox.Height = 180;
-      myPictureBox.Width = 180;
-      myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-      myPictureBox.Tag = this;
     }
 
-    public PictureBox getPictureBox()
+    public Image Thumbnail
     {
-      return myPictureBox;
+      get
+      {
+        return myThumbnail;
+      }
     }
 
     public ScanPageSize getScanPageSize()
@@ -96,7 +92,6 @@ namespace PDFScanningApp
     {
       rotate_180 = !rotate_180;
       myThumbnail.RotateFlip(RotateFlipType.Rotate180FlipNone);
-      myPictureBox.Refresh();
     }
 
     public void makeLandscape()
@@ -110,8 +105,6 @@ namespace PDFScanningApp
         myThumbnail.RotateFlip(RotateFlipType.Rotate90FlipNone);
       }
       this.landscape = !this.landscape;
-      
-      myPictureBox.Refresh();
     }
 
     public bool isLandscape()
@@ -126,7 +119,6 @@ namespace PDFScanningApp
 
     public void cleanUp()
     {
-      myPictureBox.Dispose();
       myThumbnail.Dispose();
       if(this.tempFile)
       {
