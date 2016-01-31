@@ -16,30 +16,154 @@ namespace PDFScanningApp
   public partial class MainForm : Form
   {
     private Settings settings;
+    private const int none_selected = -1;
+    private int selected_index = none_selected;
+    private Document myDocument;
 
-    const int none_selected = 5000;
-    int selected_index = none_selected;
-    Document myDocument;
 
     public MainForm(Settings settings)
     {
-      this.settings = settings;
       InitializeComponent();
+      this.settings = settings;
 
       myDocument = new Document();
-
-      moveLeftButton.Enabled = false;
-      moveRightButton.Enabled = false;
-      deleteButton.Enabled = false;
-      rotateButton.Enabled = false;
-      buttonLandscape.Enabled = false;
-      saveButton.Enabled = false;
-      checkSided2ButtonStatus();
+      myDocument.OnPageAdded += myDocument_OnPageAdded;
+      myDocument.OnPageRemoved += myDocument_OnPageRemoved;
+      myDocument.OnPageUpdated += myDocument_OnPageUpdated;
+      myDocument.OnPageMoved += myDocument_OnPageMoved;
 
       comboBoxResolution.Items.Add("200 dpi");
       comboBoxResolution.Items.Add("300 dpi");
       comboBoxResolution.SelectedIndex = 1;
     }
+
+
+    private void MainForm_Load(object sender, EventArgs e)
+    {
+      RefreshControls();
+    }
+
+
+    void RefreshControls()
+    {
+      int numPages = myDocument.NumPages;
+
+      // we have to have at least 3 pages to make this worth while
+      // only allow this button when no page is selected
+      if((numPages > 2) && (selected_index == none_selected))
+      {
+        sided2Button.Enabled = true;
+      }
+      else
+      {
+        sided2Button.Enabled = false;
+      }
+
+      if(numPages > 0)
+      {
+        saveButton.Enabled = true;
+      }
+      else
+      {
+        saveButton.Enabled = false;
+      }
+
+      if(selected_index == none_selected)
+      {
+        moveLeftButton.Enabled = false;
+        moveRightButton.Enabled = false;
+        deleteButton.Enabled = false;
+        rotateButton.Enabled = false;
+        buttonLandscape.Enabled = false;
+      }
+      else
+      {
+        if(selected_index == 0)
+        {
+          moveLeftButton.Enabled = false;
+        }
+        else
+        {
+          moveLeftButton.Enabled = true;
+        }
+
+        if(selected_index == (numPages - 1))
+        {
+          moveRightButton.Enabled = false;
+        }
+        else 
+        {
+          moveRightButton.Enabled = true;
+        }
+
+        deleteButton.Enabled = true;
+        rotateButton.Enabled = true;
+        buttonLandscape.Enabled = true;
+      }
+    }
+
+
+    void myDocument_OnPageAdded(object sender, EventArgs e)
+    {
+      DocumentPageEventArgs args = (DocumentPageEventArgs)e;
+      Page page = myDocument.GetPage(args.Index);
+      PictureBox myPictureBox = new PictureBox();
+      myPictureBox.Image = page.Thumbnail;
+      myPictureBox.Height = 180;
+      myPictureBox.Width = 180;
+      myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+      myPictureBox.Click += picBox_Click;
+      imagePanel.Controls.Add(myPictureBox);
+      RefreshControls();
+    }
+
+
+    void myDocument_OnPageRemoved(object sender, EventArgs e)
+    {
+      DocumentPageEventArgs args = (DocumentPageEventArgs)e;
+
+      if(args.Index >= 0)
+      {
+        PictureBox myPictureBox = (PictureBox)imagePanel.Controls[args.Index];
+        myPictureBox.Image = null; // No exception, but needed to make this similar to below -Caner
+        imagePanel.Controls.RemoveAt(args.Index);
+      }
+      else
+      {
+        // Negative index, all pages are removed
+        // first copy the controls to another croup;
+        int count = imagePanel.Controls.Count;
+
+        for(int i = 0; i < count; i++)
+        {
+          PictureBox myPictureBox = (PictureBox)imagePanel.Controls[0];
+          myPictureBox.Image = null; // Exception if I don't do this first -Caner
+          imagePanel.Controls.RemoveAt(0);
+        }
+      }
+
+      selected_index = none_selected;
+      RefreshControls();
+    }
+
+
+    void myDocument_OnPageUpdated(object sender, EventArgs e)
+    {
+      DocumentPageEventArgs args = (DocumentPageEventArgs)e;
+      Control pbox = imagePanel.Controls[args.Index];
+      pbox.Refresh();
+      RefreshControls();
+    }
+
+
+    void myDocument_OnPageMoved(object sender, EventArgs e)
+    {
+      DocumentPageMoveEventArgs args = (DocumentPageMoveEventArgs)e;
+      imagePanel.Controls.SetChildIndex(imagePanel.Controls[args.SourceIndex], args.TargetIndex);
+      selected_index = args.TargetIndex;
+      RefreshControls();
+    }
+
 
     int getScanResolution()
     {
@@ -52,6 +176,7 @@ namespace PDFScanningApp
         return 200;
       }
     }
+
 
     void picBox_Click(object sender, EventArgs e)
     {
@@ -67,24 +192,9 @@ namespace PDFScanningApp
         }
 
         // select this one
-        selected_index = imagePanel.Controls.IndexOf(pBox);
         pBox.BorderStyle = BorderStyle.FixedSingle;
         pBox.BackColor = Color.DarkGray;
-
-        if(selected_index != 0)
-        {
-          moveLeftButton.Enabled = true;
-        }
-
-        if(selected_index != (imagePanel.Controls.Count - 1))
-        {
-          moveRightButton.Enabled = true;
-        }
-
-        deleteButton.Enabled = true;
-        rotateButton.Enabled = true;
-        buttonLandscape.Enabled = true;
-        checkSided2ButtonStatus();
+        selected_index = imagePanel.Controls.IndexOf(pBox);
       }
       else
       {
@@ -92,15 +202,11 @@ namespace PDFScanningApp
         pBox.BorderStyle = BorderStyle.None;
         pBox.BackColor = imagePanel.BackColor;
         selected_index = none_selected;
-
-        moveLeftButton.Enabled = false;
-        moveRightButton.Enabled = false;
-        deleteButton.Enabled = false;
-        rotateButton.Enabled = false;
-        buttonLandscape.Enabled = false;
-        checkSided2ButtonStatus();
       }
+
+      RefreshControls();
     }
+
 
     private void Scan(double width, double height, double resolution)
     {
@@ -135,11 +241,9 @@ namespace PDFScanningApp
           Page myPage = new Page(fileName, true, height == 14 ? ScanPageSize.Legal : ScanPageSize.Letter);
 
           myDocument.AddPage(myPage);
-          ShowPage(myPage);
-          saveButton.Enabled = true;
-          checkSided2ButtonStatus();
         }
 
+        // TODO: Do we really need this?
         // close all these images
         while(images.Count > 0)
         {
@@ -155,9 +259,9 @@ namespace PDFScanningApp
       }
     }
 
+
     private ImageCodecInfo GetEncoder(ImageFormat format)
     {
-
       ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
 
       foreach(ImageCodecInfo codec in codecs)
@@ -170,12 +274,14 @@ namespace PDFScanningApp
       return null;
     }
 
+
     private void button3_Click(object sender, EventArgs e)
     {
       Scan(8.48, 11, getScanResolution());
 
       button3.Focus();
     }
+
 
     private void button1_Click(object sender, EventArgs e)
     {
@@ -184,80 +290,50 @@ namespace PDFScanningApp
       button1.Focus();
     }
 
-    private void checkSided2ButtonStatus()
-    {
-      // we have to have at least 3 pages to make this worth while
-      // only allow this button when no page is selected
-      if(imagePanel.Controls.Count > 2 && selected_index == none_selected)
-      {
-        sided2Button.Enabled = true;
-      }
-      else
-      {
-        sided2Button.Enabled = false;
-      }
-    }
 
     private void moveLeftButton_Click(object sender, EventArgs e)
     {
-      Page pageToMove = (Page)imagePanel.Controls[selected_index].Tag;
-      myDocument.MovePageUp(pageToMove);
-
-      imagePanel.Controls.SetChildIndex(imagePanel.Controls[selected_index], selected_index - 1);
-
-      selected_index--;
-
-      if(selected_index == 0)
-      {
-        moveLeftButton.Enabled = false;
-      }
-      // after moving left we can always move right
-      moveRightButton.Enabled = true;
+      myDocument.MovePage(selected_index, selected_index - 1);
     }
+
 
     private void moveRightButton_Click(object sender, EventArgs e)
     {
-      Page pageToMove = (Page)imagePanel.Controls[selected_index].Tag;
-      myDocument.MovePageDown(pageToMove);
-
-      imagePanel.Controls.SetChildIndex(imagePanel.Controls[selected_index], selected_index + 1);
-      selected_index++;
-
-      // check if we are at the end
-      if(selected_index == (imagePanel.Controls.Count - 1))
-      {
-        moveRightButton.Enabled = false;
-      }
-      // after moving right we can always move left
-      moveLeftButton.Enabled = true;
+      myDocument.MovePage(selected_index, selected_index + 1);
     }
+
 
     private void deleteButton_Click(object sender, EventArgs e)
     {
       if(DialogResult.OK == MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButtons.OKCancel))
       {
-        Page pageToDelete = (Page)imagePanel.Controls[selected_index].Tag;
-
-        myDocument.DeletePage(pageToDelete);
-
-        imagePanel.Controls.RemoveAt(selected_index);
-        selected_index = none_selected;
-
-        moveLeftButton.Enabled = false;
-        moveRightButton.Enabled = false;
-        deleteButton.Enabled = false;
-        rotateButton.Enabled = false;
-        buttonLandscape.Enabled = false;
-        checkSided2ButtonStatus();
-
-        pageToDelete.cleanUp();
-
-        if(imagePanel.Controls.Count == 0)
-        {
-          saveButton.Enabled = false;
-        }
+        myDocument.DeletePage(selected_index);
       }
     }
+
+
+    private void rotateButton_Click(object sender, EventArgs e)
+    {
+      myDocument.RotatePage(selected_index);
+    }
+
+
+    private void buttonLandscape_Click(object sender, EventArgs e)
+    {
+      myDocument.LandscapePage(selected_index);
+    }
+
+
+    private void sided2Button_Click(object sender, EventArgs e)
+    {
+      int loc_of_next = 1;
+      while(loc_of_next < imagePanel.Controls.Count - 1)
+      {
+        myDocument.MovePage(imagePanel.Controls.Count - 1, loc_of_next);
+        loc_of_next += 2;
+      }
+    }
+
 
     private void saveButton_Click(object sender, EventArgs e)
     {
@@ -278,32 +354,15 @@ namespace PDFScanningApp
 
         myDocument.Save(fileName);
 
-        // first copy the controls to another croup;
-        int count = imagePanel.Controls.Count;
-
-        for(int i = 0; i < count; i++)
-        {
-          imagePanel.Controls.RemoveAt(0);
-        }
-
         Thread.Sleep(5000);
 
         myDocument.RemoveAll();
 
         settings.LastDirectory = Path.GetDirectoryName(fileName);
         settings.SaveSettings();
-
-        selected_index = none_selected;
-
-        saveButton.Enabled = false;
-        moveLeftButton.Enabled = false;
-        moveRightButton.Enabled = false;
-        deleteButton.Enabled = false;
-        rotateButton.Enabled = false;
-        buttonLandscape.Enabled = false;
-        checkSided2ButtonStatus();
       }
     }
+
 
     private void imageLoad_Click(object sender, EventArgs e)
     {
@@ -325,62 +384,11 @@ namespace PDFScanningApp
         {
           Page myPage = new Page(openFileDialog1.FileNames[i]);
           myDocument.AddPage(myPage);
-          ShowPage(myPage);
-          checkSided2ButtonStatus();
         }
       }
 
-      if(imagePanel.Controls.Count > 0)
-      {
-        saveButton.Enabled = true;
-      }
-
       button3.Focus();
-    }
-
-
-    private void ShowPage(Page page)
-    {
-      PictureBox myPictureBox = new PictureBox();
-      myPictureBox.Image = page.Thumbnail;
-      myPictureBox.Height = 180;
-      myPictureBox.Width = 180;
-      myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-      myPictureBox.Tag = page;
-      myPictureBox.Click += picBox_Click;
-      imagePanel.Controls.Add(myPictureBox);
-    }
-
-
-    private void rotateButton_Click(object sender, EventArgs e)
-    {
-      Control pbox = imagePanel.Controls[selected_index];
-      Page page = (Page)pbox.Tag;
-      page.rotate();
-      pbox.Refresh();
-    }
-
-    private void sided2Button_Click(object sender, EventArgs e)
-    {
-
-      int loc_of_next = 1;
-      while(loc_of_next < imagePanel.Controls.Count - 1)
-      {
-        Page pageToMove = (Page)imagePanel.Controls[imagePanel.Controls.Count - 1].Tag;
-        myDocument.MovePageTo(pageToMove, loc_of_next);
-
-        // keep moving the last page into position
-        imagePanel.Controls.SetChildIndex(imagePanel.Controls[imagePanel.Controls.Count - 1], loc_of_next);
-        loc_of_next += 2;
-      }
-    }
-
-    private void buttonLandscape_Click(object sender, EventArgs e)
-    {
-      Control pbox = imagePanel.Controls[selected_index];
-      Page page = (Page)pbox.Tag;
-      page.makeLandscape();
-      pbox.Refresh();
+      RefreshControls();
     }
   }
 }

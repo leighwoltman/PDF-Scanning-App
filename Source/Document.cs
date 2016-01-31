@@ -10,45 +10,98 @@ using PdfSharp.Pdf.IO;
 
 namespace PDFScanningApp
 {
+  class DocumentPageEventArgs : EventArgs
+  {
+    public int Index;
+  }
+
+
+  class DocumentPageMoveEventArgs : EventArgs
+  {
+    public int SourceIndex;
+    public int TargetIndex;
+  }
+
+
   class Document
   {
-    List<Page> pages;
+    private List<Page> pages;
+
 
     public Document()
     {
       pages = new List<Page>();
     }
 
+
+    public Page GetPage(int index)
+    {
+      return pages[index];
+    }
+
+
+    public int NumPages
+    {
+      get { return pages.Count; }
+    }
+
+
     public void AddPage(Page newPage)
     {
-      pages.Add(newPage);
+      int index = pages.Count;
+      pages.Insert(index, newPage);
+      RaisePageAdded(index);
     }
 
-    public void DeletePage(Page pageToDelete)
-    {
-      pages.Remove(pageToDelete);
-    }
 
-    public void MovePageUp(Page pageToMove)
+    public void DeletePage(int index)
     {
-      int index = pages.IndexOf(pageToMove);
+      Page pageToDelete = pages[index];
       pages.RemoveAt(index);
-      pages.Insert(index - 1, pageToMove);
+      pageToDelete.cleanUp();
+      RaisePageRemoved(index);
     }
 
-    public void MovePageDown(Page pageToMove)
+
+    public void RemoveAll()
     {
-      int index = pages.IndexOf(pageToMove);
-      pages.RemoveAt(index);
-      pages.Insert(index + 1, pageToMove);
+      int count = pages.Count;
+
+      for(int i = 0; i < count; i++)
+      {
+        pages[0].cleanUp();
+        pages.RemoveAt(0);
+      }
+
+      RaisePageRemoved(-1);
     }
 
-    public void MovePageTo(Page pageToMove, int targetIndex)
+
+    // TODO: Provide a generic orientation function
+    public void RotatePage(int index)
     {
-      int index = pages.IndexOf(pageToMove);
-      pages.RemoveAt(index);
-      pages.Insert(targetIndex, pageToMove);
+      Page targetPage = pages[index];
+      targetPage.rotate();
+      RaisePageUpdated(index);
     }
+
+
+    public void LandscapePage(int index)
+    {
+      Page targetPage = pages[index];
+      targetPage.makeLandscape();
+      RaisePageUpdated(index);
+    }
+
+
+    public void MovePage(int sourceIndex, int targetIndex)
+    {
+      Page targetPage = pages[sourceIndex];
+      pages.RemoveAt(sourceIndex);
+      pages.Insert(targetIndex, targetPage);
+      RaisePageMoved(sourceIndex, targetIndex);
+    }
+
 
     public void Save(string fileName)
     {
@@ -153,17 +206,62 @@ namespace PDFScanningApp
 
       // Save the document...
       document.Save(fileName);
-
     }
 
-    public void RemoveAll()
-    {
-      int count = pages.Count;
 
-      for(int i = 0; i < count; i++)
+    public event EventHandler OnPageAdded;
+
+
+    private void RaisePageAdded(int index)
+    {
+      if(OnPageAdded != null)
       {
-        pages[0].cleanUp();
-        pages.RemoveAt(0);
+        DocumentPageEventArgs args = new DocumentPageEventArgs();
+        args.Index = index;
+        OnPageAdded(this, args);
+      }
+    }
+
+
+    public event EventHandler OnPageRemoved;
+
+
+    private void RaisePageRemoved(int index)
+    {
+      if(OnPageRemoved != null)
+      {
+        DocumentPageEventArgs args = new DocumentPageEventArgs();
+        args.Index = index;
+        OnPageRemoved(this, args);
+      }
+    }
+
+
+    public event EventHandler OnPageUpdated;
+
+
+    private void RaisePageUpdated(int index)
+    {
+      if(OnPageUpdated != null)
+      {
+        DocumentPageEventArgs args = new DocumentPageEventArgs();
+        args.Index = index;
+        OnPageUpdated(this, args);
+      }
+    }
+
+
+    public event EventHandler OnPageMoved;
+
+
+    private void RaisePageMoved(int sourceIndex, int targetIndex)
+    {
+      if(OnPageMoved != null)
+      {
+        DocumentPageMoveEventArgs args = new DocumentPageMoveEventArgs();
+        args.SourceIndex = sourceIndex;
+        args.TargetIndex = targetIndex;
+        OnPageMoved(this, args);
       }
     }
   }
