@@ -43,7 +43,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MyPanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Document.cs" />
+    <Compile Include="MyPictureBox.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="Page.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

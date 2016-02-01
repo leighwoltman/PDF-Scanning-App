@@ -107,12 +107,13 @@ namespace PDFScanningApp
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
       Page page = myDocument.GetPage(args.Index);
-      PictureBox myPictureBox = new PictureBox();
-      myPictureBox.Image = page.Thumbnail;
+      MyPanel myPictureBox = new MyPanel(page.Thumbnail);
+      
       myPictureBox.Height = 180;
       myPictureBox.Width = 180;
-      myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
-      myPictureBox.Click += picBox_Click;
+      myPictureBox.BackColor = Color.Red;
+      //myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
+      //myPictureBox.Click += picBox_Click;
       imagePanel.Controls.Add(myPictureBox);
       RefreshControls();
     }
@@ -389,6 +390,30 @@ namespace PDFScanningApp
 
       button3.Focus();
       RefreshControls();
+    }
+
+    private void imagePanel_DragEnter(object sender, DragEventArgs e)
+    {
+      e.Effect = DragDropEffects.All;
+    }
+
+    private void imagePanel_DragDrop(object sender, DragEventArgs e)
+    {
+      MyPanel data = (MyPanel)e.Data.GetData(typeof(MyPanel));
+      FlowLayoutPanel _destination = (FlowLayoutPanel)sender;
+      FlowLayoutPanel _source = (FlowLayoutPanel)data.Parent;
+
+      if (_source == _destination)
+      {
+        // Just add the control to the new panel.
+        // No need to remove from the other panel,
+        // this changes the Control.Parent property.
+        Point p = _destination.PointToClient(new Point(e.X, e.Y));
+        var item = _destination.GetChildAtPoint(p);
+        int index = _destination.Controls.GetChildIndex(item, false);
+        _destination.Controls.SetChildIndex(data, index);
+        _destination.Invalidate();
+      }
     }
   }
 }

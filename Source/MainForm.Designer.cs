@@ -56,12 +56,15 @@
       // 
       // imagePanel
       // 
+      this.imagePanel.AllowDrop = true;
       this.imagePanel.AutoScroll = true;
       this.imagePanel.Location = new System.Drawing.Point(12, 42);
       this.imagePanel.Name = "imagePanel";
       this.imagePanel.Size = new System.Drawing.Size(905, 205);
       this.imagePanel.TabIndex = 15;
       this.imagePanel.WrapContents = false;
+      this.imagePanel.DragDrop += new System.Windows.Forms.DragEventHandler(this.imagePanel_DragDrop);
+      this.imagePanel.DragEnter += new System.Windows.Forms.DragEventHandler(this.imagePanel_DragEnter);
       // 
       // label1
       // 
