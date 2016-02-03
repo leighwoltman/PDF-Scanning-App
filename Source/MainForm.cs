@@ -3,11 +3,9 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.IO;
-using System.Drawing.Imaging;
 using System.Threading;
 
 
@@ -208,73 +206,6 @@ namespace PDFScanningApp
     }
 
 
-    private void Scan(double width, double height, double resolution)
-    {
-      List<Image> images = WIAScanner.Scan(settings.CurrentScanner, width, height, resolution);
-
-      if(images.Count != 0)
-      {
-        for(int i = 0; i < images.Count; i++)
-        {
-          // get a temporary path
-          string fileName = Path.GetTempFileName();
-
-          ImageCodecInfo jgpEncoder = GetEncoder(ImageFormat.Jpeg);
-
-          // Create an Encoder object based on the GUID 
-          // for the Quality parameter category.
-          System.Drawing.Imaging.Encoder myEncoder =
-              System.Drawing.Imaging.Encoder.Quality;
-
-          // Create an EncoderParameters object. 
-          // An EncoderParameters object has an array of EncoderParameter 
-          // objects. In this case, there is only one 
-          // EncoderParameter object in the array.
-          EncoderParameters myEncoderParameters = new EncoderParameters(1);
-
-          EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 95L);
-          myEncoderParameters.Param[0] = myEncoderParameter;
-
-          // use max as the filename
-          images[i].Save(fileName, jgpEncoder, myEncoderParameters);
-
-          Page myPage = new Page(fileName, true, height == 14 ? ScanPageSize.Legal : ScanPageSize.Letter);
-
-          myDocument.AddPage(myPage);
-        }
-
-        // TODO: Do we really need this?
-        // close all these images
-        while(images.Count > 0)
-        {
-          Image img = images[0];
-          images.RemoveAt(0);
-          img.Dispose();
-        }
-      }
-      else
-      {
-        // an error occured in scanning the file
-        MessageBox.Show("Last image now scanned correctly, rescan it. If this error keeps occuring close the program and restart it.");
-      }
-    }
-
-
-    private ImageCodecInfo GetEncoder(ImageFormat format)
-    {
-      ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-
-      foreach(ImageCodecInfo codec in codecs)
-      {
-        if(codec.FormatID == format.Guid)
-        {
-          return codec;
-        }
-      }
-      return null;
-    }
-
-
     private void button3_Click(object sender, EventArgs e)
     {
       Scan(8.48, 11, getScanResolution());
@@ -332,6 +263,33 @@ namespace PDFScanningApp
         myDocument.MovePage(imagePanel.Controls.Count - 1, loc_of_next);
         loc_of_next += 2;
       }
+    }
+
+
+    private void Scan(double width, double height, double resolution)
+    {
+      DataSource ds = new DataSource();
+      ds.OnNewPage += ds_OnNewPage;
+      ds.OnScanningComplete += ds_OnScanningComplete;
+
+      if(ds.Scan(settings.CurrentScanner, width, height, resolution) == false)
+      {
+        // an error occured in scanning the file
+        MessageBox.Show("Last image now scanned correctly, rescan it. If this error keeps occuring close the program and restart it.");
+      }
+    }
+
+
+    void ds_OnNewPage(object sender, EventArgs e)
+    {
+      DataSourceNewPageEventArgs args = (DataSourceNewPageEventArgs)e;
+      myDocument.AddPage(args.ThePage);
+    }
+
+
+    void ds_OnScanningComplete(object sender, EventArgs e)
+    {
+      // TBD
     }
 
 

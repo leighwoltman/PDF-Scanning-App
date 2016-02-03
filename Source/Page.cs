@@ -10,7 +10,7 @@ namespace PDFScanningApp
 {
   public enum ScanPageSize { Letter, Legal };
 
-  class Page
+  public class Page
   {
     private string fileName;
     private Image myThumbnail;

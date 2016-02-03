@@ -43,6 +43,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataSource.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="MainForm.cs">
