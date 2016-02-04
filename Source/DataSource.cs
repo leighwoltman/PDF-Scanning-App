@@ -35,7 +35,7 @@ namespace PDFScanningApp
 
       List<Image> images = WIAScanner.Scan(scannerName, width, height, resolution);
 
-      if(images.Count != 0)
+      if (images != null && images.Count != 0)
       {
         for(int i = 0; i < images.Count; i++)
         {
@@ -55,7 +55,7 @@ namespace PDFScanningApp
           // EncoderParameter object in the array.
           EncoderParameters myEncoderParameters = new EncoderParameters(1);
 
-          EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 95L);
+          EncoderParameter myEncoderParameter = new EncoderParameter(myEncoder, 75L);
           myEncoderParameters.Param[0] = myEncoderParameter;
 
           // use max as the filename
