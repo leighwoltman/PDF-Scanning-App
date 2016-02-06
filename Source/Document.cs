@@ -1,11 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text;
-using PdfSharp;
-using PdfSharp.Drawing;
 using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
 
 
 namespace PDFScanningApp
@@ -25,39 +21,39 @@ namespace PDFScanningApp
 
   class Document
   {
-    private List<Page> pages;
+    private List<Page> fPages;
 
 
     public Document()
     {
-      pages = new List<Page>();
+      fPages = new List<Page>();
     }
 
 
     public Page GetPage(int index)
     {
-      return pages[index];
+      return fPages[index];
     }
 
 
     public int NumPages
     {
-      get { return pages.Count; }
+      get { return fPages.Count; }
     }
 
 
     public void AddPage(Page newPage)
     {
-      int index = pages.Count;
-      pages.Insert(index, newPage);
+      int index = fPages.Count;
+      fPages.Insert(index, newPage);
       RaisePageAdded(index);
     }
 
 
     public void DeletePage(int index)
     {
-      Page pageToDelete = pages[index];
-      pages.RemoveAt(index);
+      Page pageToDelete = fPages[index];
+      fPages.RemoveAt(index);
       pageToDelete.cleanUp();
       RaisePageRemoved(index);
     }
@@ -65,12 +61,12 @@ namespace PDFScanningApp
 
     public void RemoveAll()
     {
-      int count = pages.Count;
+      int count = fPages.Count;
 
       for(int i = 0; i < count; i++)
       {
-        pages[0].cleanUp();
-        pages.RemoveAt(0);
+        fPages[0].cleanUp();
+        fPages.RemoveAt(0);
       }
 
       RaisePageRemoved(-1);
@@ -80,7 +76,7 @@ namespace PDFScanningApp
     // TODO: Provide a generic orientation function
     public void RotatePage(int index)
     {
-      Page targetPage = pages[index];
+      Page targetPage = fPages[index];
       targetPage.rotate();
       RaisePageUpdated(index);
     }
@@ -88,7 +84,7 @@ namespace PDFScanningApp
 
     public void LandscapePage(int index)
     {
-      Page targetPage = pages[index];
+      Page targetPage = fPages[index];
       targetPage.makeLandscape();
       RaisePageUpdated(index);
     }
@@ -96,9 +92,9 @@ namespace PDFScanningApp
 
     public void MovePage(int sourceIndex, int targetIndex)
     {
-      Page targetPage = pages[sourceIndex];
-      pages.RemoveAt(sourceIndex);
-      pages.Insert(targetIndex, targetPage);
+      Page targetPage = fPages[sourceIndex];
+      fPages.RemoveAt(sourceIndex);
+      fPages.Insert(targetIndex, targetPage);
       RaisePageMoved(sourceIndex, targetIndex);
     }
 
@@ -108,100 +104,12 @@ namespace PDFScanningApp
       PdfDocument document = new PdfDocument();
       document.Info.Title = "Created with PDFsharp";
 
-      for (int i = 0; i < pages.Count; i++)
+      for(int i = 0; i < fPages.Count; i++)
       {
-        Page imgContainer = pages[i];
-
         // Create an empty page
         PdfPage page = document.AddPage();
-        if (imgContainer.getScanPageSize() == ScanPageSize.Legal)
-        {
-          page.Size = PageSize.Legal;
-        }
-        else
-        {
-          page.Size = PageSize.Letter;
-        }
-
-        // we need to swap the height and the width if this is a landscape image
-        double aspect_ratio = ((double)imgContainer.getWidth()) / ((double)imgContainer.getHeight());
-
-        if (imgContainer.isLandscape())
-        {
-          page.Orientation = PageOrientation.Landscape;
-        }
-        else
-        {
-          page.Orientation = PageOrientation.Portrait;
-        }
-
-        // Get an XGraphics object for drawing
-        XGraphics gfx = XGraphics.FromPdfPage(page);
-        // Create a font
-        XFont font = new XFont("Verdana", 20, XFontStyle.BoldItalic);
-
-        int draw_point_x = 0;
-        int draw_point_y = 0;
-        int draw_point_width = 0;
-        int draw_point_height = 0;
-
-        if (imgContainer.isLandscape())
-        {
-          // these are swapped
-          draw_point_width = (int)page.Height;
-          draw_point_height = (int)page.Width;
-
-          if (aspect_ratio > ((double)draw_point_width / (double)draw_point_height))
-          {
-            // means our image has the width as the maximum dimension
-            draw_point_height = (int)((double)draw_point_width / aspect_ratio);
-            draw_point_y = ((int)page.Height - draw_point_height) / 2;
-            draw_point_x = ((int)page.Width - draw_point_width) / 2;
-          }
-          else
-          {
-            // means our image has the height as the maximum dimension
-            draw_point_width = (int)(aspect_ratio * (double)draw_point_height);
-            draw_point_x = ((int)page.Width - draw_point_width) / 2;
-            draw_point_y = ((int)page.Height - draw_point_height) / 2;
-          }
-        }
-        else
-        {
-          draw_point_width = (int)page.Width;
-          draw_point_height = (int)page.Height;
-
-          if (aspect_ratio > ((double)draw_point_width / (double)draw_point_height))
-          {
-            // means our image has the width as the maximum dimension
-            draw_point_height = (int)((double)draw_point_width / aspect_ratio);
-            draw_point_y = ((int)page.Height - draw_point_height) / 2;
-          }
-          else
-          {
-            // means our image has the height as the maximum dimension
-            draw_point_width = (int)(aspect_ratio * (double)draw_point_height);
-            draw_point_x = ((int)page.Width - draw_point_width) / 2;
-          }
-        }
-
-
-        XImage image = XImage.FromFile(imgContainer.getFileName());
-
-        if (imgContainer.isRotated())
-        {
-          // rotate around the center of the page
-          gfx.RotateAtTransform(-180, new XPoint(page.Width / 2, page.Height / 2));
-        }
-
-        if (imgContainer.isLandscape())
-        {
-          // rotate around the center of the page
-          gfx.RotateAtTransform(90, new XPoint(page.Width / 2, page.Height / 2));
-        }
-
-        gfx.DrawImage(image, draw_point_x, draw_point_y, draw_point_width, draw_point_height);
-        image.Dispose();
+        // Print page to pdf
+        fPages[i].ToPdf(page);
       }
 
       // Save the document...
