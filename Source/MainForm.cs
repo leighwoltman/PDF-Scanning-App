@@ -10,6 +10,7 @@ using System.Threading;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
+using PdfSharp.Pdf.Filters;
 
 
 namespace PDFScanningApp
@@ -399,38 +400,16 @@ namespace PDFScanningApp
                             try
                             {
                               // Fortunately JPEG has native support in PDF and exporting an image is just writing the stream to a file.
+                              
                               byte[] byteArray = xObject.Stream.Value;
 
-                              MemoryStream ms = new MemoryStream();
+                              FlateDecode fd = new FlateDecode();
+                              byte[] byteArrayDecompressed = fd.Decode(byteArray);
 
-                              MemoryStream msInput = new MemoryStream(byteArray);
-                              MemoryStream msOutput = new MemoryStream();
+                              Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
 
-                              InflaterInputStream iis = new InflaterInputStream(msInput, new Inflater(false));
-                              int cbRead;
-                              byte[] abResult = new byte[32768];
-                              do
-                              {
-                                cbRead = iis.Read(abResult, 0, abResult.Length);
-                                if (cbRead > 0)
-                                  msOutput.Write(abResult, 0, cbRead);
-                              }
-                              while (cbRead > 0);
-                              iis.Close();
-                              msOutput.Flush();
-                              if (msOutput.Length >= 0)
-                              {
-                                msOutput.Capacity = (int)msOutput.Length;
-
-                                Image image = Image.FromStream(msOutput);
-
-                                Page myPage = new Page(image);
-                                myDocument.AddPage(myPage);
-                              }
-
-                              //Image image = Image.FromStream(new MemoryStream(byteArray));
-
-                              
+                              Page myPage = new Page(image);
+                              myDocument.AddPage(myPage);
                             }
                             catch(Exception ex)
                             {
