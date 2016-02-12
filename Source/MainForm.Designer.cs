@@ -42,6 +42,7 @@
       this.button1 = new System.Windows.Forms.Button();
       this.buttonLandscape = new System.Windows.Forms.Button();
       this.comboBoxResolution = new System.Windows.Forms.ComboBox();
+      this.pdfLoad = new System.Windows.Forms.Button();
       this.SuspendLayout();
       // 
       // button3
@@ -171,11 +172,23 @@
       this.comboBoxResolution.Size = new System.Drawing.Size(139, 21);
       this.comboBoxResolution.TabIndex = 26;
       // 
+      // pdfLoad
+      // 
+      this.pdfLoad.Location = new System.Drawing.Point(478, 253);
+      this.pdfLoad.Name = "pdfLoad";
+      this.pdfLoad.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+      this.pdfLoad.Size = new System.Drawing.Size(131, 52);
+      this.pdfLoad.TabIndex = 27;
+      this.pdfLoad.Text = "Load From PDF";
+      this.pdfLoad.UseVisualStyleBackColor = true;
+      this.pdfLoad.Click += new System.EventHandler(this.pdfLoad_Click);
+      // 
       // MainForm
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
       this.ClientSize = new System.Drawing.Size(929, 319);
+      this.Controls.Add(this.pdfLoad);
       this.Controls.Add(this.comboBoxResolution);
       this.Controls.Add(this.buttonLandscape);
       this.Controls.Add(this.button1);
@@ -216,6 +229,7 @@
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonLandscape;
         private System.Windows.Forms.ComboBox comboBoxResolution;
+        private System.Windows.Forms.Button pdfLoad;
 
     }
 }

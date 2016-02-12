@@ -185,8 +185,7 @@ namespace PDFScanningApp
           }
         }
 
-
-        XImage image = XImage.FromFile(imgContainer.getFileName());
+        XImage image = XImage.FromGdiPlusImage(imgContainer.getImage());
 
         if (imgContainer.isRotated())
         {

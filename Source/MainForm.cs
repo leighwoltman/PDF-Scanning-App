@@ -7,6 +7,9 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
+using PdfSharp.Pdf;
+using PdfSharp.Pdf.IO;
+using PdfSharp.Pdf.Advanced;
 
 
 namespace PDFScanningApp
@@ -346,6 +349,114 @@ namespace PDFScanningApp
       }
 
       button3.Focus();
+      RefreshControls();
+    }
+
+    private void pdfLoad_Click(object sender, EventArgs e)
+    {
+      OpenFileDialog openFileDialog1 = new OpenFileDialog();
+
+      // Set the file dialog to filter for graphics files. 
+      openFileDialog1.Filter =
+          "PDF (*.PDF)|*.PDF";
+
+      openFileDialog1.Multiselect = false;
+      openFileDialog1.Title = "Select a PDF File";
+
+      if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+      {
+        try
+        {
+          PdfDocument document = PdfReader.Open(openFileDialog1.FileName);
+
+          // Iterate pages
+          foreach (PdfPage page in document.Pages)
+          {
+            // Get resources dictionary
+            PdfDictionary resources = page.Elements.GetDictionary("/Resources");
+            if (resources != null)
+            {
+              // Get external objects dictionary
+              PdfDictionary xObjects = resources.Elements.GetDictionary("/XObject");
+              if (xObjects != null)
+              {
+                ICollection<PdfItem> items = xObjects.Elements.Values;
+                // Iterate references to external objects
+                foreach (PdfItem item in items)
+                {
+                  PdfReference reference = item as PdfReference;
+                  if (reference != null)
+                  {
+                    PdfDictionary xObject = reference.Value as PdfDictionary;
+                    // Is external object an image?
+                    if (xObject != null && xObject.Elements.GetString("/Subtype") == "/Image")
+                    {
+                      //string filter = xObject.Elements.GetString("/Filter");
+                      //switch (filter)
+                      //{
+                        //case "/DCTDecode":
+                          {
+                            try
+                            {
+                              // Fortunately JPEG has native support in PDF and exporting an image is just writing the stream to a file.
+                              byte[] byteArray = xObject.Stream.Value;
+
+                              MemoryStream ms = new MemoryStream();
+
+                              MemoryStream msInput = new MemoryStream(byteArray);
+                              MemoryStream msOutput = new MemoryStream();
+
+                              InflaterInputStream iis = new InflaterInputStream(msInput, new Inflater(false));
+                              int cbRead;
+                              byte[] abResult = new byte[32768];
+                              do
+                              {
+                                cbRead = iis.Read(abResult, 0, abResult.Length);
+                                if (cbRead > 0)
+                                  msOutput.Write(abResult, 0, cbRead);
+                              }
+                              while (cbRead > 0);
+                              iis.Close();
+                              msOutput.Flush();
+                              if (msOutput.Length >= 0)
+                              {
+                                msOutput.Capacity = (int)msOutput.Length;
+
+                                Image image = Image.FromStream(msOutput);
+
+                                Page myPage = new Page(image);
+                                myDocument.AddPage(myPage);
+                              }
+
+                              //Image image = Image.FromStream(new MemoryStream(byteArray));
+
+                              
+                            }
+                            catch(Exception ex)
+                            {
+                              string mes = ex.Message;
+                            }
+                          }
+                          //break;
+
+                       // case "/FlateDecode":
+                          //ExportAsPngImage(image, ref count);
+                        //  break;
+                      //}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+        catch(Exception ex)
+        {
+          string message = ex.Message;
+        }
+        
+      }
+
       RefreshControls();
     }
   }

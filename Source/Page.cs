@@ -13,6 +13,7 @@ namespace PDFScanningApp
   public class Page
   {
     private string fileName;
+    private Image myImageFile = null;
     private Image myThumbnail;
     private int height;
     private int width;
@@ -21,11 +22,23 @@ namespace PDFScanningApp
     private bool landscape = false;
     private ScanPageSize size;
 
+
+    public Page(Image image)
+    {
+      this.fileName = null;
+      this.myImageFile = image;
+      CreateThumbnail(image);
+      this.tempFile = false;
+      this.size = ScanPageSize.Letter;
+    }
+
+
     public Page(string fileName)
       : this(fileName, false, ScanPageSize.Letter)
     {
       // nothing extra
     }
+
 
     public Page(string fileName, bool temporary_file, ScanPageSize size)
     {
@@ -33,27 +46,36 @@ namespace PDFScanningApp
       this.fileName = fileName;
       this.size = size;
       // create a thumbnail
-      int thumbnail_height;
-      int thumbnail_width;
+      
       using (Bitmap myBitmap = new Bitmap(fileName))
       {
-        this.height = myBitmap.Size.Height;
-        this.width = myBitmap.Size.Width;
-
-        if( myBitmap.Size.Height > myBitmap.Size.Width )
-        {
-          thumbnail_height = 200;
-          thumbnail_width = (int)(((double)myBitmap.Size.Width / (double)myBitmap.Size.Height) * thumbnail_height);
-        }
-        else
-        {
-          thumbnail_width = 200;
-          thumbnail_height = (int)(((double)myBitmap.Size.Height / (double)myBitmap.Size.Width) * thumbnail_width);
-        }
-        Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
-        myThumbnail = myBitmap.GetThumbnailImage(thumbnail_width, thumbnail_height, myCallback, IntPtr.Zero);
+        CreateThumbnail(myBitmap);
       }
     }
+
+
+    private void CreateThumbnail(Image myBitmap)
+    {
+      int thumbnail_height;
+      int thumbnail_width;
+
+      this.height = myBitmap.Size.Height;
+      this.width = myBitmap.Size.Width;
+
+      if( myBitmap.Size.Height > myBitmap.Size.Width )
+      {
+        thumbnail_height = 200;
+        thumbnail_width = (int)(((double)myBitmap.Size.Width / (double)myBitmap.Size.Height) * thumbnail_height);
+      }
+      else
+      {
+        thumbnail_width = 200;
+        thumbnail_height = (int)(((double)myBitmap.Size.Height / (double)myBitmap.Size.Width) * thumbnail_width);
+      }
+      Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
+      myThumbnail = myBitmap.GetThumbnailImage(thumbnail_width, thumbnail_height, myCallback, IntPtr.Zero);
+    }
+
 
     public Image Thumbnail
     {
@@ -62,6 +84,7 @@ namespace PDFScanningApp
         return myThumbnail;
       }
     }
+
 
     public ScanPageSize getScanPageSize()
     {
@@ -78,9 +101,16 @@ namespace PDFScanningApp
       return width;
     }
 
-    public string getFileName()
+    public Image getImage()
     {
-      return fileName;
+      if(fileName != null)
+      {
+        return Image.FromFile(fileName);
+      }
+      else
+      {
+        return myImageFile;
+      }
     }
 
     public bool ThumbnailCallback()
@@ -120,6 +150,11 @@ namespace PDFScanningApp
     public void cleanUp()
     {
       myThumbnail.Dispose();
+      if (myImageFile != null)
+      {
+        myImageFile.Dispose();
+        myImageFile = null;
+      }
       if(this.tempFile)
       {
         File.Delete(fileName);
