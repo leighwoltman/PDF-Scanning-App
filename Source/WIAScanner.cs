@@ -60,10 +60,11 @@ namespace PDFScanningApp
                 }
               }
 
+              // TODO: remove this so we don't return in the middle of a function!
               // device was not found
               if (device == null)
               {
-                return null;
+                return retval;
               }
 
               WIA.Item item = device.Items[1] as WIA.Item;
