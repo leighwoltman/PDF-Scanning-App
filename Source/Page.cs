@@ -239,7 +239,7 @@ namespace PDFScanningApp
       }
 
 
-      XImage image = XImage.FromFile(this.getFileName());
+      XImage image = XImage.FromGdiPlusImage(this.getImage());
 
       if(this.isRotated())
       {
