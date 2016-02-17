@@ -68,21 +68,6 @@ namespace PDFScanningApp
     }
 
 
-    private ImageCodecInfo GetEncoder(ImageFormat format)
-    {
-      ImageCodecInfo[] codecs = ImageCodecInfo.GetImageDecoders();
-
-      foreach(ImageCodecInfo codec in codecs)
-      {
-        if(codec.FormatID == format.Guid)
-        {
-          return codec;
-        }
-      }
-      return null;
-    }
-
-
     public event EventHandler OnNewPage;
 
     private void Raise_OnNewPictureData(Page page)
