@@ -392,36 +392,60 @@ namespace PDFScanningApp
                     // Is external object an image?
                     if (xObject != null && xObject.Elements.GetString("/Subtype") == "/Image")
                     {
-                      //string filter = xObject.Elements.GetString("/Filter");
-                      //switch (filter)
-                      //{
-                        //case "/DCTDecode":
-                          {
-                            try
+                      PdfArray pdfArray = null;
+
+                      try
+                      {
+                        pdfArray = xObject.Elements.GetArray("/Filter");
+                      }
+                      catch(Exception)
+                      {
+                        // do nothing
+                      }
+
+                      if (pdfArray != null && pdfArray.Elements.Count == 2)
+                      {
+                        // the "/Filter" field was an array
+
+                        // see if it had two values to indicate it is both JPEG and Deflate encoded
+                        if( (pdfArray.Elements[0].ToString() == "/DCTDecode" && pdfArray.Elements[1].ToString() == "/FlateDecode") ||
+                            (pdfArray.Elements[1].ToString() == "/DCTDecode" && pdfArray.Elements[0].ToString() == "/FlateDecode") )
+                        {
+                          byte[] byteArray = xObject.Stream.Value;
+
+                          FlateDecode fd = new FlateDecode();
+                          byte[] byteArrayDecompressed = fd.Decode(byteArray);
+
+                          Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
+
+                          Page myPage = new Page(image);
+                          myDocument.AddPage(myPage);
+                        }
+                      }
+                      else
+                      {
+                        string filter = xObject.Elements.GetString("/Filter");
+
+                        switch (filter)
+                        {
+                          case "/DCTDecode":
                             {
-                              // Fortunately JPEG has native support in PDF and exporting an image is just writing the stream to a file.
-                              
+                              // this is a directly encoded JPEG image
                               byte[] byteArray = xObject.Stream.Value;
 
-                              FlateDecode fd = new FlateDecode();
-                              byte[] byteArrayDecompressed = fd.Decode(byteArray);
-
-                              Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
+                              Image image = Image.FromStream(new MemoryStream(byteArray));
 
                               Page myPage = new Page(image);
                               myDocument.AddPage(myPage);
                             }
-                            catch(Exception ex)
+                            break;
+                          case "/FlateDecode":
                             {
-                              string mes = ex.Message;
+                              // potientially this is a BMP/PNG image
                             }
-                          }
-                          //break;
-
-                       // case "/FlateDecode":
-                          //ExportAsPngImage(image, ref count);
-                        //  break;
-                      //}
+                            break;
+                        }
+                      }
                     }
                   }
                 }
@@ -431,7 +455,7 @@ namespace PDFScanningApp
         }
         catch(Exception ex)
         {
-          string message = ex.Message;
+          string msg = ex.Message;
         }
         
       }
