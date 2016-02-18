@@ -8,12 +8,11 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using Scanning;
 
 
 namespace PDFScanningApp
 {
-  public enum ScanPageSize { Letter, Legal };
-
   public class Page
   {
     private string fileName;
@@ -24,7 +23,7 @@ namespace PDFScanningApp
     private bool tempFile;
     private bool rotate_180 = false;
     private bool landscape = false;
-    private ScanPageSize size;
+    private PageTypeEnum size;
 
 
     public Page(Image image)
@@ -33,18 +32,18 @@ namespace PDFScanningApp
       this.myImageFile = image;
       CreateThumbnail(image);
       this.tempFile = false;
-      this.size = ScanPageSize.Letter;
+      this.size = PageTypeEnum.Letter;
     }
 
 
     public Page(string fileName)
-      : this(fileName, false, ScanPageSize.Letter)
+      : this(fileName, false, PageTypeEnum.Letter)
     {
       // nothing extra
     }
 
 
-    public Page(string fileName, bool temporary_file, ScanPageSize size)
+    public Page(string fileName, bool temporary_file, PageTypeEnum size)
     {
       this.tempFile = temporary_file;
       this.fileName = fileName;
@@ -90,7 +89,7 @@ namespace PDFScanningApp
     }
 
 
-    public ScanPageSize getScanPageSize()
+    public PageTypeEnum getScanPageSize()
     {
       return size;
     }
@@ -167,7 +166,7 @@ namespace PDFScanningApp
 
     public void ToPdf(PdfPage pdfPage)
     {
-      if(this.getScanPageSize() == ScanPageSize.Legal)
+      if(this.getScanPageSize() == PageTypeEnum.Legal)
       {
         pdfPage.Size = PageSize.Legal;
       }

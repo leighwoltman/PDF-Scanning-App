@@ -11,6 +11,9 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
+using Scanning;
+using Source;
+using Utils;
 
 
 namespace PDFScanningApp
@@ -18,6 +21,7 @@ namespace PDFScanningApp
   public partial class MainForm : Form
   {
     private Settings settings;
+    private Scanner fScanner;
     private const int none_selected = -1;
     private int selected_index = none_selected;
     private Document myDocument;
@@ -26,7 +30,12 @@ namespace PDFScanningApp
     public MainForm(Settings settings)
     {
       InitializeComponent();
+      UtilDialogs.MainWindow = this;
       this.settings = settings;
+
+      fScanner = new Scanner();
+      fScanner.OnNewPage += fScanner_OnNewPage;
+      fScanner.OnScanningComplete += fScanner_OnScanningComplete;
 
       myDocument = new Document();
       myDocument.OnPageAdded += myDocument_OnPageAdded;
@@ -42,10 +51,37 @@ namespace PDFScanningApp
 
     private void MainForm_Load(object sender, EventArgs e)
     {
+      if(fScanner.Open())
+      {
+        RefreshScannerActiveDataSource();
+      }
+      else
+      {
+        UtilDialogs.ShowError("Device manager failed to initialize");
+      }
+
       RefreshControls();
     }
 
 
+    private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+    {
+      fScanner.Close();
+    }
+
+
+    void fScanner_OnNewPage(object sender, NewPageEventArgs args)
+    {
+      myDocument.AddPage(args.ThePage);
+    }
+
+
+    void fScanner_OnScanningComplete(object sender, EventArgs e)
+    {
+      // Nothing to do
+    }
+
+    
     void RefreshControls()
     {
       int numPages = myDocument.NumPages;
@@ -102,6 +138,52 @@ namespace PDFScanningApp
         rotateButton.Enabled = true;
         buttonLandscape.Enabled = true;
       }
+    }
+
+
+    private bool ExecuteDataSourceSelectionDialog()
+    {
+      bool result = false;
+
+      FormDataSourceSelectionDialog F = new FormDataSourceSelectionDialog(fScanner.GetDataSourceNames());
+
+      F.SelectedDataSource = settings.CurrentScanner;
+      //F.UseNativeUI = fSettings.ShowNativeUI;
+
+      if(F.ShowDialog() == DialogResult.OK)
+      {
+        settings.CurrentScanner = F.SelectedDataSource;
+        //fSettings.ShowNativeUI = F.UseNativeUI;
+        result = true;
+      }
+
+      return result;
+    }
+
+    
+    private bool RefreshScannerActiveDataSource()
+    {
+      bool success = true;
+
+      if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
+      {
+        success = false;
+
+        if(ExecuteDataSourceSelectionDialog() == true)
+        {
+          if(fScanner.SelectActiveDataSource(settings.CurrentScanner) == true)
+          {
+            success = true;
+          }
+        }
+      }
+
+      if(success == false)
+      {
+        UtilDialogs.ShowError("No valid data source selected");
+      }
+
+      return success;
     }
 
 
@@ -212,7 +294,7 @@ namespace PDFScanningApp
 
     private void button3_Click(object sender, EventArgs e)
     {
-      Scan(8.48, 11, getScanResolution());
+      Scan(PageTypeEnum.Letter, getScanResolution());
 
       button3.Focus();
     }
@@ -220,7 +302,7 @@ namespace PDFScanningApp
 
     private void button1_Click(object sender, EventArgs e)
     {
-      Scan(8.48, 14, getScanResolution());
+      Scan(PageTypeEnum.Legal, getScanResolution());
 
       button1.Focus();
     }
@@ -270,33 +352,30 @@ namespace PDFScanningApp
     }
 
 
-    private void Scan(double width, double height, double resolution)
+    private void Scan(PageTypeEnum pageType, double resolution)
     {
-      DataSource ds = new DataSource();
-      ds.OnNewPage += ds_OnNewPage;
-      ds.OnScanningComplete += ds_OnScanningComplete;
-
-      if(ds.Scan(settings.CurrentScanner, width, height, resolution) == false)
+      if(RefreshScannerActiveDataSource())
       {
-        // an error occured in scanning the file
-        MessageBox.Show("Last image now scanned correctly, rescan it. If this error keeps occuring close the program and restart it.");
+        ScanSettings settings = new ScanSettings();
+
+        settings.EnableFeeder = true;
+        settings.ColorMode = ColorModeEnum.RGB;
+        settings.PageType = pageType;
+        settings.Resolution = (int)resolution;
+        settings.Threshold = 0.75;
+        settings.Brightness = 0.5;
+        settings.Contrast = 0.5;
+
+        if(fScanner.Acquire(settings, false, true) == false)
+        {
+          UtilDialogs.ShowError("Scanner failed to start");
+        }
+
+        RefreshControls();
       }
     }
 
-
-    void ds_OnNewPage(object sender, EventArgs e)
-    {
-      DataSourceNewPageEventArgs args = (DataSourceNewPageEventArgs)e;
-      myDocument.AddPage(args.ThePage);
-    }
-
-
-    void ds_OnScanningComplete(object sender, EventArgs e)
-    {
-      // TBD
-    }
-
-
+    
     private void saveButton_Click(object sender, EventArgs e)
     {
       SaveFileDialog saveFileDialog1 = new SaveFileDialog();
