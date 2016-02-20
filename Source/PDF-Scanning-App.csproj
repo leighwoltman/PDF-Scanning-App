@@ -69,6 +69,7 @@
     <Compile Include="TwainDevice.cs" />
     <Compile Include="TwainLibImport.cs" />
     <Compile Include="TwainUtils.cs" />
+    <Compile Include="UtilDefines.cs" />
     <Compile Include="UtilDialogs.cs" />
     <Compile Include="UtilImaging.cs" />
     <Compile Include="WiaDataSource.cs" />

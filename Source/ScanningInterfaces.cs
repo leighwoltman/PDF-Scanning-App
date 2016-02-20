@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
+using Utils;
 
 
 namespace Scanning
@@ -41,10 +42,6 @@ namespace Scanning
     event EventHandler OnScanningComplete;
   }
 
-
-  public enum ColorModeEnum { BW, Gray, RGB };
-
-  public enum PageTypeEnum { Letter, Legal };
 
   public class ScanSettings
   {

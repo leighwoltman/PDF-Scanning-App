@@ -8,7 +8,7 @@ using PdfSharp;
 using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
-using Scanning;
+using Utils;
 
 
 namespace PDFScanningApp

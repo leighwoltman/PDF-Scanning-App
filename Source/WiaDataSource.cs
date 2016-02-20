@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using Scanning;
+using Utils;
 
 
 namespace WiaInterface
