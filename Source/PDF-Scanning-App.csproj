@@ -44,6 +44,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppSettings.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="FormDataSourceSelectionDialog.cs">
       <SubType>Form</SubType>
@@ -62,16 +63,17 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScanningInterfaces.cs" />
-    <Compile Include="Settings.cs" />
     <Compile Include="TwainCapability.cs" />
     <Compile Include="TwainDataSource.cs" />
     <Compile Include="TwainDataSourceManager.cs" />
     <Compile Include="TwainDevice.cs" />
     <Compile Include="TwainLibImport.cs" />
     <Compile Include="TwainUtils.cs" />
+    <Compile Include="UtilApp.cs" />
     <Compile Include="UtilDefines.cs" />
     <Compile Include="UtilDialogs.cs" />
     <Compile Include="UtilImaging.cs" />
+    <Compile Include="UtilSettings.cs" />
     <Compile Include="WiaDataSource.cs" />
     <Compile Include="WiaDataSourceManager.cs" />
     <Compile Include="WiaDefines.cs" />

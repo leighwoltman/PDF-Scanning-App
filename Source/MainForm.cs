@@ -20,18 +20,19 @@ namespace PDFScanningApp
 {
   public partial class MainForm : Form
   {
-    private Settings settings;
+    private AppSettings fAppSettings;
     private Scanner fScanner;
     private const int none_selected = -1;
     private int selected_index = none_selected;
     private Document myDocument;
 
 
-    public MainForm(Settings settings)
+    public MainForm()
     {
       InitializeComponent();
       UtilDialogs.MainWindow = this;
-      this.settings = settings;
+
+      fAppSettings = new AppSettings();
 
       fScanner = new Scanner();
       fScanner.OnNewPage += fScanner_OnNewPage;
@@ -141,49 +142,46 @@ namespace PDFScanningApp
     }
 
 
-    private bool ExecuteDataSourceSelectionDialog()
-    {
-      bool result = false;
-
-      FormDataSourceSelectionDialog F = new FormDataSourceSelectionDialog(fScanner.GetDataSourceNames());
-
-      F.SelectedDataSource = settings.CurrentScanner;
-      //F.UseNativeUI = fSettings.ShowNativeUI;
-
-      if(F.ShowDialog() == DialogResult.OK)
-      {
-        settings.CurrentScanner = F.SelectedDataSource;
-        //fSettings.ShowNativeUI = F.UseNativeUI;
-        result = true;
-      }
-
-      return result;
-    }
-
-    
     private bool RefreshScannerActiveDataSource()
     {
       bool success = true;
 
       if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
       {
-        success = false;
-
-        if(ExecuteDataSourceSelectionDialog() == true)
+        if(String.IsNullOrEmpty(fAppSettings.CurrentScanner))
         {
-          if(fScanner.SelectActiveDataSource(settings.CurrentScanner) == true)
-          {
-            success = true;
-          }
+          ExecuteDataSourceSelectionDialog();
+        }
+
+        if(fScanner.SelectActiveDataSource(fAppSettings.CurrentScanner) == false)
+        {
+          fAppSettings.CurrentScanner = null;
+          UtilDialogs.ShowError("No valid data source selected");
+          success = false;
         }
       }
 
-      if(success == false)
+      return success;
+    }
+
+
+    private bool ExecuteDataSourceSelectionDialog()
+    {
+      bool result = false;
+
+      FormDataSourceSelectionDialog F = new FormDataSourceSelectionDialog(fScanner.GetDataSourceNames());
+
+      F.SelectedDataSource = fAppSettings.CurrentScanner;
+      F.UseNativeUI = fAppSettings.UseScannerNativeUI;
+
+      if(F.ShowDialog() == DialogResult.OK)
       {
-        UtilDialogs.ShowError("No valid data source selected");
+        fAppSettings.CurrentScanner = F.SelectedDataSource;
+        fAppSettings.UseScannerNativeUI = F.UseNativeUI;
+        result = true;
       }
 
-      return success;
+      return result;
     }
 
 
@@ -366,7 +364,7 @@ namespace PDFScanningApp
         settings.Brightness = 0.5;
         settings.Contrast = 0.5;
 
-        if(fScanner.Acquire(settings, false, true) == false)
+        if(fScanner.Acquire(settings, fAppSettings.UseScannerNativeUI, true) == false)
         {
           UtilDialogs.ShowError("Scanner failed to start");
         }
@@ -380,12 +378,12 @@ namespace PDFScanningApp
     {
       SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
-      if(!Directory.Exists(settings.LastDirectory))
+      if(!Directory.Exists(fAppSettings.LastDirectory))
       {
-        settings.LastDirectory = "M:\\";
+        fAppSettings.LastDirectory = "M:\\";
       }
 
-      saveFileDialog1.InitialDirectory = settings.LastDirectory;
+      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectory;
       saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
       saveFileDialog1.FilterIndex = 1;
 
@@ -399,8 +397,7 @@ namespace PDFScanningApp
 
         myDocument.RemoveAll();
 
-        settings.LastDirectory = Path.GetDirectoryName(fileName);
-        settings.SaveSettings();
+        fAppSettings.LastDirectory = Path.GetDirectoryName(fileName);
       }
     }
 

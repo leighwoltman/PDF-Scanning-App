@@ -1,25 +1,36 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.IO;
 using System.Windows.Forms;
+using Utils;
+
 
 namespace PDFScanningApp
 {
-    static class Program
+  static class Program
+  {
+    /// <summary>
+    /// The main entry point for the application.
+    /// </summary>
+    [STAThread]
+    static void Main(string[] args)
     {
-        /// <summary>
-        /// The main entry point for the application.
-        /// </summary>
-        [STAThread]
-        static void Main()
-        {
-          Application.EnableVisualStyles();
-          Application.SetCompatibleTextRenderingDefault(false);
+      string settingsFilename;
 
-          // first get the settings
-          Settings settings = Settings.GetSettings();
+      if(args.Length > 0)
+      {
+        settingsFilename = args[0];
+      }
+      else
+      {
+        settingsFilename = Path.Combine(UtilApp.GetUserAppDataFolder(), Application.ProductName, "Settings.xml");
+      }
 
-          Application.Run(new MainForm(settings));
-        }
+      AppSettings.Initialize(settingsFilename);
+
+      Application.EnableVisualStyles();
+      Application.SetCompatibleTextRenderingDefault(false);
+      Application.Run(new MainForm());
     }
+  }
 }
