@@ -169,16 +169,32 @@ namespace TwainInterface
 
             fCapabilityPixelType.CurrentValue = pixelType;
 
-            TwCapPageType pageType;
-
-            switch(fSettings.PageType)
+            if(fSettings.PageType == PageTypeEnum.Custom)
             {
-              case PageTypeEnum.Letter: pageType = TwCapPageType.UsLetter; break;
-              case PageTypeEnum.Legal: pageType = TwCapPageType.UsLegal; break;
-              default: pageType = TwCapPageType.UsLetter; break;
-            }
+              TwImageLayout ilayout = new TwImageLayout();
 
-            fCapabilityPageSize.CurrentValue = pageType;
+              if(fTwain.GetImageLayout(fIdent, ilayout))
+              {
+                ilayout.Frame.Left = 2;
+                ilayout.Frame.Top = 4;
+                ilayout.Frame.Right = 6;
+                ilayout.Frame.Bottom = 8;
+                fTwain.SetImageLayout(fIdent, ilayout);
+              }
+            }
+            else
+            {
+              TwCapPageType pageType;
+
+              switch(fSettings.PageType)
+              {
+                case PageTypeEnum.Letter: pageType = TwCapPageType.UsLetter; break;
+                case PageTypeEnum.Legal: pageType = TwCapPageType.UsLegal; break;
+                default: pageType = TwCapPageType.UsLetter; break;
+              }
+
+              fCapabilityPageSize.CurrentValue = pageType;
+            }
 
             float resolution = (float)fSettings.Resolution;
 

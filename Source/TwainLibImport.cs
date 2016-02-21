@@ -61,6 +61,9 @@ namespace TwainInterface
       public static extern TwRC DSiinf([In, Out] TwIdentity origin, [In] TwIdentity dest, TwDG dg, TwDAT dat, TwMSG msg, [In, Out] TwImageInfo imginf);
 
       [DllImport("twain_32.dll", EntryPoint = "#1")]
+      public static extern TwRC DSilayout([In, Out] TwIdentity origin, [In] TwIdentity dest, TwDG dg, TwDAT dat, TwMSG msg, [In, Out] TwImageLayout value);
+
+      [DllImport("twain_32.dll", EntryPoint = "#1")]
       public static extern TwRC DSixfer([In, Out] TwIdentity origin, [In] TwIdentity dest, TwDG dg, TwDAT dat, TwMSG msg, ref IntPtr hbitmap);
 
       [DllImport("twain_32.dll", EntryPoint = "#1")]
@@ -587,6 +590,50 @@ namespace TwainInterface
 
 
     [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    class TwFrame
+    {
+      private UInt32 fLeft;
+      private UInt32 fTop;
+      private UInt32 fRight;
+      private UInt32 fBottom;
+
+      public float Left 
+      {
+        get { return TwainUtils.FloatFromFix32(fLeft); }
+        set { fLeft = TwainUtils.Fix32FromFloat(value); } 
+      }
+
+      public float Top
+      {
+        get { return TwainUtils.FloatFromFix32(fTop); }
+        set { fTop = TwainUtils.Fix32FromFloat(value); } 
+      }
+
+      public float Right
+      {
+        get { return TwainUtils.FloatFromFix32(fRight); }
+        set { fRight = TwainUtils.Fix32FromFloat(value); } 
+      }
+
+      public float Bottom
+      {
+        get { return TwainUtils.FloatFromFix32(fBottom); }
+        set { fBottom = TwainUtils.Fix32FromFloat(value); } 
+      }
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
+    class TwImageLayout
+    {
+      public TwFrame Frame;
+      public UInt32 DocumentNumber;
+      public UInt32 PageNumber;
+      public UInt32 FrameNumber;
+    }
+
+
+    [StructLayout(LayoutKind.Sequential, Pack = 2)]
     class TwPendingXfers
     {
       public short Count;
@@ -664,11 +711,7 @@ namespace TwainInterface
 
           case TwType.Fix32:
             {
-              float f = (float)value;
-              int i = (int)((f * 65536.0f) + 0.5f);
-              short Whole = (short)(i >> 16);
-              ushort Frac = (ushort)(i & 0x0000ffff);
-              result = (UInt32)(ushort)Whole + ((uint)Frac << 16);
+              result = TwainUtils.Fix32FromFloat((float)value);
             }
             break;
 
@@ -706,9 +749,7 @@ namespace TwainInterface
 
           case TwType.Fix32:
             {
-              short whole = (short)(rawData & 0x0000ffff);
-              ushort frac = (ushort)(rawData >> 16);
-              result = (float)whole + ((float)frac / 65536.0f);
+              result = TwainUtils.FloatFromFix32(rawData);
             }
             break;
 

@@ -251,6 +251,28 @@ namespace TwainInterface
       }
 
 
+      public bool SetImageLayout(TwIdentity dataSourceId, TwImageLayout value)
+      {
+        TwRC rc = LibTwain32.DSilayout(fApplicationId, dataSourceId, TwDG.Image, TwDAT.ImageLayout, TwMSG.Set, value);
+        return (bool)(rc == TwRC.Success);
+      }
+
+
+      public bool GetImageLayout(TwIdentity dataSourceId, TwImageLayout result)
+      {
+        TwRC rc = LibTwain32.DSilayout(fApplicationId, dataSourceId, TwDG.Image, TwDAT.ImageLayout, TwMSG.Get, result);
+        return (bool)(rc == TwRC.Success);
+      }
+
+
+      public TwImageLayout GetImageLayout(TwIdentity dataSourceId)
+      {
+        TwImageLayout result = new TwImageLayout();
+        TwRC rc = LibTwain32.DSilayout(fApplicationId, dataSourceId, TwDG.Image, TwDAT.ImageLayout, TwMSG.Get, result);
+        return (rc == TwRC.Success) ? result : null;
+      }
+
+
       public bool TransferImage(TwIdentity dataSourceId, ref IntPtr hresultBitmap)
       {
         TwRC rc = LibTwain32.DSixfer(fApplicationId, dataSourceId, TwDG.Image, TwDAT.ImageNativeXfer, TwMSG.Get, ref hresultBitmap);

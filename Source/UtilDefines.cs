@@ -7,5 +7,5 @@ namespace Utils
 {
   public enum ColorModeEnum { BW, Gray, RGB };
 
-  public enum PageTypeEnum { Letter, Legal };
+  public enum PageTypeEnum { Custom, Letter, Legal };
 }
