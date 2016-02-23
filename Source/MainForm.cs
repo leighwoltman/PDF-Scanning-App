@@ -11,8 +11,8 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
-using Scanning;
 using Source;
+using Model;
 using Utils;
 
 
@@ -22,9 +22,10 @@ namespace PDFScanningApp
   {
     private AppSettings fAppSettings;
     private Scanner fScanner;
+    private PdfExporter fPdfExporter;
+    private Document myDocument;
     private const int none_selected = -1;
     private int selected_index = none_selected;
-    private Document myDocument;
 
 
     public MainForm()
@@ -35,8 +36,9 @@ namespace PDFScanningApp
       fAppSettings = new AppSettings();
 
       fScanner = new Scanner();
-      fScanner.OnNewPage += fScanner_OnNewPage;
       fScanner.OnScanningComplete += fScanner_OnScanningComplete;
+
+      fPdfExporter = new PdfExporter();
 
       myDocument = new Document();
       myDocument.OnPageAdded += myDocument_OnPageAdded;
@@ -68,12 +70,6 @@ namespace PDFScanningApp
     private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
     {
       fScanner.Close();
-    }
-
-
-    void fScanner_OnNewPage(object sender, NewPageEventArgs args)
-    {
-      myDocument.AddPage(args.ThePage);
     }
 
 
@@ -364,7 +360,7 @@ namespace PDFScanningApp
         settings.Brightness = 0.5;
         settings.Contrast = 0.5;
 
-        if(fScanner.Acquire(settings, fAppSettings.UseScannerNativeUI, true) == false)
+        if(fScanner.Acquire(myDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
         {
           UtilDialogs.ShowError("Scanner failed to start");
         }
@@ -391,7 +387,7 @@ namespace PDFScanningApp
       {
         string fileName = saveFileDialog1.FileName;
 
-        myDocument.Save(fileName);
+        fPdfExporter.SaveDocument(myDocument, fileName);
 
         Thread.Sleep(5000);
 

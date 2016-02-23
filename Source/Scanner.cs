@@ -10,17 +10,11 @@ using Scanning;
 using Utils;
 
 
-namespace PDFScanningApp
+namespace Model
 {
-  public delegate void NewPageEventHandler(object sender, NewPageEventArgs e);
-
-
-  public class NewPageEventArgs : EventArgs
-  {
-    public Page ThePage;
-  }
-
+  public class ScanSettings : Scanning.ScanSettings { }
   
+
   class Scanner
   {
     private InterfaceDataSourceManager fTwain;
@@ -30,6 +24,7 @@ namespace PDFScanningApp
     private List<ColorModeEnum> fAvailableValuesForColorMode;
     private List<PageTypeEnum> fAvailableValuesForPageType;
     private List<int> fAvailableValuesForResolution;
+    private Document fDocument;
 
 
     public Scanner()
@@ -170,7 +165,7 @@ namespace PDFScanningApp
     }
 
 
-    public bool Acquire(ScanSettings settings, bool showSettingsUI, bool showTransferUI)
+    public bool Acquire(Document document, ScanSettings settings, bool showSettingsUI, bool showTransferUI)
     {
       bool result = false;
 
@@ -180,6 +175,8 @@ namespace PDFScanningApp
         {
           fActiveDataSource.OnNewPictureData += fActiveDataSource_OnNewPictureData;
           fActiveDataSource.OnScanningComplete += fActiveDataSource_OnScanningComplete;
+
+          fDocument = document;
 
           result = fActiveDataSource.Acquire(settings, showSettingsUI, showTransferUI);
 
@@ -203,7 +200,7 @@ namespace PDFScanningApp
 
       Page myPage = new Page(fileName, true, args.TheSettings.PageType);
 
-      Raise_OnNewPage(myPage);
+      fDocument.AddPage(myPage);
     }
 
 
@@ -211,19 +208,6 @@ namespace PDFScanningApp
     {
       fActiveDataSource.Close();
       Raise_OnScanningComplete();
-    }
-
-
-    public event NewPageEventHandler OnNewPage;
-
-    private void Raise_OnNewPage(Page page)
-    {
-      if(OnNewPage != null)
-      {
-        NewPageEventArgs args = new NewPageEventArgs();
-        args.ThePage = page;
-        OnNewPage(this, args);
-      }
     }
 
 

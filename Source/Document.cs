@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using PdfSharp.Pdf;
 
 
-namespace PDFScanningApp
+namespace Model
 {
   class DocumentPageEventArgs : EventArgs
   {
@@ -96,24 +95,6 @@ namespace PDFScanningApp
       fPages.RemoveAt(sourceIndex);
       fPages.Insert(targetIndex, targetPage);
       RaisePageMoved(sourceIndex, targetIndex);
-    }
-
-
-    public void Save(string fileName)
-    {
-      PdfDocument document = new PdfDocument();
-      document.Info.Title = "Created with PDFsharp";
-
-      for(int i = 0; i < fPages.Count; i++)
-      {
-        // Create an empty page
-        PdfPage page = document.AddPage();
-        // Print page to pdf
-        fPages[i].ToPdf(page);
-      }
-
-      // Save the document...
-      document.Save(fileName);
     }
 
 
