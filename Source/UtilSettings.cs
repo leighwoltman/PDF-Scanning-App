@@ -163,5 +163,28 @@ namespace Utils
 
       return result;
     }
+
+
+    public void SetDouble(string key, double value)
+    {
+      Set(key, value.ToString());
+    }
+
+
+    public double GetDouble(string key, double defaultValue)
+    {
+      double result;
+
+      try
+      {
+        result = Double.Parse(Get(key, ""));
+      }
+      catch
+      {
+        result = defaultValue;
+      }
+
+      return result;
+    }
   }
 }
