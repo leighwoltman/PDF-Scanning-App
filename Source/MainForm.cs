@@ -7,10 +7,6 @@ using System.Text;
 using System.Windows.Forms;
 using System.IO;
 using System.Threading;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using PdfSharp.Pdf.Advanced;
-using PdfSharp.Pdf.Filters;
 using Source;
 using Model;
 using Utils;
@@ -23,6 +19,7 @@ namespace PDFScanningApp
     private AppSettings fAppSettings;
     private Scanner fScanner;
     private PdfExporter fPdfExporter;
+    private PdfImporter fPdfImporter;
     private Document myDocument;
     private const int none_selected = -1;
     private int selected_index = none_selected;
@@ -39,6 +36,7 @@ namespace PDFScanningApp
       fScanner.OnScanningComplete += fScanner_OnScanningComplete;
 
       fPdfExporter = new PdfExporter();
+      fPdfImporter = new PdfImporter();
 
       myDocument = new Document();
       myDocument.OnPageAdded += myDocument_OnPageAdded;
@@ -425,6 +423,7 @@ namespace PDFScanningApp
       RefreshControls();
     }
 
+
     private void pdfLoad_Click(object sender, EventArgs e)
     {
       OpenFileDialog openFileDialog1 = new OpenFileDialog();
@@ -438,98 +437,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        try
-        {
-          PdfDocument document = PdfReader.Open(openFileDialog1.FileName);
-
-          // Iterate pages
-          foreach (PdfPage page in document.Pages)
-          {
-            // Get resources dictionary
-            PdfDictionary resources = page.Elements.GetDictionary("/Resources");
-            if (resources != null)
-            {
-              // Get external objects dictionary
-              PdfDictionary xObjects = resources.Elements.GetDictionary("/XObject");
-              if (xObjects != null)
-              {
-                ICollection<PdfItem> items = xObjects.Elements.Values;
-                // Iterate references to external objects
-                foreach (PdfItem item in items)
-                {
-                  PdfReference reference = item as PdfReference;
-                  if (reference != null)
-                  {
-                    PdfDictionary xObject = reference.Value as PdfDictionary;
-                    // Is external object an image?
-                    if (xObject != null && xObject.Elements.GetString("/Subtype") == "/Image")
-                    {
-                      PdfArray pdfArray = null;
-
-                      try
-                      {
-                        pdfArray = xObject.Elements.GetArray("/Filter");
-                      }
-                      catch(Exception)
-                      {
-                        // do nothing
-                      }
-
-                      if (pdfArray != null && pdfArray.Elements.Count == 2)
-                      {
-                        // the "/Filter" field was an array
-
-                        // see if it had two values to indicate it is both JPEG and Deflate encoded
-                        if( (pdfArray.Elements[0].ToString() == "/DCTDecode" && pdfArray.Elements[1].ToString() == "/FlateDecode") ||
-                            (pdfArray.Elements[1].ToString() == "/DCTDecode" && pdfArray.Elements[0].ToString() == "/FlateDecode") )
-                        {
-                          byte[] byteArray = xObject.Stream.Value;
-
-                          FlateDecode fd = new FlateDecode();
-                          byte[] byteArrayDecompressed = fd.Decode(byteArray);
-
-                          Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
-
-                          Page myPage = new Page(image);
-                          myDocument.AddPage(myPage);
-                        }
-                      }
-                      else
-                      {
-                        string filter = xObject.Elements.GetString("/Filter");
-
-                        switch (filter)
-                        {
-                          case "/DCTDecode":
-                            {
-                              // this is a directly encoded JPEG image
-                              byte[] byteArray = xObject.Stream.Value;
-
-                              Image image = Image.FromStream(new MemoryStream(byteArray));
-
-                              Page myPage = new Page(image);
-                              myDocument.AddPage(myPage);
-                            }
-                            break;
-                          case "/FlateDecode":
-                            {
-                              // potientially this is a BMP/PNG image
-                            }
-                            break;
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          }
-        }
-        catch(Exception ex)
-        {
-          string msg = ex.Message;
-        }
-        
+        fPdfImporter.LoadDocument(myDocument, openFileDialog1.FileName);
       }
 
       RefreshControls();
