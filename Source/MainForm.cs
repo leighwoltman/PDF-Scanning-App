@@ -20,7 +20,7 @@ namespace PDFScanningApp
     private Scanner fScanner;
     private PdfExporter fPdfExporter;
     private PdfImporter fPdfImporter;
-    private Document myDocument;
+    private Document fDocument;
     private const int none_selected = -1;
     private int selected_index = none_selected;
 
@@ -38,11 +38,11 @@ namespace PDFScanningApp
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
 
-      myDocument = new Document();
-      myDocument.OnPageAdded += myDocument_OnPageAdded;
-      myDocument.OnPageRemoved += myDocument_OnPageRemoved;
-      myDocument.OnPageUpdated += myDocument_OnPageUpdated;
-      myDocument.OnPageMoved += myDocument_OnPageMoved;
+      fDocument = new Document();
+      fDocument.OnPageAdded += fDocument_OnPageAdded;
+      fDocument.OnPageRemoved += fDocument_OnPageRemoved;
+      fDocument.OnPageUpdated += fDocument_OnPageUpdated;
+      fDocument.OnPageMoved += fDocument_OnPageMoved;
 
       comboBoxResolution.Items.Add("200 dpi");
       comboBoxResolution.Items.Add("300 dpi");
@@ -79,7 +79,7 @@ namespace PDFScanningApp
     
     void RefreshControls()
     {
-      int numPages = myDocument.NumPages;
+      int numPages = fDocument.NumPages;
 
       // we have to have at least 3 pages to make this worth while
       // only allow this button when no page is selected
@@ -179,10 +179,10 @@ namespace PDFScanningApp
     }
 
 
-    void myDocument_OnPageAdded(object sender, EventArgs e)
+    void fDocument_OnPageAdded(object sender, EventArgs e)
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
-      Page page = myDocument.GetPage(args.Index);
+      Page page = fDocument.GetPage(args.Index);
       PictureBox myPictureBox = new PictureBox();
       myPictureBox.Image = page.Thumbnail;
       myPictureBox.Height = 180;
@@ -194,7 +194,7 @@ namespace PDFScanningApp
     }
 
 
-    void myDocument_OnPageRemoved(object sender, EventArgs e)
+    void fDocument_OnPageRemoved(object sender, EventArgs e)
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
 
@@ -223,7 +223,7 @@ namespace PDFScanningApp
     }
 
 
-    void myDocument_OnPageUpdated(object sender, EventArgs e)
+    void fDocument_OnPageUpdated(object sender, EventArgs e)
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
       Control pbox = imagePanel.Controls[args.Index];
@@ -232,7 +232,7 @@ namespace PDFScanningApp
     }
 
 
-    void myDocument_OnPageMoved(object sender, EventArgs e)
+    void fDocument_OnPageMoved(object sender, EventArgs e)
     {
       DocumentPageMoveEventArgs args = (DocumentPageMoveEventArgs)e;
       imagePanel.Controls.SetChildIndex(imagePanel.Controls[args.SourceIndex], args.TargetIndex);
@@ -302,13 +302,13 @@ namespace PDFScanningApp
 
     private void moveLeftButton_Click(object sender, EventArgs e)
     {
-      myDocument.MovePage(selected_index, selected_index - 1);
+      fDocument.MovePage(selected_index, selected_index - 1);
     }
 
 
     private void moveRightButton_Click(object sender, EventArgs e)
     {
-      myDocument.MovePage(selected_index, selected_index + 1);
+      fDocument.MovePage(selected_index, selected_index + 1);
     }
 
 
@@ -316,20 +316,20 @@ namespace PDFScanningApp
     {
       if(DialogResult.OK == MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButtons.OKCancel))
       {
-        myDocument.DeletePage(selected_index);
+        fDocument.DeletePage(selected_index);
       }
     }
 
 
     private void rotateButton_Click(object sender, EventArgs e)
     {
-      myDocument.RotatePage(selected_index);
+      fDocument.RotatePage(selected_index);
     }
 
 
     private void buttonLandscape_Click(object sender, EventArgs e)
     {
-      myDocument.LandscapePage(selected_index);
+      fDocument.LandscapePage(selected_index);
     }
 
 
@@ -338,7 +338,7 @@ namespace PDFScanningApp
       int loc_of_next = 1;
       while(loc_of_next < imagePanel.Controls.Count - 1)
       {
-        myDocument.MovePage(imagePanel.Controls.Count - 1, loc_of_next);
+        fDocument.MovePage(imagePanel.Controls.Count - 1, loc_of_next);
         loc_of_next += 2;
       }
     }
@@ -358,7 +358,7 @@ namespace PDFScanningApp
         settings.Brightness = 0.5;
         settings.Contrast = 0.5;
 
-        if(fScanner.Acquire(myDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
+        if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
         {
           UtilDialogs.ShowError("Scanner failed to start");
         }
@@ -385,11 +385,11 @@ namespace PDFScanningApp
       {
         string fileName = saveFileDialog1.FileName;
 
-        fPdfExporter.SaveDocument(myDocument, fileName);
+        fPdfExporter.SaveDocument(fDocument, fileName);
 
         Thread.Sleep(5000);
 
-        myDocument.RemoveAll();
+        fDocument.RemoveAll();
 
         fAppSettings.LastDirectory = Path.GetDirectoryName(fileName);
       }
@@ -415,7 +415,7 @@ namespace PDFScanningApp
         for(int i = 0; i < openFileDialog1.FileNames.Length; i++)
         {
           Page myPage = new Page(openFileDialog1.FileNames[i]);
-          myDocument.AddPage(myPage);
+          fDocument.AddPage(myPage);
         }
       }
 
@@ -437,7 +437,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(myDocument, openFileDialog1.FileName);
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName);
       }
 
       RefreshControls();
