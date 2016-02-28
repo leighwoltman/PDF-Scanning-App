@@ -159,6 +159,7 @@
       this.ListViewPages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
       this.ListViewPages.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.ListViewPages.FullRowSelect = true;
       this.ListViewPages.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
       this.ListViewPages.LargeImageList = this.ImageListPages;
       this.ListViewPages.Location = new System.Drawing.Point(0, 0);
