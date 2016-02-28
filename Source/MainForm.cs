@@ -335,11 +335,9 @@ namespace PDFScanningApp
 
     private void sided2Button_Click(object sender, EventArgs e)
     {
-      int loc_of_next = 1;
-      while(loc_of_next < imagePanel.Controls.Count - 1)
+      if(DialogResult.Yes == MessageBox.Show("This will sort the images in front/back order", "Confirm", MessageBoxButtons.YesNo))
       {
-        fDocument.MovePage(imagePanel.Controls.Count - 1, loc_of_next);
-        loc_of_next += 2;
+        fDocument.RearrangePages2Sided();
       }
     }
 

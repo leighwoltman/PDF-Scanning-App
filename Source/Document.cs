@@ -72,6 +72,17 @@ namespace Model
     }
 
 
+    public void RearrangePages2Sided()
+    {
+      int loc_of_next = 1;
+      while(loc_of_next < this.NumPages - 1)
+      {
+        this.MovePage(this.NumPages, loc_of_next);
+        loc_of_next += 2;
+      }
+    }
+
+
     // TODO: Provide a generic orientation function
     public void RotatePage(int index)
     {
