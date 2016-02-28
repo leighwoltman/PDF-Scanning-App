@@ -56,6 +56,8 @@ namespace PDFScanningApp
         RefreshScanner(fAppSettings.CurrentScanner);
       }
 
+      StatusLabel1.Text = "";
+      StatusLabel2.Text = "";
       RefreshControls();
     }
 
@@ -75,7 +77,6 @@ namespace PDFScanningApp
     void RefreshControls()
     {
       StatusLabel1.Text = ListViewPages.Items.Count + " items";
-      StatusLabel2.Text = "";
     }
 
 
@@ -211,6 +212,7 @@ namespace PDFScanningApp
         ListViewPages.RedrawItems(args.TargetIndex, args.SourceIndex, true);
       }
 
+      ListViewPages.Items[args.TargetIndex].Selected = true;
       RefreshControls();
     }
 
@@ -274,10 +276,21 @@ namespace PDFScanningApp
 
     private void ListViewPages_DragOver(object sender, DragEventArgs e)
     {
+      ListViewItem draggedItem = (ListViewItem)e.Data.GetData(typeof(ListViewItem));
       Point targetPoint = ListViewPages.PointToClient(new Point(e.X, e.Y));
       int targetIndex = ListViewPages.InsertionMark.NearestIndex(targetPoint);
+
       ListViewPages.InsertionMark.Index = targetIndex;
 
+      if(targetIndex > draggedItem.Index)
+      {
+        ListViewPages.InsertionMark.AppearsAfterItem = true;
+      }
+      else
+      {
+        ListViewPages.InsertionMark.AppearsAfterItem = false;
+      }
+      
       if(targetIndex >= 0)
       {
         if(targetIndex == ListViewPages.TopItem.Index)
@@ -292,32 +305,24 @@ namespace PDFScanningApp
           ListViewPages.Items[targetIndex].EnsureVisible();
         }
       }
+
+      StatusLabel2.Text = "Page " + (draggedItem.Index + 1) + " >> " + (targetIndex + 1);
     }
 
 
     private void ListViewPages_DragDrop(object sender, DragEventArgs e)
     {
-      // Retrieve the index of the insertion mark;
       int targetIndex = ListViewPages.InsertionMark.Index;
 
-      // If the insertion mark is not visible, exit the method.
-      if(targetIndex == -1)
+      if(targetIndex >= 0)
       {
-        return;
+        ListViewItem draggedItem = (ListViewItem)e.Data.GetData(typeof(ListViewItem));
+        fDocument.MovePage(draggedItem.Index, targetIndex);
       }
 
-      // If the insertion mark is to the right of the item with
-      // the corresponding index, increment the target index.
-      if(ListViewPages.InsertionMark.AppearsAfterItem)
-      {
-        targetIndex++;
-      }
-
-
-      // Retrieve the dragged item.
-      ListViewItem draggedItem = (ListViewItem)e.Data.GetData(typeof(ListViewItem));
-
-      fDocument.MovePage(draggedItem.Index, targetIndex);
+      // Clear the insertion mark and the status
+      ListViewPages.InsertionMark.Index = -1;
+      StatusLabel2.Text = "";
     }
 
 
