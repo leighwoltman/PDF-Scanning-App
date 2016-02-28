@@ -108,23 +108,36 @@ namespace Model
     {
       bool success = false;
 
-      InterfaceDataSource ds = GetDataSourceByName(name);
-
-      if(ds != null)
+      if(GetActiveDataSourceName() == name)
       {
-        if(ds.Open())
-        {
-          fAvailableValuesForColorMode = ds.GetAvailableValuesForColorMode();
-          fAvailableValuesForPageType = ds.GetAvailableValuesForPageType();
-          fAvailableValuesForResolution = ds.GetAvailableValuesForResolution();
-          ds.Close();
+        success = true; // Already selected
+      }
+      else
+      {
+        InterfaceDataSource ds = GetDataSourceByName(name);
 
-          fActiveDataSource = ds;
-          success = true;
+        if(ds != null)
+        {
+          if(ds.Open())
+          {
+            fAvailableValuesForColorMode = ds.GetAvailableValuesForColorMode();
+            fAvailableValuesForPageType = ds.GetAvailableValuesForPageType();
+            fAvailableValuesForResolution = ds.GetAvailableValuesForResolution();
+            ds.Close();
+
+            fActiveDataSource = ds;
+            success = true;
+          }
         }
       }
 
       return success;
+    }
+
+
+    public bool DataSourceReady()
+    {
+      return (bool)(String.IsNullOrEmpty(GetActiveDataSourceName()) == false);
     }
 
 
