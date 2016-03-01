@@ -64,6 +64,7 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="ImageLoader.cs" />
     <Compile Include="Page.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>

@@ -20,6 +20,7 @@ namespace PDFScanningApp
     private Scanner fScanner;
     private PdfExporter fPdfExporter;
     private PdfImporter fPdfImporter;
+    private ImageLoader fImageLoader;
     private Document fDocument;
 
     
@@ -35,6 +36,7 @@ namespace PDFScanningApp
 
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
+      fImageLoader = new ImageLoader();
 
       fDocument = new Document();
       fDocument.OnPageAdded += fDocument_OnPageAdded;
@@ -407,12 +409,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        // load the files
-        for(int i = 0; i < openFileDialog1.FileNames.Length; i++)
-        {
-          Page myPage = new Page(openFileDialog1.FileNames[i]);
-          fDocument.AddPage(myPage);
-        }
+        fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames);
       }
 
       RefreshControls();
