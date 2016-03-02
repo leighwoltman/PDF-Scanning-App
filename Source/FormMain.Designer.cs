@@ -54,6 +54,7 @@
       this.ButtonLoadImages = new System.Windows.Forms.Button();
       this.ButtonLoadPdf = new System.Windows.Forms.Button();
       this.ButtonSavePdf = new System.Windows.Forms.Button();
+      this.ButtonPrint = new System.Windows.Forms.Button();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -280,6 +281,7 @@
       this.flowLayoutPanel1.Controls.Add(this.ButtonLoadImages);
       this.flowLayoutPanel1.Controls.Add(this.ButtonLoadPdf);
       this.flowLayoutPanel1.Controls.Add(this.ButtonSavePdf);
+      this.flowLayoutPanel1.Controls.Add(this.ButtonPrint);
       this.flowLayoutPanel1.Dock = System.Windows.Forms.DockStyle.Bottom;
       this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 358);
       this.flowLayoutPanel1.Name = "flowLayoutPanel1";
@@ -339,6 +341,16 @@
       this.ButtonSavePdf.UseVisualStyleBackColor = true;
       this.ButtonSavePdf.Click += new System.EventHandler(this.ButtonSavePdf_Click);
       // 
+      // ButtonPrint
+      // 
+      this.ButtonPrint.Location = new System.Drawing.Point(282, 66);
+      this.ButtonPrint.Name = "ButtonPrint";
+      this.ButtonPrint.Size = new System.Drawing.Size(131, 52);
+      this.ButtonPrint.TabIndex = 33;
+      this.ButtonPrint.Text = "Print";
+      this.ButtonPrint.UseVisualStyleBackColor = true;
+      this.ButtonPrint.Click += new System.EventHandler(this.ButtonPrint_Click);
+      // 
       // FormMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -395,6 +407,7 @@
     private System.Windows.Forms.Button ButtonSavePdf;
     private System.Windows.Forms.ToolStripStatusLabel StatusLabel1;
     private System.Windows.Forms.ToolStripStatusLabel StatusLabel2;
+    private System.Windows.Forms.Button ButtonPrint;
   }
 }
 

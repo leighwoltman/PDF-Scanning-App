@@ -18,6 +18,7 @@ namespace PDFScanningApp
   {
     private AppSettings fAppSettings;
     private Scanner fScanner;
+    private Printer fPrinter;
     private PdfExporter fPdfExporter;
     private PdfImporter fPdfImporter;
     private ImageLoader fImageLoader;
@@ -33,7 +34,7 @@ namespace PDFScanningApp
 
       fScanner = new Scanner();
       fScanner.OnScanningComplete += fScanner_OnScanningComplete;
-
+      fPrinter = new Printer();
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
       fImageLoader = new ImageLoader();
@@ -460,6 +461,26 @@ namespace PDFScanningApp
         fDocument.RemoveAll();
 
         fAppSettings.LastDirectory = Path.GetDirectoryName(fileName);
+      }
+    }
+
+
+    private void ButtonPrint_Click(object sender, EventArgs e)
+    {
+      if(fDocument.NumPages > 0)
+      {
+        PrintDialog dlg = new PrintDialog();
+        dlg.AllowSomePages = true;
+        dlg.PrinterSettings.PrinterName = "PrimoPDF";
+        dlg.PrinterSettings.MinimumPage = 1;
+        dlg.PrinterSettings.MaximumPage = fDocument.NumPages;
+        dlg.PrinterSettings.FromPage = dlg.PrinterSettings.MinimumPage;
+        dlg.PrinterSettings.ToPage = dlg.PrinterSettings.MaximumPage;
+
+        if(dlg.ShowDialog() == DialogResult.OK)
+        {
+          fPrinter.PrintDocument(fDocument, dlg.PrinterSettings);
+        }
       }
     }
 
