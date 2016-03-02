@@ -29,6 +29,7 @@ namespace PDFScanningApp
     {
       InitializeComponent();
       UtilDialogs.MainWindow = this;
+      this.Text = UtilApp.GetApplicationName();
 
       fAppSettings = new AppSettings();
 
