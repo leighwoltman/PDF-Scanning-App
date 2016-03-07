@@ -66,7 +66,7 @@ namespace Model
 
                         Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
 
-                        Page myPage = new Page(image);
+                        Page myPage = new PageFromImage(image);
                         document.AddPage(myPage);
                       }
                     }
@@ -83,7 +83,7 @@ namespace Model
 
                             Image image = Image.FromStream(new MemoryStream(byteArray));
 
-                            Page myPage = new Page(image);
+                            Page myPage = new PageFromImage(image);
                             document.AddPage(myPage);
                           }
                           break;

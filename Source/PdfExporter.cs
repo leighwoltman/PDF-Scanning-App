@@ -34,13 +34,13 @@ namespace Model
 
     public void PageToPdfPage(Page page, PdfPage pdfPage)
     {
-      if(page.getScanPageSize() == PageTypeEnum.Legal)
+      if(page.getScanPageSize() == PageSize.Legal)
       {
-        pdfPage.Size = PageSize.Legal;
+        pdfPage.Size = PdfSharp.PageSize.Legal;
       }
       else
       {
-        pdfPage.Size = PageSize.Letter;
+        pdfPage.Size = PdfSharp.PageSize.Letter;
       }
 
       // we need to swap the height and the width if page is a landscape image

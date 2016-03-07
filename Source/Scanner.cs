@@ -211,7 +211,21 @@ namespace Model
 
       UtilImaging.SaveImageAsJpeg(args.TheImage, fileName, 75L);
 
-      Page myPage = new Page(fileName, true, args.TheSettings.PageType);
+      PageSize param = PageSize.Letter;
+
+      switch(args.TheSettings.PageType)
+      {
+        case PageTypeEnum.Letter:
+          param = PageSize.Letter;
+          break;
+        case PageTypeEnum.Legal:
+          param = PageSize.Legal;
+          break;
+        default:
+          break;
+      }
+
+      Page myPage = new PageFromFile(fileName, true, param);
 
       fDocument.AddPage(myPage);
     }

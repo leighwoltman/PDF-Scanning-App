@@ -9,57 +9,23 @@ using Utils;
 
 namespace Model
 {
-  public class Page
+  abstract public class Page
   {
-    private string fileName;
-    private Image myImageFile = null;
-    private Image myThumbnail;
-    private int height;
-    private int width;
-    private bool tempFile;
-    private bool rotate_180 = false;
-    private bool landscape = false;
-    private PageTypeEnum size;
+    protected Image myThumbnail;
+    protected int heightPixels;
+    protected int widthPixels;
+    protected bool rotate_180 = false;
+    protected bool landscape = false;
+    protected PageSize size;
 
 
-    public Page(Image image)
-    {
-      this.fileName = null;
-      this.myImageFile = image;
-      CreateThumbnail(image);
-      this.tempFile = false;
-      this.size = PageTypeEnum.Letter;
-    }
-
-
-    public Page(string fileName)
-      : this(fileName, false, PageTypeEnum.Letter)
-    {
-      // nothing extra
-    }
-
-
-    public Page(string fileName, bool temporary_file, PageTypeEnum size)
-    {
-      this.tempFile = temporary_file;
-      this.fileName = fileName;
-      this.size = size;
-      // create a thumbnail
-      
-      using (Bitmap myBitmap = new Bitmap(fileName))
-      {
-        CreateThumbnail(myBitmap);
-      }
-    }
-
-
-    private void CreateThumbnail(Image myBitmap)
+    protected void CreateThumbnail(Image myBitmap)
     {
       int thumbnail_height;
       int thumbnail_width;
 
-      this.height = myBitmap.Size.Height;
-      this.width = myBitmap.Size.Width;
+      this.heightPixels = myBitmap.Size.Height;
+      this.widthPixels = myBitmap.Size.Width;
 
       if( myBitmap.Size.Height > myBitmap.Size.Width )
       {
@@ -85,32 +51,26 @@ namespace Model
     }
 
 
-    public PageTypeEnum getScanPageSize()
+    public PageSize getScanPageSize()
     {
       return size;
     }
 
+
     public int getHeight()
     {
-      return height;
+      return heightPixels;
     }
+
 
     public int getWidth()
     {
-      return width;
+      return widthPixels;
     }
 
-    public Image getImage()
-    {
-      if(fileName != null)
-      {
-        return Image.FromFile(fileName);
-      }
-      else
-      {
-        return myImageFile;
-      }
-    }
+
+    abstract public Image getImage();
+
 
     public bool ThumbnailCallback()
     {
@@ -146,18 +106,11 @@ namespace Model
       return rotate_180;
     }
 
-    public void cleanUp()
+    abstract public void cleanUp();
+
+    protected void pageCleanUp()
     {
       myThumbnail.Dispose();
-      if (myImageFile != null)
-      {
-        myImageFile.Dispose();
-        myImageFile = null;
-      }
-      if(this.tempFile)
-      {
-        File.Delete(fileName);
-      }
     }
   }
 }

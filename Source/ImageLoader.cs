@@ -11,7 +11,7 @@ namespace Model
     {
       foreach(string filename in filenames)
       {
-        Page myPage = new Page(filename);
+        Page myPage = new PageFromFile(filename);
         document.AddPage(myPage);
       }
     }

@@ -412,7 +412,7 @@ namespace PDFScanningApp
         // load the files
         for(int i = 0; i < openFileDialog1.FileNames.Length; i++)
         {
-          Page myPage = new Page(openFileDialog1.FileNames[i]);
+          Page myPage = new PageFromFile(openFileDialog1.FileNames[i]);
           fDocument.AddPage(myPage);
         }
       }
