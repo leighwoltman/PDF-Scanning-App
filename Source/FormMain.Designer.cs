@@ -33,7 +33,10 @@
       this.toolStrip1 = new System.Windows.Forms.ToolStrip();
       this.toolStripLabel1 = new System.Windows.Forms.ToolStripLabel();
       this.ComboBoxScanners = new System.Windows.Forms.ToolStripComboBox();
-      this.ButtonScanSettings = new System.Windows.Forms.ToolStripButton();
+      this.MenuSettings = new System.Windows.Forms.ToolStripDropDownButton();
+      this.MenuSettingsScanner = new System.Windows.Forms.ToolStripMenuItem();
+      this.MenuSettingsPrinter = new System.Windows.Forms.ToolStripMenuItem();
+      this.MenuSettingsPrinterUsePreview = new System.Windows.Forms.ToolStripMenuItem();
       this.ImageListPages = new System.Windows.Forms.ImageList(this.components);
       this.statusStrip1 = new System.Windows.Forms.StatusStrip();
       this.StatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
@@ -72,7 +75,7 @@
       this.toolStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripLabel1,
             this.ComboBoxScanners,
-            this.ButtonScanSettings});
+            this.MenuSettings});
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
       this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
@@ -94,15 +97,40 @@
       this.ComboBoxScanners.Size = new System.Drawing.Size(250, 25);
       this.ComboBoxScanners.SelectedIndexChanged += new System.EventHandler(this.ComboBoxScanners_SelectedIndexChanged);
       // 
-      // ButtonScanSettings
+      // MenuSettings
       // 
-      this.ButtonScanSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
-      this.ButtonScanSettings.Image = ((System.Drawing.Image)(resources.GetObject("ButtonScanSettings.Image")));
-      this.ButtonScanSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
-      this.ButtonScanSettings.Name = "ButtonScanSettings";
-      this.ButtonScanSettings.Size = new System.Drawing.Size(53, 22);
-      this.ButtonScanSettings.Text = "Settings";
-      this.ButtonScanSettings.Click += new System.EventHandler(this.ButtonScanSettings_Click);
+      this.MenuSettings.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
+      this.MenuSettings.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuSettingsScanner,
+            this.MenuSettingsPrinter});
+      this.MenuSettings.Image = ((System.Drawing.Image)(resources.GetObject("MenuSettings.Image")));
+      this.MenuSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
+      this.MenuSettings.Name = "MenuSettings";
+      this.MenuSettings.Size = new System.Drawing.Size(62, 22);
+      this.MenuSettings.Text = "Settings";
+      // 
+      // MenuSettingsScanner
+      // 
+      this.MenuSettingsScanner.DoubleClickEnabled = true;
+      this.MenuSettingsScanner.Name = "MenuSettingsScanner";
+      this.MenuSettingsScanner.Size = new System.Drawing.Size(152, 22);
+      this.MenuSettingsScanner.Text = "Scanner...";
+      this.MenuSettingsScanner.Click += new System.EventHandler(this.MenuSettingsScanner_Click);
+      // 
+      // MenuSettingsPrinter
+      // 
+      this.MenuSettingsPrinter.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.MenuSettingsPrinterUsePreview});
+      this.MenuSettingsPrinter.Name = "MenuSettingsPrinter";
+      this.MenuSettingsPrinter.Size = new System.Drawing.Size(152, 22);
+      this.MenuSettingsPrinter.Text = "Printer";
+      // 
+      // MenuSettingsPrinterUsePreview
+      // 
+      this.MenuSettingsPrinterUsePreview.CheckOnClick = true;
+      this.MenuSettingsPrinterUsePreview.Name = "MenuSettingsPrinterUsePreview";
+      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(152, 22);
+      this.MenuSettingsPrinterUsePreview.Text = "Use Preview";
       // 
       // ImageListPages
       // 
@@ -388,7 +416,6 @@
     private System.Windows.Forms.ImageList ImageListPages;
     private System.Windows.Forms.ToolStripLabel toolStripLabel1;
     private System.Windows.Forms.ToolStripComboBox ComboBoxScanners;
-    private System.Windows.Forms.ToolStripButton ButtonScanSettings;
     private System.Windows.Forms.StatusStrip statusStrip1;
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.ListView ListViewPages;
@@ -409,6 +436,10 @@
     private System.Windows.Forms.ToolStripStatusLabel StatusLabel1;
     private System.Windows.Forms.ToolStripStatusLabel StatusLabel2;
     private System.Windows.Forms.Button ButtonPrint;
+    private System.Windows.Forms.ToolStripDropDownButton MenuSettings;
+    private System.Windows.Forms.ToolStripMenuItem MenuSettingsScanner;
+    private System.Windows.Forms.ToolStripMenuItem MenuSettingsPrinter;
+    private System.Windows.Forms.ToolStripMenuItem MenuSettingsPrinterUsePreview;
   }
 }
 

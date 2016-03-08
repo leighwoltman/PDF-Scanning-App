@@ -45,6 +45,8 @@ namespace PDFScanningApp
       fDocument.OnPageRemoved += fDocument_OnPageRemoved;
       fDocument.OnPageUpdated += fDocument_OnPageUpdated;
       fDocument.OnPageMoved += fDocument_OnPageMoved;
+
+      MenuSettingsPrinterUsePreview.Checked = true;
     }
 
 
@@ -378,12 +380,6 @@ namespace PDFScanningApp
     }
 
 
-    private void ButtonScanSettings_Click(object sender, EventArgs e)
-    {
-      ExecuteDataSourceSettingsDialog();
-    }
-
-
     private void ButtonScanLetter_Click(object sender, EventArgs e)
     {
       Scan(PageTypeEnum.Letter);
@@ -472,6 +468,7 @@ namespace PDFScanningApp
       {
         PrintDialog dlg = new PrintDialog();
         dlg.AllowSomePages = true;
+        dlg.UseEXDialog = true;
         dlg.PrinterSettings.PrinterName = "PrimoPDF";
         dlg.PrinterSettings.MinimumPage = 1;
         dlg.PrinterSettings.MaximumPage = fDocument.NumPages;
@@ -480,7 +477,14 @@ namespace PDFScanningApp
 
         if(dlg.ShowDialog() == DialogResult.OK)
         {
-          fPrinter.PrintDocument(fDocument, dlg.PrinterSettings);
+          if(MenuSettingsPrinterUsePreview.Checked)
+          {
+            fPrinter.PreviewDocument(fDocument, dlg.PrinterSettings);
+          }
+          else 
+          {
+            fPrinter.PrintDocument(fDocument, dlg.PrinterSettings);
+          }
         }
       }
     }
@@ -531,6 +535,12 @@ namespace PDFScanningApp
       {
         fDocument.RemoveAll();
       }
+    }
+
+
+    private void MenuSettingsScanner_Click(object sender, EventArgs e)
+    {
+      ExecuteDataSourceSettingsDialog();
     }
   }
 }
