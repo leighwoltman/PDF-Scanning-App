@@ -21,26 +21,11 @@ namespace Model
 
     protected void CreateThumbnail(Image myBitmap)
     {
-      int thumbnail_height;
-      int thumbnail_width;
-
       this.heightPixels = myBitmap.Size.Height;
       this.widthPixels = myBitmap.Size.Width;
-
-      if( myBitmap.Size.Height > myBitmap.Size.Width )
-      {
-        thumbnail_height = 200;
-        thumbnail_width = (int)(((double)myBitmap.Size.Width / (double)myBitmap.Size.Height) * thumbnail_height);
-      }
-      else
-      {
-        thumbnail_width = 200;
-        thumbnail_height = (int)(((double)myBitmap.Size.Height / (double)myBitmap.Size.Width) * thumbnail_width);
-      }
-      Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
-      myThumbnail = myBitmap.GetThumbnailImage(thumbnail_width, thumbnail_height, myCallback, IntPtr.Zero);
+      myThumbnail = UtilImaging.CreateThumbnail(myBitmap, 200);
     }
-
+    
 
     public Image Thumbnail
     {
@@ -71,11 +56,6 @@ namespace Model
 
     abstract public Image getImage();
 
-
-    public bool ThumbnailCallback()
-    {
-      return false;
-    }
 
     public void rotate()
     {

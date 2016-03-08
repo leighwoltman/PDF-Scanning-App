@@ -32,5 +32,31 @@ namespace Utils
       }
       return result;
     }
+
+
+    public static Image CreateThumbnail(Image image, int maxDimension)
+    {
+      int thumbnail_height;
+      int thumbnail_width;
+
+      if(image.Size.Height > image.Size.Width)
+      {
+        thumbnail_height = maxDimension;
+        thumbnail_width = (int)(((double)image.Size.Width / (double)image.Size.Height) * thumbnail_height);
+      }
+      else
+      {
+        thumbnail_width = maxDimension;
+        thumbnail_height = (int)(((double)image.Size.Height / (double)image.Size.Width) * thumbnail_width);
+      }
+      Image.GetThumbnailImageAbort myCallback = new Image.GetThumbnailImageAbort(ThumbnailCallback);
+      return image.GetThumbnailImage(thumbnail_width, thumbnail_height, myCallback, IntPtr.Zero);
+    }
+
+
+    private static bool ThumbnailCallback()
+    {
+      return false;
+    }
   }
 }
