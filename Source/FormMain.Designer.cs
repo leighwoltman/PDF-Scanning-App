@@ -359,6 +359,7 @@
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.statusStrip1);
       this.Controls.Add(this.toolStrip1);
+      this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
       this.Name = "FormMain";
       this.Text = "Form1";
       this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.FormMain_FormClosing);
