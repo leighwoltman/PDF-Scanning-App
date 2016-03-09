@@ -53,7 +53,7 @@ namespace Model
     {
       Page pageToDelete = fPages[index];
       fPages.RemoveAt(index);
-      pageToDelete.cleanUp();
+      pageToDelete.CleanUp();
       RaisePageRemoved(index);
     }
 
@@ -64,7 +64,7 @@ namespace Model
 
       for(int i = 0; i < count; i++)
       {
-        fPages[0].cleanUp();
+        fPages[0].CleanUp();
         fPages.RemoveAt(0);
       }
 
@@ -87,7 +87,15 @@ namespace Model
     public void RotatePage(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.rotate();
+      targetPage.Rotate();
+      RaisePageUpdated(index);
+    }
+
+
+    public void MirrorPage(int index)
+    {
+      Page targetPage = fPages[index];
+      targetPage.Mirror();
       RaisePageUpdated(index);
     }
 
@@ -95,7 +103,7 @@ namespace Model
     public void LandscapePage(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.makeLandscape();
+      targetPage.Landscape();
       RaisePageUpdated(index);
     }
 

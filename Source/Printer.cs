@@ -56,7 +56,7 @@ namespace Model
     void fPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
     {
       int pageIndex = fPrintCurrentPage - 1;
-      System.Drawing.Image img = (Image)fDocument.GetPage(pageIndex).getImage();
+      System.Drawing.Image img = (Image)fDocument.GetPage(pageIndex).GetImage();
       Point loc = new Point(0, 0);
       e.Graphics.DrawImage(img, loc);
       e.HasMorePages = fPrintCurrentPage < fPrintToPage;

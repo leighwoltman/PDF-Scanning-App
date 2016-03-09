@@ -16,23 +16,23 @@ namespace Model
     public PageFromImage(Image image)
     {
       this.myImageFile = image;
-      CreateThumbnail(image);
-      this.size = PageSize.Letter;
+      AssignImage(image);
+      this.fSize = PageSize.Letter;
     }
 
 
-    public override Image getImage()
+    protected override Image CreateImage()
     {
       return myImageFile;
     }
 
 
-    public override void cleanUp()
+    public override void CleanUp()
     {
       this.myImageFile.Dispose();
       this.myImageFile = null;
 
-      base.pageCleanUp();
+      base.CleanUp();
     }
   }
 }

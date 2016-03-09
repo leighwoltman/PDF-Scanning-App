@@ -26,30 +26,30 @@ namespace Model
     {
       this.tempFile = temporary_file;
       this.fileName = fileName;
-      this.size = size;
+      this.fSize = size;
       
       // create a thumbnail
       using (Bitmap myBitmap = new Bitmap(fileName))
       {
-        CreateThumbnail(myBitmap);
+        AssignImage(myBitmap);
       }
     }
 
 
-    public override Image getImage()
+    protected override Image CreateImage()
     {
       return Image.FromFile(fileName);
     }
 
 
-    public override void cleanUp()
+    public override void CleanUp()
     {
       if(this.tempFile)
       {
         File.Delete(fileName);
       }
 
-      base.pageCleanUp();
+      base.CleanUp();
     }
   }
 }

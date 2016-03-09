@@ -11,86 +11,147 @@ namespace Model
 {
   abstract public class Page
   {
-    protected Image myThumbnail;
-    protected int heightPixels;
-    protected int widthPixels;
-    protected bool rotate_180 = false;
-    protected bool landscape = false;
-    protected PageSize size;
+    protected Image fSourceThumbnail;
+    protected Image fThumbnail;
+    protected int fHeightPixels;
+    protected int fWidthPixels;
+    protected int fOrientation;
+    protected bool fMirrored;
+    protected bool fLandscape;
+    protected PageSize fSize;
 
 
-    protected void CreateThumbnail(Image myBitmap)
+    public Page()
     {
-      this.heightPixels = myBitmap.Size.Height;
-      this.widthPixels = myBitmap.Size.Width;
-      myThumbnail = UtilImaging.CreateThumbnail(myBitmap, 200);
+      fOrientation = 0;
+      fMirrored = false;
+      fLandscape = false;
     }
-    
+
+
+    protected void AssignImage(Image myBitmap)
+    {
+      fHeightPixels = myBitmap.Size.Height;
+      fWidthPixels = myBitmap.Size.Width;
+      fSourceThumbnail = UtilImaging.CreateThumbnail(myBitmap, 200);
+      RefreshThumbnail();
+    }
+
+
+    private void RefreshThumbnail()
+    {
+      fThumbnail = (Image)fSourceThumbnail.Clone();
+      TransformImage(fThumbnail);
+    }
+
 
     public Image Thumbnail
     {
       get
       {
-        return myThumbnail;
+        return fThumbnail;
       }
     }
 
 
-    public PageSize getScanPageSize()
+    public PageSize GetScanPageSize()
     {
-      return size;
+      return fSize;
     }
 
 
-    public int getHeight()
+    public int GetHeight()
     {
-      return heightPixels;
+      return fHeightPixels;
     }
 
 
-    public int getWidth()
+    public int GetWidth()
     {
-      return widthPixels;
+      return fWidthPixels;
     }
 
 
-    abstract public Image getImage();
+    readonly RotateFlipType[] rf_table =
+    { 
+      RotateFlipType.RotateNoneFlipNone,
+      RotateFlipType.Rotate90FlipNone,
+      RotateFlipType.Rotate180FlipNone,
+      RotateFlipType.Rotate270FlipNone,
+      RotateFlipType.RotateNoneFlipX,
+      RotateFlipType.Rotate90FlipX,
+      RotateFlipType.Rotate180FlipX,
+      RotateFlipType.Rotate270FlipX
+    };
 
 
-    public void rotate()
+    protected void TransformImage(Image image)
     {
-      rotate_180 = !rotate_180;
-      myThumbnail.RotateFlip(RotateFlipType.Rotate180FlipNone);
+      int index = fOrientation + (fMirrored ? 4 : 0);
+      image.RotateFlip(rf_table[index]);
     }
 
-    public void makeLandscape()
+
+    abstract protected Image CreateImage();
+
+
+    public Image GetImage()
     {
-      if(this.landscape)
-      {
-        myThumbnail.RotateFlip(RotateFlipType.Rotate270FlipNone);
-      }
-      else
-      {
-        myThumbnail.RotateFlip(RotateFlipType.Rotate90FlipNone);
-      }
-      this.landscape = !this.landscape;
+      Image result = CreateImage();
+      TransformImage(result);
+      return result;
     }
 
-    public bool isLandscape()
+
+    public void Rotate()
     {
-      return this.landscape;
+      fOrientation = (fOrientation + 1) % 4;
+      RefreshThumbnail();
     }
 
-    public bool isRotated()
+
+    public int GetOrientation()
     {
-      return rotate_180;
+      return fOrientation * 90;
     }
 
-    abstract public void cleanUp();
 
-    protected void pageCleanUp()
+    public void Mirror()
     {
-      myThumbnail.Dispose();
+      fMirrored = !fMirrored;
+      RefreshThumbnail();
+    }
+
+
+    public bool IsMirrored()
+    {
+      return fMirrored;
+    }
+
+
+    public void Landscape()
+    {
+      //if(this.fLandscape)
+      //{
+      //  fThumbnail.RotateFlip(RotateFlipType.Rotate270FlipNone);
+      //}
+      //else
+      //{
+      //  fThumbnail.RotateFlip(RotateFlipType.Rotate90FlipNone);
+      //}
+      fLandscape = !fLandscape;
+    }
+
+
+    public bool IsLandscape()
+    {
+      return fLandscape;
+    }
+
+
+    virtual public void CleanUp()
+    {
+      fThumbnail.Dispose();
     }
   }
 }

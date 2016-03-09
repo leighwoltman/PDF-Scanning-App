@@ -34,7 +34,7 @@ namespace Model
 
     public void PageToPdfPage(Page page, PdfPage pdfPage)
     {
-      if(page.getScanPageSize() == PageSize.Legal)
+      if(page.GetScanPageSize() == PageSize.Legal)
       {
         pdfPage.Size = PdfSharp.PageSize.Legal;
       }
@@ -44,9 +44,9 @@ namespace Model
       }
 
       // we need to swap the height and the width if page is a landscape image
-      double aspect_ratio = ((double)page.getWidth()) / ((double)page.getHeight());
+      double aspect_ratio = ((double)page.GetWidth()) / ((double)page.GetHeight());
 
-      if(page.isLandscape())
+      if(page.IsLandscape())
       {
         pdfPage.Orientation = PageOrientation.Landscape;
       }
@@ -65,7 +65,7 @@ namespace Model
       int draw_point_width = 0;
       int draw_point_height = 0;
 
-      if(page.isLandscape())
+      if(page.IsLandscape())
       {
         // these are swapped
         draw_point_width = (int)pdfPage.Height;
@@ -106,19 +106,19 @@ namespace Model
       }
 
 
-      XImage image = XImage.FromGdiPlusImage(page.getImage());
+      XImage image = XImage.FromGdiPlusImage(page.GetImage());
 
-      if(page.isRotated())
-      {
-        // rotate around the center of the pdfPage
-        gfx.RotateAtTransform(-180, new XPoint(pdfPage.Width / 2, pdfPage.Height / 2));
-      }
+      //if(page.IsRotated())
+      //{
+      //  // rotate around the center of the pdfPage
+      //  gfx.RotateAtTransform(-180, new XPoint(pdfPage.Width / 2, pdfPage.Height / 2));
+      //}
 
-      if(page.isLandscape())
-      {
-        // rotate around the center of the pdfPage
-        gfx.RotateAtTransform(90, new XPoint(pdfPage.Width / 2, pdfPage.Height / 2));
-      }
+      //if(page.IsLandscape())
+      //{
+      //  // rotate around the center of the pdfPage
+      //  gfx.RotateAtTransform(90, new XPoint(pdfPage.Width / 2, pdfPage.Height / 2));
+      //}
 
       gfx.DrawImage(image, draw_point_x, draw_point_y, draw_point_width, draw_point_height);
       image.Dispose();

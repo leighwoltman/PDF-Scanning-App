@@ -201,6 +201,7 @@ namespace PDFScanningApp
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
       ListViewPages.RedrawItems(args.Index, args.Index, true);
+      ListViewPages_SelectedIndexChanged(sender, e);
       RefreshControls();
     }
 
@@ -251,7 +252,7 @@ namespace PDFScanningApp
       else
       {
         Page page = fDocument.GetPage(item.Index);
-        PictureBoxPreview.Image = page.getImage();
+        PictureBoxPreview.Image = page.GetImage();
       }
     }
 
@@ -490,20 +491,29 @@ namespace PDFScanningApp
     }
 
 
-    private void ButtonLandscape_Click(object sender, EventArgs e)
-    {
-      if(ListViewSelectedItem != null)
-      {
-        fDocument.LandscapePage(ListViewSelectedItem.Index);
-      }
-    }
-
-
     private void ButtonRotate_Click(object sender, EventArgs e)
     {
       if(ListViewSelectedItem != null)
       {
         fDocument.RotatePage(ListViewSelectedItem.Index);
+      }
+    }
+
+    
+    private void ButtonMirror_Click(object sender, EventArgs e)
+    {
+      if(ListViewSelectedItem != null)
+      {
+        fDocument.MirrorPage(ListViewSelectedItem.Index);
+      }
+    }
+
+
+    private void ButtonLandscape_Click(object sender, EventArgs e)
+    {
+      if(ListViewSelectedItem != null)
+      {
+        fDocument.LandscapePage(ListViewSelectedItem.Index);
       }
     }
 
