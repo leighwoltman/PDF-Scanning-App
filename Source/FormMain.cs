@@ -399,7 +399,7 @@ namespace PDFScanningApp
 
       // Set the file dialog to filter for graphics files. 
       openFileDialog1.Filter =
-          "Images (*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF,*.PNG|" +
+          "Images (*.BMP;*.JPG;*.GIF;*.PNG)|*.BMP;*.JPG;*.GIF;*.PNG|" +
           "All files (*.*)|*.*";
 
       // Allow the user to select multiple images. 
