@@ -191,6 +191,8 @@ namespace PDFScanningApp
       {
         // Negative index, all pages are removed
         ListViewPages.Items.Clear();
+        // This does not get called on clear even though items are unselected
+        ListViewPages_SelectedIndexChanged(sender, e);
       }
 
       RefreshControls();
