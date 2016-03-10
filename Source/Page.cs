@@ -13,8 +13,8 @@ namespace Model
   {
     protected Image fSourceThumbnail;
     protected Image fThumbnail;
-    protected int fHeightPixels;
-    protected int fWidthPixels;
+    protected int fImageHeightPixels;
+    protected int fImageWidthPixels;
     protected int fOrientation;
     protected bool fMirrored;
     protected bool fLandscape;
@@ -33,8 +33,8 @@ namespace Model
     {
       using(Image myImage = CreateImage())
       {
-        fHeightPixels = myImage.Size.Height;
-        fWidthPixels = myImage.Size.Width;
+        fImageHeightPixels = myImage.Size.Height;
+        fImageWidthPixels = myImage.Size.Width;
         fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
       }
       RefreshThumbnail();
@@ -64,18 +64,18 @@ namespace Model
     }
 
 
-    public int GetHeight()
+    public int ImageHeightPixels
     {
-      return fHeightPixels;
+      get { return fImageHeightPixels; }
     }
 
 
-    public int GetWidth()
+    public int ImageWidthPixels
     {
-      return fWidthPixels;
+      get { return fImageWidthPixels; }
     }
 
-
+    
     readonly RotateFlipType[] rf_table =
     { 
       RotateFlipType.RotateNoneFlipNone,

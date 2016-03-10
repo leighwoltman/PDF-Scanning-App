@@ -44,7 +44,7 @@ namespace Model
       }
 
       // we need to swap the height and the width if page is a landscape image
-      double aspect_ratio = ((double)page.GetWidth()) / ((double)page.GetHeight());
+      double aspect_ratio = ((double)page.ImageWidthPixels) / ((double)page.ImageHeightPixels);
 
       if(page.IsLandscape())
       {
