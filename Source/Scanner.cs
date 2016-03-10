@@ -206,18 +206,7 @@ namespace Model
 
     private void fActiveDataSource_OnNewPictureData(object sender, NewPictureEventArgs args)
     {
-      // get a temporary path
-      string fileName = Path.GetTempFileName();
-
-      UtilImaging.SaveImageAsJpeg(args.TheImage, fileName, 75L);
-
-      double pageWidth = args.TheImage.Width / (double)args.TheSettings.Resolution;
-      double pageHeight = args.TheImage.Height / (double)args.TheSettings.Resolution;
-
-      PageSize pageSize = new PageSize(pageWidth, pageHeight);
-
-      Page myPage = new PageFromFile(fileName, true, pageSize);
-
+      Page myPage = new PageFromScanner(args.TheImage, args.TheSettings.Resolution);
       fDocument.AddPage(myPage);
     }
 

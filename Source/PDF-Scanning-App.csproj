@@ -74,6 +74,7 @@
     </Compile>
     <Compile Include="PageFromFile.cs" />
     <Compile Include="PageFromImage.cs" />
+    <Compile Include="PageFromScanner.cs" />
     <Compile Include="PageSize.cs" />
     <Compile Include="PdfExporter.cs" />
     <Compile Include="PdfImporter.cs" />
