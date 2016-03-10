@@ -34,7 +34,7 @@ namespace Model
 
     public void PageToPdfPage(Page page, PdfPage pdfPage)
     {
-      if(page.GetScanPageSize() == PageSize.Legal)
+      if(page.Size == PageSize.Legal)
       {
         pdfPage.Size = PdfSharp.PageSize.Legal;
       }

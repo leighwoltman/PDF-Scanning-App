@@ -18,7 +18,7 @@ namespace Model
     protected int fOrientation;
     protected bool fMirrored;
     protected bool fLandscape;
-    protected PageSize fSize;
+    private PageSize fSize;
 
 
     public Page()
@@ -57,9 +57,10 @@ namespace Model
     }
 
 
-    public PageSize GetScanPageSize()
+    public PageSize Size
     {
-      return fSize;
+      get { return fSize; }
+      protected set { fSize = value; }
     }
 
 

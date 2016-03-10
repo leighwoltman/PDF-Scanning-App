@@ -24,7 +24,7 @@ namespace Model
     public PageFromFile(string fileName, PageSize size)
     {
       this.fileName = fileName;
-      this.fSize = size;
+      this.Size = size;
      
       InitializeImage();
     }

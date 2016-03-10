@@ -16,7 +16,7 @@ namespace Model
     public PageFromImage(Image image)
     {
       this.myImageFile = image;
-      this.fSize = PageSize.Letter;
+      this.Size = PageSize.Letter;
 
       InitializeImage();
     }
