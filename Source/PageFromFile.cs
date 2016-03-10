@@ -25,12 +25,8 @@ namespace Model
     {
       this.fileName = fileName;
       this.fSize = size;
-      
-      // create a thumbnail
-      using (Bitmap myBitmap = new Bitmap(fileName))
-      {
-        AssignImage(myBitmap);
-      }
+     
+      InitializeImage();
     }
 
 

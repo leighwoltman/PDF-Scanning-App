@@ -25,11 +25,7 @@ namespace Model
 
       this.fSize = new PageSize(pageWidth, pageHeight);
 
-      // create a thumbnail
-      using(Bitmap myBitmap = new Bitmap(fFilename))
-      {
-        AssignImage(myBitmap);
-      }
+      InitializeImage();
     }
 
 

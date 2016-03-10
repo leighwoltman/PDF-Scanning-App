@@ -29,11 +29,14 @@ namespace Model
     }
 
 
-    protected void AssignImage(Image myBitmap)
+    protected void InitializeImage()
     {
-      fHeightPixels = myBitmap.Size.Height;
-      fWidthPixels = myBitmap.Size.Width;
-      fSourceThumbnail = UtilImaging.CreateThumbnail(myBitmap, 200);
+      using(Image myImage = CreateImage())
+      {
+        fHeightPixels = myImage.Size.Height;
+        fWidthPixels = myImage.Size.Width;
+        fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
+      }
       RefreshThumbnail();
     }
 
