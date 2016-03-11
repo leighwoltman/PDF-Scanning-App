@@ -46,7 +46,7 @@ namespace Model
       // we need to swap the height and the width if page is a landscape image
       double aspect_ratio = ((double)page.ImageWidthPixels) / ((double)page.ImageHeightPixels);
 
-      if(page.IsLandscape())
+      if(page.IsLandscape)
       {
         pdfPage.Orientation = PageOrientation.Landscape;
       }
@@ -65,7 +65,7 @@ namespace Model
       int draw_point_width = 0;
       int draw_point_height = 0;
 
-      if(page.IsLandscape())
+      if(page.IsLandscape)
       {
         // these are swapped
         draw_point_width = (int)pdfPage.Height;

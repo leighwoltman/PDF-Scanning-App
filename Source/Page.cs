@@ -11,21 +11,28 @@ namespace Model
 {
   abstract public class Page
   {
-    protected Image fSourceThumbnail;
-    protected Image fThumbnail;
-    protected int fImageHeightPixels;
-    protected int fImageWidthPixels;
-    protected int fOrientation;
-    protected bool fMirrored;
-    protected bool fLandscape;
+    private Image fSourceThumbnail;
+    private Image fThumbnail;
+    private int fImageHeightPixels;
+    private int fImageWidthPixels;
+    private int fImageResolutionDpi;
+    private int fOrientation;
+    private bool fMirrored;
+    private bool fLandscape;
     private PageSize fSize;
 
 
     public Page()
     {
+      fSourceThumbnail = null;
+      fThumbnail = null;
+      fImageHeightPixels = 0;
+      fImageWidthPixels = 0;
+      fImageResolutionDpi = 0;
       fOrientation = 0;
       fMirrored = false;
       fLandscape = false;
+      fSize = null;
     }
 
 
@@ -75,7 +82,19 @@ namespace Model
       get { return fImageWidthPixels; }
     }
 
-    
+
+    public int ImageResolutionDpi
+    {
+      get { return fImageResolutionDpi; }
+    }
+
+
+    public bool ImageResolutionIsDefined
+    {
+      get { return (bool)(fImageResolutionDpi != 0); }
+    }
+
+
     readonly RotateFlipType[] rf_table =
     { 
       RotateFlipType.RotateNoneFlipNone,
@@ -114,9 +133,9 @@ namespace Model
     }
 
 
-    public int GetOrientation()
+    public int Orientation
     {
-      return fOrientation * 90;
+      get { return fOrientation * 90; }
     }
 
 
@@ -127,29 +146,22 @@ namespace Model
     }
 
 
-    public bool IsMirrored()
+    public bool IsMirrored
     {
-      return fMirrored;
+      get { return fMirrored; }
     }
 
 
     public void Landscape()
     {
-      //if(this.fLandscape)
-      //{
-      //  fThumbnail.RotateFlip(RotateFlipType.Rotate270FlipNone);
-      //}
-      //else
-      //{
-      //  fThumbnail.RotateFlip(RotateFlipType.Rotate90FlipNone);
-      //}
+      // TODO: Flip page Height/Width?
       fLandscape = !fLandscape;
     }
 
 
-    public bool IsLandscape()
+    public bool IsLandscape
     {
-      return fLandscape;
+      get { return fLandscape; }
     }
 
 
