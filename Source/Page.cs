@@ -86,6 +86,7 @@ namespace Model
     public int ImageResolutionDpi
     {
       get { return fImageResolutionDpi; }
+      protected set { fImageResolutionDpi = value; }
     }
 
 

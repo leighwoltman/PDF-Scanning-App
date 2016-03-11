@@ -24,6 +24,7 @@ namespace Model
       double pageHeight = image.Height / (double)dpi;
 
       this.Size = new PageSize(pageWidth, pageHeight);
+      this.ImageResolutionDpi = dpi;
 
       InitializeImage();
     }
