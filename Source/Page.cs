@@ -151,9 +151,32 @@ namespace Model
     }
 
 
-    public void Rotate()
+    public void RotateClockwise()
     {
       fOrientation = (fOrientation + 1) % 4;
+      RefreshThumbnail();
+    }
+
+
+    public void RotateCounterClockwise()
+    {
+      fOrientation = (fOrientation + 3) % 4;
+      RefreshThumbnail();
+    }
+
+
+    public void MirrorHorizontally()
+    {
+      fMirrored = !fMirrored;
+      fOrientation = 3 - fOrientation;
+      RefreshThumbnail();
+    }
+
+
+    public void MirrorVertically()
+    {
+      fMirrored = !fMirrored;
+      fOrientation = (5 - fOrientation) % 4;
       RefreshThumbnail();
     }
 
@@ -161,13 +184,6 @@ namespace Model
     public int Orientation
     {
       get { return fOrientation * 90; }
-    }
-
-
-    public void Mirror()
-    {
-      fMirrored = !fMirrored;
-      RefreshThumbnail();
     }
 
 

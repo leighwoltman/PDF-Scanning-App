@@ -323,7 +323,7 @@ namespace PDFScanningApp
 
     private void rotateButton_Click(object sender, EventArgs e)
     {
-      fDocument.RotatePage(selected_index);
+      fDocument.RotatePageClockwise(selected_index);
     }
 
 

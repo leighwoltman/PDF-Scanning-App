@@ -84,18 +84,34 @@ namespace Model
 
 
     // TODO: Provide a generic orientation function
-    public void RotatePage(int index)
+    public void RotatePageClockwise(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.Rotate();
+      targetPage.RotateClockwise();
       RaisePageUpdated(index);
     }
 
 
-    public void MirrorPage(int index)
+    public void RotatePageCounterClockwise(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.Mirror();
+      targetPage.RotateCounterClockwise();
+      RaisePageUpdated(index);
+    }
+
+
+    public void MirrorPageHorizontally(int index)
+    {
+      Page targetPage = fPages[index];
+      targetPage.MirrorHorizontally();
+      RaisePageUpdated(index);
+    }
+
+
+    public void MirrorPageVertically(int index)
+    {
+      Page targetPage = fPages[index];
+      targetPage.MirrorVertically();
       RaisePageUpdated(index);
     }
 

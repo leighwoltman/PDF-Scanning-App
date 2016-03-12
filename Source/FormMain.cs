@@ -493,24 +493,42 @@ namespace PDFScanningApp
     }
 
 
-    private void ButtonRotate_Click(object sender, EventArgs e)
+    private void ButtonRotateClockwise_Click(object sender, EventArgs e)
     {
       if(ListViewSelectedItem != null)
       {
-        fDocument.RotatePage(ListViewSelectedItem.Index);
+        fDocument.RotatePageClockwise(ListViewSelectedItem.Index);
+      }
+    }
+
+
+    private void ButtonRotateCounterClockwise_Click(object sender, EventArgs e)
+    {
+      if(ListViewSelectedItem != null)
+      {
+        fDocument.RotatePageCounterClockwise(ListViewSelectedItem.Index);
+      }
+    }
+
+
+    private void ButtonMirrorHorizontally_Click(object sender, EventArgs e)
+    {
+      if(ListViewSelectedItem != null)
+      {
+        fDocument.MirrorPageHorizontally(ListViewSelectedItem.Index);
+      }
+    }
+
+
+    private void ButtonMirrorVertically_Click(object sender, EventArgs e)
+    {
+      if(ListViewSelectedItem != null)
+      {
+        fDocument.MirrorPageVertically(ListViewSelectedItem.Index);
       }
     }
 
     
-    private void ButtonMirror_Click(object sender, EventArgs e)
-    {
-      if(ListViewSelectedItem != null)
-      {
-        fDocument.MirrorPage(ListViewSelectedItem.Index);
-      }
-    }
-
-
     private void ButtonLandscape_Click(object sender, EventArgs e)
     {
       if(ListViewSelectedItem != null)
