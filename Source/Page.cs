@@ -15,10 +15,10 @@ namespace Model
     private Image fThumbnail;
     private int fImageHeightPixels;
     private int fImageWidthPixels;
-    private int fImageResolutionDpi;
+    private int fImageVerticalResolutionDpi;
+    private int fImageHorizontalResolutionDpi;
     private int fOrientation;
     private bool fMirrored;
-    private bool fLandscape;
     private PageSize fSize;
 
 
@@ -28,10 +28,10 @@ namespace Model
       fThumbnail = null;
       fImageHeightPixels = 0;
       fImageWidthPixels = 0;
-      fImageResolutionDpi = 0;
+      fImageVerticalResolutionDpi = 0;
+      fImageHorizontalResolutionDpi = 0;
       fOrientation = 0;
       fMirrored = false;
-      fLandscape = false;
       fSize = null;
     }
 
@@ -48,6 +48,23 @@ namespace Model
     }
 
 
+    abstract protected Image CreateImage();
+
+
+    public Image GetImage()
+    {
+      Image result = CreateImage();
+      TransformImage(result);
+      return result;
+    }
+
+
+    public Image Thumbnail
+    {
+      get { return fThumbnail; }
+    }
+
+
     private void RefreshThumbnail()
     {
       fThumbnail = (Image)fSourceThumbnail.Clone();
@@ -55,44 +72,9 @@ namespace Model
     }
 
 
-    public Image Thumbnail
+    virtual public void CleanUp()
     {
-      get
-      {
-        return fThumbnail;
-      }
-    }
-
-
-    public PageSize Size
-    {
-      get { return fSize; }
-      protected set { fSize = value; }
-    }
-
-
-    public int ImageHeightPixels
-    {
-      get { return fImageHeightPixels; }
-    }
-
-
-    public int ImageWidthPixels
-    {
-      get { return fImageWidthPixels; }
-    }
-
-
-    public int ImageResolutionDpi
-    {
-      get { return fImageResolutionDpi; }
-      protected set { fImageResolutionDpi = value; }
-    }
-
-
-    public bool ImageResolutionIsDefined
-    {
-      get { return (bool)(fImageResolutionDpi != 0); }
+      fThumbnail.Dispose();
     }
 
 
@@ -102,10 +84,10 @@ namespace Model
       RotateFlipType.Rotate90FlipNone,
       RotateFlipType.Rotate180FlipNone,
       RotateFlipType.Rotate270FlipNone,
-      RotateFlipType.RotateNoneFlipX,
-      RotateFlipType.Rotate90FlipX,
+      RotateFlipType.Rotate270FlipX,
       RotateFlipType.Rotate180FlipX,
-      RotateFlipType.Rotate270FlipX
+      RotateFlipType.Rotate90FlipX,
+      RotateFlipType.RotateNoneFlipX,
     };
 
 
@@ -116,14 +98,56 @@ namespace Model
     }
 
 
-    abstract protected Image CreateImage();
-
-
-    public Image GetImage()
+    // TODO: Make the following properties follow the orientation
+    public int ImageHeightPixels
     {
-      Image result = CreateImage();
-      TransformImage(result);
-      return result;
+      get { return fImageHeightPixels; }
+      protected set { fImageHeightPixels = value; }
+    }
+
+
+    public int ImageWidthPixels
+    {
+      get { return fImageWidthPixels; }
+      protected set { fImageWidthPixels = value; }
+    }
+
+
+    public int ImageVerticalResolutionDpi
+    {
+      get { return fImageVerticalResolutionDpi; }
+      protected set { fImageVerticalResolutionDpi = value; }
+    }
+
+
+    public int ImageHorizontalResolutionDpi
+    {
+      get { return fImageHorizontalResolutionDpi; }
+      protected set { fImageHorizontalResolutionDpi = value; }
+    }
+
+
+    public bool ImageResolutionIsDefined
+    {
+      get { return (bool)((fImageVerticalResolutionDpi != 0) && (fImageHorizontalResolutionDpi != 0)); }
+    }
+
+
+    public PageSize ImageSize
+    {
+      get 
+      {
+        PageSize result = null;
+
+        if(ImageResolutionIsDefined)
+        {
+          double width = ImageWidthPixels / (double)ImageHorizontalResolutionDpi;
+          double height = ImageHeightPixels / (double)ImageVerticalResolutionDpi;
+          result = new PageSize(width, height);
+        }
+
+        return result; 
+      }
     }
 
 
@@ -153,22 +177,30 @@ namespace Model
     }
 
 
+    public PageSize Size
+    {
+      get { return fSize; }
+      protected set { fSize = value; }
+    }
+
+
     public void Landscape()
     {
-      // TODO: Flip page Height/Width?
-      fLandscape = !fLandscape;
+      if(fSize != null)
+      {
+        double temp = fSize.Width;
+        fSize.Width = fSize.Height;
+        fSize.Height = temp;
+      }
     }
 
 
     public bool IsLandscape
     {
-      get { return fLandscape; }
-    }
-
-
-    virtual public void CleanUp()
-    {
-      fThumbnail.Dispose();
+      get 
+      { 
+        return (fSize != null) && (fSize.Width > fSize.Height); 
+      }
     }
   }
 }
