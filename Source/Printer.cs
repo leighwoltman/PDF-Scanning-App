@@ -21,6 +21,7 @@ namespace Model
       fPrintDocument = new PrintDocument();
       fPrintDocument.BeginPrint += fPrintDocument_BeginPrint;
       fPrintDocument.PrintPage += fPrintDocument_PrintPage;
+      fPrintDocument.QueryPageSettings += fPrintDocument_QueryPageSettings;
       fPrintCurrentPage = 0;
       fPrintToPage = 0;
     }
@@ -52,13 +53,62 @@ namespace Model
       fPrintDocument.DocumentName = "Scanner" + fPrintCurrentPage + "-" + fPrintToPage;
     }
 
-    
+
+    void fPrintDocument_QueryPageSettings(object sender, QueryPageSettingsEventArgs e)
+    {
+      int pageIndex = fPrintCurrentPage - 1;
+      Page page = fDocument.GetPage(pageIndex);
+      PageSize pageSize = page.Size;
+      int width = InchesToHundrethsOfInch(pageSize.Width);
+      int height = InchesToHundrethsOfInch(pageSize.Height);
+      e.PageSettings.PaperSize = new PaperSize("Custom", width, height);
+    }
+
+
+    int InchesToHundrethsOfInch(double value)
+    {
+      return (int)(value * 100);
+    }
+
+
     void fPrintDocument_PrintPage(object sender, PrintPageEventArgs e)
     {
       int pageIndex = fPrintCurrentPage - 1;
-      System.Drawing.Image img = (Image)fDocument.GetPage(pageIndex).GetImage();
-      Point loc = new Point(0, 0);
-      e.Graphics.DrawImage(img, loc);
+      Page page = fDocument.GetPage(pageIndex);
+
+      double image_aspect_ratio = page.ImageWidthPixels / (double)page.ImageHeightPixels;
+
+      PageSize pageSize = page.Size;
+      double page_aspect_ratio = pageSize.Width / pageSize.Height;
+
+      Rectangle rect = new Rectangle();
+
+      if(image_aspect_ratio > page_aspect_ratio)
+      {
+        // means our image has the width as the maximum dimension
+        double imageWidth = pageSize.Width;
+        double imageHeight = pageSize.Width / image_aspect_ratio;
+        
+        rect.X = InchesToHundrethsOfInch(0);
+        rect.Y = InchesToHundrethsOfInch((pageSize.Height - imageHeight) / 2);
+        rect.Width = InchesToHundrethsOfInch(imageWidth);
+        rect.Height = InchesToHundrethsOfInch(imageHeight);
+      }
+      else
+      {
+        // means our image has the height as the maximum dimension
+        double imageWidth = pageSize.Height * image_aspect_ratio;
+        double imageHeight = pageSize.Height;
+
+        rect.X = InchesToHundrethsOfInch((pageSize.Width - imageWidth) / 2);
+        rect.Y = InchesToHundrethsOfInch(0);
+        rect.Width = InchesToHundrethsOfInch(imageWidth);
+        rect.Height = InchesToHundrethsOfInch(imageHeight);
+      }
+
+      Image img = page.GetImage();
+      e.Graphics.DrawImage(img, rect);
+
       e.HasMorePages = fPrintCurrentPage < fPrintToPage;
       fPrintCurrentPage++;
     }
