@@ -254,7 +254,47 @@ namespace PDFScanningApp
       else
       {
         Page page = fDocument.GetPage(item.Index);
-        PictureBoxPreview.Image = page.GetImage();
+        PageSize pageSize = page.Size;
+
+        int pageWidth = (int)(100 * pageSize.Width); // Convert to Hundreth of Inch
+        int pageHeight = (int)(100 * pageSize.Height); // Convert to Hundreth of Inch
+        int imageWidth;
+        int imageHeight;
+
+        double image_aspect_ratio = page.ImageWidthPixels / (double)page.ImageHeightPixels;
+        double page_aspect_ratio = pageSize.Width / pageSize.Height;
+
+        if(image_aspect_ratio > page_aspect_ratio)
+        {
+          // means our image has the width as the maximum dimension
+          imageWidth = pageWidth;
+          imageHeight = (int)(pageWidth / image_aspect_ratio);
+        }
+        else
+        {
+          // means our image has the height as the maximum dimension
+          imageWidth = (int)(pageHeight * image_aspect_ratio);
+          imageHeight = pageHeight;
+        }
+
+        Bitmap pageBitmap = new Bitmap(pageWidth, pageHeight);
+
+        using(Graphics g = Graphics.FromImage(pageBitmap))
+        {
+          Rectangle pageRect = new Rectangle(0, 0, pageWidth, pageHeight);
+          g.FillRectangle(Brushes.White, pageRect);
+
+          Rectangle imageRect = new Rectangle();
+          imageRect.X = (pageWidth - imageWidth) / 2;
+          imageRect.Y = (pageHeight - imageHeight) / 2;
+          imageRect.Width = imageWidth;
+          imageRect.Height = imageHeight;
+
+          Image img = page.GetImage();
+          g.DrawImage(img, imageRect);
+        }
+
+        PictureBoxPreview.Image = pageBitmap;
       }
     }
 
