@@ -9,7 +9,7 @@ namespace Utils
 {
   class UtilDialogs
   {
-    static public Form MainWindow = null;
+    static public IntPtr MainWindow = IntPtr.Zero;
 
 
     static public void AdoptForm(Form form, Control parent)
@@ -32,7 +32,7 @@ namespace Utils
 
     static public void ShowError(string message)
     {
-      MessageBox.Show(MainWindow, message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+      MessageBox.Show(message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
     }
 
     

@@ -1,0 +1,89 @@
+﻿<Window x:Class="PDF_Scanner_App_WPF.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="PDF-Scanning-App" Height="583.333" Width="816.667" Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" Loaded="Window_Loaded">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="175*"/>
+            <ColumnDefinition Width="436*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <Ribbon x:Name="RibbonWin"  SelectedIndex="0" Loaded="RibbonWin_Loaded" Grid.ColumnSpan="2">
+            <!-- Help Pane, located at the right-hand side -->
+            <!--<Ribbon.HelpPaneContent>
+                <RibbonButton SmallImageSource="External\Images\001.png" />
+            </Ribbon.HelpPaneContent>-->
+            <!-- Quick Access Toolbar - located at the upper-left corner-->
+            <Ribbon.QuickAccessToolBar>
+                <RibbonQuickAccessToolBar Visibility="Collapsed">
+                    <RibbonButton x:Name ="Save" SmallImageSource="External\Icons8\Scanner-96.png" />
+                    <RibbonSplitButton x:Name ="Undo" SmallImageSource="External\Icons8\Scanner-96.png">
+                        <RibbonSplitMenuItem Header="Undo 1" />
+                        <RibbonSplitMenuItem Header="Undo 2" />
+                        <RibbonSplitMenuItem Header="Undo 3" />
+                    </RibbonSplitButton>
+                    <RibbonSplitButton x:Name="Redo" SmallImageSource="External\Icons8\Scanner-96.png" >
+                        <RibbonSplitMenuItem Header="Redo 1" />
+                        <RibbonSplitMenuItem Header="Redo 2" />
+                    </RibbonSplitButton>
+                </RibbonQuickAccessToolBar>
+            </Ribbon.QuickAccessToolBar>
+            <!-- Application Menu, located at the left-hand side (down arrow) -->
+            <Ribbon.ApplicationMenu>
+                <RibbonApplicationMenu KeyTip="F" Visibility="Collapsed">
+                    <RibbonApplicationMenuItem Header="Options" ImageSource="External\Icons8\Scanner-96.png" />
+                    <RibbonApplicationMenuItem Header="Exit" ImageSource="External\Icons8\Scanner-96.png" />
+                </RibbonApplicationMenu>
+            </Ribbon.ApplicationMenu>
+            <!-- Ribbon Tab #1: Home -->
+            <RibbonTab Header="Home" KeyTip="H" >
+                <!-- Home  group-->
+                <RibbonGroup x:Name="AcquireGroup" Header="Acquire">
+                    <RibbonMenuButton LargeImageSource="External\Icons8\Scanner-96.png" Label="Scan" KeyTip="S">
+                        <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 11" KeyTip="L" Click="ButtonScanLetter_Click"/>
+                        <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 14" KeyTip="B" Click="ButtonScanLegal_Click"/>
+                    </RibbonMenuButton>
+                    <RibbonButton LargeImageSource="External\Icons8\Edit Image-96.png" Label="From Images" KeyTip="C" Click="ButtonLoadImages_Click" />
+                    <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="From PDF" KeyTip="FP" Click="ButtonLoadPdf_Click" />
+                </RibbonGroup>
+                <!-- Output group-->
+                <RibbonGroup x:Name="OutputGroup" Header="Output">
+                    <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="Save As PDF" KeyTip="FP" Click="ButtonSavePdf_Click"/>
+                    <RibbonButton LargeImageSource="External\Icons8\Print-96.png" Label="Print" KeyTip="C" Click="ButtonPrint_Click" />
+                </RibbonGroup>
+                <!-- Edit group-->
+                <RibbonGroup x:Name="EditGroup" Header="Edit">
+                    <RibbonButton SmallImageSource="External\Icons8\Flip Vertical-96.png" Label="Flip Horizontal" Click="ButtonMirrorHorizontally_Click"/>
+                    <RibbonButton SmallImageSource="External\Icons8\Flip Horizontal-96.png" Label="Flip Vertical" Click="ButtonMirrorVertically_Click"/>
+
+                    <RibbonButton SmallImageSource="External\Icons8\Rotate Left-96.png" Label="Rotate Counterclockwise" Click="ButtonRotateCounterClockwise_Click"/>
+                    <RibbonButton SmallImageSource="External\Icons8\Rotate Right-96.png" Label="Rotate Clockwise" Click="ButtonRotateClockwise_Click"/>
+
+                    <RibbonButton SmallImageSource="External\Icons8\Rotate to Landscape-96.png" Label="Landscape" Click="ButtonLandscape_Click"/>
+                    <RibbonButton SmallImageSource="External\Icons8\Literature-96.png" Label="Two Sided Shuffle" Click="Button2Sided_Click"/>
+
+                    <RibbonButton SmallImageSource="External\Icons8\Delete File-96.png" Label="Remove Page" Click="ButtonDelete_Click"/>
+                    <RibbonButton SmallImageSource="External\Icons8\Delete-96.png" Label="Remove All" Click="ButtonDeleteAll_Click"/>
+                </RibbonGroup>
+            </RibbonTab>
+            <!-- Ribbon Tab #2: -->
+            <RibbonTab Header="Settings" KeyTip="I">
+                <RibbonGroup x:Name="SettingsGroup" Header="Settings">
+                    <RibbonButton LargeImageSource="External\Icons8\Settings-96.png" Label="Settings" KeyTip="S" />
+                </RibbonGroup>
+            </RibbonTab>
+            <!-- Ribbon Tab #3: -->
+            <!--<RibbonTab Header="PageLayout" KeyTip="L"/>-->
+        </Ribbon>
+        <StatusBar x:Name="StatusLabel1" Margin="0,0,0,0" Grid.Row="1" Grid.ColumnSpan="2" Height="23" VerticalAlignment="Bottom">
+            <StatusBarItem>
+                <TextBlock Name="lblCursorPosition" />
+            </StatusBarItem>
+        </StatusBar>
+        <WindowsFormsHost x:Name="LeftBarWindowsFormsHost" HorizontalAlignment="Left" Grid.Row="1" Width="232" Margin="0,0,0,23"/>
+        <WindowsFormsHost x:Name="RightBarWindowsFormsHost" Grid.Column="1" Grid.Row="1" Margin="0,0,0,23"/>
+    </Grid>
+</Window>

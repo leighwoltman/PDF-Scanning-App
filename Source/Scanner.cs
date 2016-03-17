@@ -29,7 +29,7 @@ namespace Model
 
     public Scanner()
     {
-      fTwain = new TwainDataSourceManager(UtilDialogs.MainWindow.Handle);
+      fTwain = new TwainDataSourceManager(UtilDialogs.MainWindow);
       fWia = new WiaDataSourceManager();
       fDataSources = null;
       fActiveDataSource = null;
