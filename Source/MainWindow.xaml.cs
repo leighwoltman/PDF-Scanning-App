@@ -90,7 +90,6 @@ namespace PDF_Scanner_App_WPF
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
       this.columnHeader1.Width = 128;
 
-      this.ListViewPages.BackColor = System.Drawing.Color.Bisque;
       this.ListViewPages.AllowDrop = true;
       this.ListViewPages.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1});
@@ -122,7 +121,6 @@ namespace PDF_Scanner_App_WPF
 
       PictureBoxPreview = new System.Windows.Forms.PictureBox();
 
-      this.PictureBoxPreview.BackColor = System.Drawing.Color.Aquamarine;      
       this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
       this.PictureBoxPreview.Location = new System.Drawing.Point(0, 39);
       this.PictureBoxPreview.Name = "PictureBoxPreview";

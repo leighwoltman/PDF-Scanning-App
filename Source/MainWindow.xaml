@@ -83,7 +83,7 @@
                 <TextBlock Name="lblCursorPosition" />
             </StatusBarItem>
         </StatusBar>
-        <WindowsFormsHost x:Name="LeftBarWindowsFormsHost" HorizontalAlignment="Left" Grid.Row="1" Width="232" Margin="0,0,0,23"/>
+        <WindowsFormsHost x:Name="LeftBarWindowsFormsHost" Grid.Row="1" Margin="0,0,0,23"/>
         <WindowsFormsHost x:Name="RightBarWindowsFormsHost" Grid.Column="1" Grid.Row="1" Margin="0,0,0,23"/>
     </Grid>
 </Window>
