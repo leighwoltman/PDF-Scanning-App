@@ -24,12 +24,22 @@ namespace PDFScanningApp
     private ImageLoader fImageLoader;
     private Document fDocument;
 
+    // Special UI
+    private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
+
     
     public FormMain()
     {
       InitializeComponent();
       UtilDialogs.MainWindow = this.Handle;
       this.Text = UtilApp.GetApplicationName();
+
+      // Create PictureBoxPreview from special component;
+      this.PictureBoxPreview = new Cyotek.Windows.Forms.ImageBox();
+      this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.PictureBoxPreview.TabStop = false;
+      this.PictureBoxPreview.BorderStyle = BorderStyle.None;
+      this.splitContainer1.Panel2.Controls.Add(this.PictureBoxPreview);
 
       fAppSettings = new AppSettings();
 

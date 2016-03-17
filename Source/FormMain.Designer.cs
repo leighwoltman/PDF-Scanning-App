@@ -44,10 +44,11 @@
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.ListViewPages = new System.Windows.Forms.ListView();
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-      this.PictureBoxPreview = new System.Windows.Forms.PictureBox();
       this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
       this.ButtonRotateClockwise = new System.Windows.Forms.Button();
+      this.ButtonRotateCounterClockwise = new System.Windows.Forms.Button();
       this.ButtonMirrorHorizontally = new System.Windows.Forms.Button();
+      this.ButtonMirrorVertically = new System.Windows.Forms.Button();
       this.ButtonLandscape = new System.Windows.Forms.Button();
       this.Button2Sided = new System.Windows.Forms.Button();
       this.ButtonDelete = new System.Windows.Forms.Button();
@@ -59,15 +60,12 @@
       this.ButtonLoadPdf = new System.Windows.Forms.Button();
       this.ButtonSavePdf = new System.Windows.Forms.Button();
       this.ButtonPrint = new System.Windows.Forms.Button();
-      this.ButtonMirrorVertically = new System.Windows.Forms.Button();
-      this.ButtonRotateCounterClockwise = new System.Windows.Forms.Button();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
       this.splitContainer1.Panel1.SuspendLayout();
       this.splitContainer1.Panel2.SuspendLayout();
       this.splitContainer1.SuspendLayout();
-      ((System.ComponentModel.ISupportInitialize)(this.PictureBoxPreview)).BeginInit();
       this.flowLayoutPanel2.SuspendLayout();
       this.flowLayoutPanel1.SuspendLayout();
       this.SuspendLayout();
@@ -178,7 +176,6 @@
       // 
       // splitContainer1.Panel2
       // 
-      this.splitContainer1.Panel2.Controls.Add(this.PictureBoxPreview);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel2);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel1);
       this.splitContainer1.Size = new System.Drawing.Size(938, 484);
@@ -217,16 +214,6 @@
       // 
       this.columnHeader1.Width = 128;
       // 
-      // PictureBoxPreview
-      // 
-      this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.PictureBoxPreview.Location = new System.Drawing.Point(0, 39);
-      this.PictureBoxPreview.Name = "PictureBoxPreview";
-      this.PictureBoxPreview.Size = new System.Drawing.Size(538, 319);
-      this.PictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-      this.PictureBoxPreview.TabIndex = 4;
-      this.PictureBoxPreview.TabStop = false;
-      // 
       // flowLayoutPanel2
       // 
       this.flowLayoutPanel2.AutoSize = true;
@@ -258,6 +245,18 @@
       this.ButtonRotateClockwise.UseVisualStyleBackColor = true;
       this.ButtonRotateClockwise.Click += new System.EventHandler(this.ButtonRotateClockwise_Click);
       // 
+      // ButtonRotateCounterClockwise
+      // 
+      this.ButtonRotateCounterClockwise.AutoSize = true;
+      this.ButtonRotateCounterClockwise.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.ButtonRotateCounterClockwise.Location = new System.Drawing.Point(78, 8);
+      this.ButtonRotateCounterClockwise.Name = "ButtonRotateCounterClockwise";
+      this.ButtonRotateCounterClockwise.Size = new System.Drawing.Size(64, 23);
+      this.ButtonRotateCounterClockwise.TabIndex = 33;
+      this.ButtonRotateCounterClockwise.Text = "Rotate <<";
+      this.ButtonRotateCounterClockwise.UseVisualStyleBackColor = true;
+      this.ButtonRotateCounterClockwise.Click += new System.EventHandler(this.ButtonRotateCounterClockwise_Click);
+      // 
       // ButtonMirrorHorizontally
       // 
       this.ButtonMirrorHorizontally.AutoSize = true;
@@ -269,6 +268,18 @@
       this.ButtonMirrorHorizontally.Text = "Mirror-H";
       this.ButtonMirrorHorizontally.UseVisualStyleBackColor = true;
       this.ButtonMirrorHorizontally.Click += new System.EventHandler(this.ButtonMirrorHorizontally_Click);
+      // 
+      // ButtonMirrorVertically
+      // 
+      this.ButtonMirrorVertically.AutoSize = true;
+      this.ButtonMirrorVertically.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+      this.ButtonMirrorVertically.Location = new System.Drawing.Point(208, 8);
+      this.ButtonMirrorVertically.Name = "ButtonMirrorVertically";
+      this.ButtonMirrorVertically.Size = new System.Drawing.Size(53, 23);
+      this.ButtonMirrorVertically.TabIndex = 32;
+      this.ButtonMirrorVertically.Text = "Mirror-V";
+      this.ButtonMirrorVertically.UseVisualStyleBackColor = true;
+      this.ButtonMirrorVertically.Click += new System.EventHandler(this.ButtonMirrorVertically_Click);
       // 
       // ButtonLandscape
       // 
@@ -397,30 +408,6 @@
       this.ButtonPrint.UseVisualStyleBackColor = true;
       this.ButtonPrint.Click += new System.EventHandler(this.ButtonPrint_Click);
       // 
-      // ButtonMirrorVertically
-      // 
-      this.ButtonMirrorVertically.AutoSize = true;
-      this.ButtonMirrorVertically.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.ButtonMirrorVertically.Location = new System.Drawing.Point(208, 8);
-      this.ButtonMirrorVertically.Name = "ButtonMirrorVertically";
-      this.ButtonMirrorVertically.Size = new System.Drawing.Size(53, 23);
-      this.ButtonMirrorVertically.TabIndex = 32;
-      this.ButtonMirrorVertically.Text = "Mirror-V";
-      this.ButtonMirrorVertically.UseVisualStyleBackColor = true;
-      this.ButtonMirrorVertically.Click += new System.EventHandler(this.ButtonMirrorVertically_Click);
-      // 
-      // ButtonRotateCounterClockwise
-      // 
-      this.ButtonRotateCounterClockwise.AutoSize = true;
-      this.ButtonRotateCounterClockwise.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-      this.ButtonRotateCounterClockwise.Location = new System.Drawing.Point(78, 8);
-      this.ButtonRotateCounterClockwise.Name = "ButtonRotateCounterClockwise";
-      this.ButtonRotateCounterClockwise.Size = new System.Drawing.Size(64, 23);
-      this.ButtonRotateCounterClockwise.TabIndex = 33;
-      this.ButtonRotateCounterClockwise.Text = "Rotate <<";
-      this.ButtonRotateCounterClockwise.UseVisualStyleBackColor = true;
-      this.ButtonRotateCounterClockwise.Click += new System.EventHandler(this.ButtonRotateCounterClockwise_Click);
-      // 
       // FormMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -443,7 +430,6 @@
       this.splitContainer1.Panel2.PerformLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).EndInit();
       this.splitContainer1.ResumeLayout(false);
-      ((System.ComponentModel.ISupportInitialize)(this.PictureBoxPreview)).EndInit();
       this.flowLayoutPanel2.ResumeLayout(false);
       this.flowLayoutPanel2.PerformLayout();
       this.flowLayoutPanel1.ResumeLayout(false);
@@ -462,7 +448,6 @@
     private System.Windows.Forms.SplitContainer splitContainer1;
     private System.Windows.Forms.ListView ListViewPages;
     private System.Windows.Forms.ColumnHeader columnHeader1;
-    private System.Windows.Forms.PictureBox PictureBoxPreview;
     private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
     private System.Windows.Forms.Button ButtonLandscape;
     private System.Windows.Forms.Button ButtonRotateClockwise;
