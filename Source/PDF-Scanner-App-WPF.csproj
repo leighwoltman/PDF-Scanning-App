@@ -37,6 +37,9 @@
     <Reference Include="BitMiracle.LibTiff.NET">
       <HintPath>External\LibTiff\BitMiracle.LibTiff.NET.dll</HintPath>
     </Reference>
+    <Reference Include="Cyotek.Windows.Forms.ImageBox">
+      <HintPath>External\ImageBox\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="PdfSharp">
       <HintPath>External\PDFsharp\PdfSharp.dll</HintPath>

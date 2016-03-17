@@ -36,7 +36,7 @@ namespace PDF_Scanner_App_WPF
     private Document fDocument;
     private System.Windows.Forms.ListView ListViewPages;
     private System.Windows.Forms.ImageList ImageListPages;
-    private System.Windows.Forms.PictureBox PictureBoxPreview;
+    private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
     private System.Windows.Forms.ColumnHeader columnHeader1;
 
     public MainWindow()
@@ -119,14 +119,9 @@ namespace PDF_Scanner_App_WPF
       ListViewPages.Layout += ListViewPages_Layout;
       LeftBarWindowsFormsHost.Child = ListViewPages;
 
-      PictureBoxPreview = new System.Windows.Forms.PictureBox();
+      PictureBoxPreview = new Cyotek.Windows.Forms.ImageBox();
 
       this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.PictureBoxPreview.Location = new System.Drawing.Point(0, 39);
-      this.PictureBoxPreview.Name = "PictureBoxPreview";
-      this.PictureBoxPreview.Size = new System.Drawing.Size(538, 319);
-      this.PictureBoxPreview.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-      this.PictureBoxPreview.TabIndex = 4;
       this.PictureBoxPreview.TabStop = false;
 
       RightBarWindowsFormsHost.Child = PictureBoxPreview;
