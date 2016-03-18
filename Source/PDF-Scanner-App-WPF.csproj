@@ -74,6 +74,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="PageFromPdf.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScanningInterfaces.cs" />
     <Compile Include="TwainCapability.cs" />
@@ -96,8 +97,8 @@
     <Compile Include="AppSettings.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="ImageLoader.cs" />
-    <Compile Include="MainWindow.xaml.cs">
-      <DependentUpon>MainWindow.xaml</DependentUpon>
+    <Compile Include="WindowMain.xaml.cs">
+      <DependentUpon>WindowMain.xaml</DependentUpon>
     </Compile>
     <Compile Include="Page.cs" />
     <Compile Include="PageFromFile.cs" />
@@ -146,7 +147,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Page Include="MainWindow.xaml">
+    <Page Include="WindowMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -173,6 +174,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="External\Icons8\Print-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="PdfNotAvailableBanner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
