@@ -1,5 +1,6 @@
 ﻿using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
+using Ghostscript.NET.Rasterizer;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -54,10 +55,24 @@ namespace Model
       {
         if(fRasterize)
         {
-          // we need to load it from the file
-          System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-          Stream myStream = myAssembly.GetManifestResourceStream("PDF_Scanner_App_WPF.PdfNotAvailableBanner.png");
-          Image image = Image.FromStream(myStream);
+          Image image = null;
+
+          try
+          {
+            using (var rasterizer = new GhostscriptRasterizer())
+            {
+              rasterizer.Open(fFilename);
+              // Ghostscript uses 1 based page indexing
+              image = rasterizer.GetPage(300, 300, (int)fPageNumber + 1);
+            }
+          }
+          catch (Exception e)
+          {
+            // we need to load it from the file
+            System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
+            Stream myStream = myAssembly.GetManifestResourceStream("PDF_Scanner_App_WPF.PdfNotAvailableBanner.png");
+            image = Image.FromStream(myStream);
+          }
 
           return image;
         }
