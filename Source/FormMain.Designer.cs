@@ -60,6 +60,7 @@
       this.ButtonLoadPdf = new System.Windows.Forms.Button();
       this.ButtonSavePdf = new System.Windows.Forms.Button();
       this.ButtonPrint = new System.Windows.Forms.Button();
+      this.PanelPreview = new System.Windows.Forms.Panel();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -176,6 +177,7 @@
       // 
       // splitContainer1.Panel2
       // 
+      this.splitContainer1.Panel2.Controls.Add(this.PanelPreview);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel2);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel1);
       this.splitContainer1.Size = new System.Drawing.Size(938, 484);
@@ -408,6 +410,14 @@
       this.ButtonPrint.UseVisualStyleBackColor = true;
       this.ButtonPrint.Click += new System.EventHandler(this.ButtonPrint_Click);
       // 
+      // PanelPreview
+      // 
+      this.PanelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.PanelPreview.Location = new System.Drawing.Point(0, 39);
+      this.PanelPreview.Name = "PanelPreview";
+      this.PanelPreview.Size = new System.Drawing.Size(538, 319);
+      this.PanelPreview.TabIndex = 4;
+      // 
       // FormMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -470,6 +480,7 @@
     private System.Windows.Forms.Button ButtonMirrorHorizontally;
     private System.Windows.Forms.Button ButtonMirrorVertically;
     private System.Windows.Forms.Button ButtonRotateCounterClockwise;
+    private System.Windows.Forms.Panel PanelPreview;
   }
 }
 

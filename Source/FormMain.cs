@@ -39,7 +39,7 @@ namespace PDFScanningApp
       this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
       this.PictureBoxPreview.TabStop = false;
       this.PictureBoxPreview.BorderStyle = BorderStyle.None;
-      this.splitContainer1.Panel2.Controls.Add(this.PictureBoxPreview);
+      this.PanelPreview.Controls.Add(this.PictureBoxPreview);
 
       fAppSettings = new AppSettings();
 
