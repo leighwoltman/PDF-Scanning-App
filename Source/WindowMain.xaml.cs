@@ -23,9 +23,9 @@ using Utils;
 namespace PDF_Scanner_App_WPF
 {
   /// <summary>
-  /// Interaction logic for MainWindow.xaml
+  /// Interaction logic for WindowMain.xaml
   /// </summary>
-  public partial class MainWindow : Window
+  public partial class WindowMain : Window
   {
     private AppSettings fAppSettings;
     private Scanner fScanner;
@@ -39,7 +39,7 @@ namespace PDF_Scanner_App_WPF
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
     private System.Windows.Forms.ColumnHeader columnHeader1;
 
-    public MainWindow()
+    public WindowMain()
     {
       InitializeComponent();
 
@@ -361,6 +361,8 @@ namespace PDF_Scanner_App_WPF
         }
 
         PictureBoxPreview.Image = pageBitmap;
+
+        PictureBoxPreview.ZoomToFit();
       }
     }
 
