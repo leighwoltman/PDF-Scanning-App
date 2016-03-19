@@ -26,7 +26,7 @@ namespace Model
       this.fileName = fileName;
       this.Size = size;
      
-      InitializeImage();
+      InitializeImage(0, 0);
     }
 
 

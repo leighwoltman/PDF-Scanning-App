@@ -37,7 +37,7 @@ namespace Model
       
       this.Size = PageSize.Letter;
 
-      InitializeImage();
+      InitializeImage(0, 0);
 
       // we want to save memory
       this.myImageFile.Dispose();

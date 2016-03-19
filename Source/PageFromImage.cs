@@ -18,7 +18,7 @@ namespace Model
       this.myImageFile = image;
       this.Size = PageSize.Letter;
 
-      InitializeImage();
+      InitializeImage(0, 0);
     }
 
 

@@ -39,12 +39,14 @@ namespace Model
     }
 
 
-    protected void InitializeImage()
+    protected void InitializeImage(int verticalDpi, int horizontalDpi)
     {
       using(Image myImage = CreateImage())
       {
         fImageHeightPixels = myImage.Size.Height;
         fImageWidthPixels = myImage.Size.Width;
+        fImageVerticalResolutionDpi = verticalDpi;
+        fImageHorizontalResolutionDpi = horizontalDpi;
         fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
       }
       RefreshThumbnail();
@@ -101,56 +103,33 @@ namespace Model
     }
 
 
-    // TODO: Make the following properties follow the orientation
     public int ImageHeightPixels
     {
-      get { return fImageHeightPixels; }
-      protected set { fImageHeightPixels = value; }
+      get { return (fOrientation & 1) == 0 ? fImageHeightPixels : fImageWidthPixels; }
     }
 
 
     public int ImageWidthPixels
     {
-      get { return fImageWidthPixels; }
-      protected set { fImageWidthPixels = value; }
+      get { return (fOrientation & 1) == 0 ? fImageWidthPixels : fImageHeightPixels; }
     }
 
 
     public int ImageVerticalResolutionDpi
     {
-      get { return fImageVerticalResolutionDpi; }
-      protected set { fImageVerticalResolutionDpi = value; }
+      get { return (fOrientation & 1) == 0 ? fImageVerticalResolutionDpi : fImageHorizontalResolutionDpi; }
     }
 
 
     public int ImageHorizontalResolutionDpi
     {
-      get { return fImageHorizontalResolutionDpi; }
-      protected set { fImageHorizontalResolutionDpi = value; }
+      get { return (fOrientation & 1) == 0 ? fImageHorizontalResolutionDpi : fImageVerticalResolutionDpi; }
     }
 
 
     public bool ImageResolutionIsDefined
     {
       get { return (bool)((fImageVerticalResolutionDpi != 0) && (fImageHorizontalResolutionDpi != 0)); }
-    }
-
-
-    public PageSize ImageSize
-    {
-      get 
-      {
-        PageSize result = null;
-
-        if(ImageResolutionIsDefined)
-        {
-          double width = ImageWidthPixels / (double)ImageHorizontalResolutionDpi;
-          double height = ImageHeightPixels / (double)ImageVerticalResolutionDpi;
-          result = new PageSize(width, height);
-        }
-
-        return result; 
-      }
     }
 
 
@@ -221,6 +200,64 @@ namespace Model
         return (fSize != null) && (fSize.Width > fSize.Height); 
       }
     }
+
+
+    public Rectangle GetPageRectangle()
+    {
+      double hRes;
+      double vRes;
+
+      if(ImageResolutionIsDefined)
+      {
+        hRes = ImageHorizontalResolutionDpi;
+        vRes = ImageVerticalResolutionDpi;
+      }
+      else
+      {
+        double image_aspect_ratio = ImageWidthPixels / (double)ImageHeightPixels;
+        double page_aspect_ratio = fSize.Width / fSize.Height;
+        double imageWidth;
+        double imageHeight;
+
+        if(image_aspect_ratio > page_aspect_ratio)
+        {
+          // means our image has the width as the maximum dimension
+          imageWidth = fSize.Width;
+          imageHeight = fSize.Width / image_aspect_ratio;
+        }
+        else
+        {
+          // means our image has the height as the maximum dimension
+          imageWidth = fSize.Height * image_aspect_ratio;
+          imageHeight = fSize.Height;
+        }
+
+        hRes = ImageWidthPixels / imageWidth;
+        vRes = ImageHeightPixels / imageHeight;
+      }
+
+
+      int pagePixelWidth = (int)(fSize.Width * hRes);
+      int pagePixelHeight = (int)(fSize.Height * vRes);
+
+      return new Rectangle(0, 0, pagePixelWidth, pagePixelHeight);
+    }
+
+
+    public Rectangle GetImageRectangle()
+    {
+      Rectangle pageRect = GetPageRectangle();
+
+      Rectangle imageArea = new Rectangle();
+
+      imageArea.Width = ImageWidthPixels;
+      imageArea.Height = ImageHeightPixels;
+      imageArea.X = (pageRect.Width - imageArea.Width) / 2;
+      imageArea.Y = (pageRect.Height - imageArea.Height) / 2;
+
+      return imageArea;
+    }
+
 
     virtual public void AddPdfPage(PdfDocument pdfDocument)
     {
