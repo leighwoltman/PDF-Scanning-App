@@ -21,7 +21,7 @@ namespace Model
     private int fImageVerticalResolutionDpi;
     private int fImageHorizontalResolutionDpi;
     private int fOrientation;
-    private bool fMirrored;
+    private int fMirror;
     private PageSize fSize;
 
 
@@ -34,7 +34,7 @@ namespace Model
       fImageVerticalResolutionDpi = 0;
       fImageHorizontalResolutionDpi = 0;
       fOrientation = 0;
-      fMirrored = false;
+      fMirror = 0;
       fSize = null;
     }
 
@@ -89,41 +89,57 @@ namespace Model
       RotateFlipType.Rotate90FlipNone,
       RotateFlipType.Rotate180FlipNone,
       RotateFlipType.Rotate270FlipNone,
-      RotateFlipType.Rotate270FlipX,
-      RotateFlipType.Rotate180FlipX,
-      RotateFlipType.Rotate90FlipX,
       RotateFlipType.RotateNoneFlipX,
+      RotateFlipType.Rotate90FlipY,
+      RotateFlipType.Rotate180FlipX,
+      RotateFlipType.Rotate270FlipY,
     };
 
 
     protected void TransformImage(Image image)
     {
-      int index = fOrientation + (fMirrored ? 4 : 0);
+      int index;
+
+      switch(fMirror)
+      {
+        case 0: index = fOrientation; break;
+        case 1: index = fOrientation + 4; break;
+        case 2: index = (fOrientation + 2) % 4 + 4; break;
+        case 3: index = (fOrientation + 2) % 4; break;
+        default: index = 0; break;
+      }
+      
       image.RotateFlip(rf_table[index]);
+    }
+
+
+    private bool IsFlipped
+    {
+      get { return (bool)((fOrientation & 1) == 0); }
     }
 
 
     public int ImageHeightPixels
     {
-      get { return (fOrientation & 1) == 0 ? fImageHeightPixels : fImageWidthPixels; }
+      get { return IsFlipped ? fImageHeightPixels : fImageWidthPixels; }
     }
 
 
     public int ImageWidthPixels
     {
-      get { return (fOrientation & 1) == 0 ? fImageWidthPixels : fImageHeightPixels; }
+      get { return IsFlipped ? fImageWidthPixels : fImageHeightPixels; }
     }
 
 
     public int ImageVerticalResolutionDpi
     {
-      get { return (fOrientation & 1) == 0 ? fImageVerticalResolutionDpi : fImageHorizontalResolutionDpi; }
+      get { return IsFlipped ? fImageVerticalResolutionDpi : fImageHorizontalResolutionDpi; }
     }
 
 
     public int ImageHorizontalResolutionDpi
     {
-      get { return (fOrientation & 1) == 0 ? fImageHorizontalResolutionDpi : fImageVerticalResolutionDpi; }
+      get { return IsFlipped ? fImageHorizontalResolutionDpi : fImageVerticalResolutionDpi; }
     }
 
 
@@ -149,16 +165,28 @@ namespace Model
 
     public void MirrorHorizontally()
     {
-      fMirrored = !fMirrored;
-      fOrientation = 3 - fOrientation;
+      if(IsFlipped)
+      {
+        fMirror ^= 1;
+      }
+      else
+      {
+        fMirror ^= 2;
+      }
       RefreshThumbnail();
     }
 
 
     public void MirrorVertically()
     {
-      fMirrored = !fMirrored;
-      fOrientation = (5 - fOrientation) % 4;
+      if(IsFlipped)
+      {
+        fMirror ^= 2;
+      }
+      else
+      {
+        fMirror ^= 1;
+      }
       RefreshThumbnail();
     }
 
@@ -171,7 +199,7 @@ namespace Model
 
     public bool IsMirrored
     {
-      get { return fMirrored; }
+      get { return (bool)(fMirror != 0); }
     }
 
 
