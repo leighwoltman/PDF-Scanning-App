@@ -264,22 +264,37 @@ namespace PDFScanningApp
       else
       {
         Page page = fDocument.GetPage(item.Index);
-
-        Rectangle pageRect = page.GetPageRectangle();
-        Rectangle imageRect = page.GetImageRectangle();
-        Image img = page.GetImage();
-
-        Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
-
-        using(Graphics g = Graphics.FromImage(pageBitmap))
-        {
-          g.FillRectangle(Brushes.White, pageRect);
-          g.DrawImage(img, imageRect);
-        }
-
-        PictureBoxPreview.Image = pageBitmap;
+        PictureBoxPreview.Image = GetPageImage(page.GetImage(), page.Size, page.ImageSize);
         PictureBoxPreview.ZoomToFit();
       }
+    }
+
+
+    private Bitmap GetPageImage(Image img, PageSize pageSize, PageSize imageSize)
+    {
+      Rectangle imageRect = new Rectangle();
+
+      imageRect.Width = img.Width;
+      imageRect.Height = img.Height;
+      imageRect.X = (int)(img.Width * (pageSize.Width / imageSize.Width - 1) / 2);
+      imageRect.Y = (int)(img.Height * (pageSize.Height / imageSize.Height - 1) / 2);
+
+      Rectangle pageRect = new Rectangle();
+
+      pageRect.Width = (int)(pageSize.Width * img.Width / imageSize.Width);
+      pageRect.Height = (int)(pageSize.Height * img.Height / imageSize.Height);
+      pageRect.X = 0;
+      pageRect.Y = 0;
+
+      Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
+
+      using(Graphics g = Graphics.FromImage(pageBitmap))
+      {
+        g.FillRectangle(Brushes.White, pageRect);
+        g.DrawImage(img, imageRect);
+      }
+
+      return pageBitmap;
     }
 
 
@@ -392,7 +407,38 @@ namespace PDFScanningApp
                                              ListViewPages.Font.Height + 5);
 
         Page page = fDocument.GetPage(e.Item.Index);
-        e.Graphics.DrawImage(page.Thumbnail, rectPic);
+
+        Image img = GetPageImage(page.Thumbnail, page.Size, page.ImageSize);
+
+        double image_aspect_ratio = img.Width / (double)img.Height;
+        double page_aspect_ratio = rectPic.Width / rectPic.Height;
+
+        double imageWidth;
+        double imageHeight;
+
+        if(image_aspect_ratio > page_aspect_ratio)
+        {
+          // means our image has the width as the maximum dimension
+          imageWidth = rectPic.Width;
+          imageHeight = rectPic.Width / image_aspect_ratio;
+        }
+        else
+        {
+          // means our image has the height as the maximum dimension
+          imageWidth = rectPic.Height * image_aspect_ratio;
+          imageHeight = rectPic.Height;
+        }
+
+        Rectangle imageRect = new Rectangle();
+
+        imageRect.Width = (int)imageWidth;
+        imageRect.Height = (int)imageHeight;
+        imageRect.X = rectPic.X + (int)(imageWidth * (rectPic.Width / imageWidth - 1) / 2);
+        imageRect.Y = rectPic.Y + (int)(imageHeight * (rectPic.Height / imageHeight - 1) / 2);
+
+
+        e.Graphics.DrawImage(img, imageRect);
+        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), imageRect.X, imageRect.Y, imageRect.Width, imageRect.Height);
         // e.Graphics.FillRectangle(Brushes.Red, rectLine1);
         // e.Graphics.FillRectangle(Brushes.Black, rectLine2);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1),  ListViewPages.Font, Brushes.Black, rectLine1);

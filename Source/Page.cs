@@ -230,60 +230,39 @@ namespace Model
     }
 
 
-    public Rectangle GetPageRectangle()
+    public PageSize ImageSize
     {
-      double hRes;
-      double vRes;
-
-      if(ImageResolutionIsDefined)
+      get 
       {
-        hRes = ImageHorizontalResolutionDpi;
-        vRes = ImageVerticalResolutionDpi;
-      }
-      else
-      {
-        double image_aspect_ratio = ImageWidthPixels / (double)ImageHeightPixels;
-        double page_aspect_ratio = fSize.Width / fSize.Height;
         double imageWidth;
         double imageHeight;
 
-        if(image_aspect_ratio > page_aspect_ratio)
+        if(ImageResolutionIsDefined)
         {
-          // means our image has the width as the maximum dimension
-          imageWidth = fSize.Width;
-          imageHeight = fSize.Width / image_aspect_ratio;
+          imageWidth = ImageWidthPixels / (double)ImageHorizontalResolutionDpi;
+          imageHeight = ImageHeightPixels / (double)ImageVerticalResolutionDpi;
         }
         else
         {
-          // means our image has the height as the maximum dimension
-          imageWidth = fSize.Height * image_aspect_ratio;
-          imageHeight = fSize.Height;
+          double image_aspect_ratio = ImageWidthPixels / (double)ImageHeightPixels;
+          double page_aspect_ratio = fSize.Width / fSize.Height;
+
+          if(image_aspect_ratio > page_aspect_ratio)
+          {
+            // means our image has the width as the maximum dimension
+            imageWidth = fSize.Width;
+            imageHeight = fSize.Width / image_aspect_ratio;
+          }
+          else
+          {
+            // means our image has the height as the maximum dimension
+            imageWidth = fSize.Height * image_aspect_ratio;
+            imageHeight = fSize.Height;
+          }
         }
 
-        hRes = ImageWidthPixels / imageWidth;
-        vRes = ImageHeightPixels / imageHeight;
+        return new PageSize(imageWidth, imageHeight);
       }
-
-
-      int pagePixelWidth = (int)(fSize.Width * hRes);
-      int pagePixelHeight = (int)(fSize.Height * vRes);
-
-      return new Rectangle(0, 0, pagePixelWidth, pagePixelHeight);
-    }
-
-
-    public Rectangle GetImageRectangle()
-    {
-      Rectangle pageRect = GetPageRectangle();
-
-      Rectangle imageArea = new Rectangle();
-
-      imageArea.Width = ImageWidthPixels;
-      imageArea.Height = ImageHeightPixels;
-      imageArea.X = (pageRect.Width - imageArea.Width) / 2;
-      imageArea.Y = (pageRect.Height - imageArea.Height) / 2;
-
-      return imageArea;
     }
 
 
