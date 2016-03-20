@@ -272,19 +272,19 @@ namespace PDFScanningApp
 
     private Bitmap GetPageImage(Image img, PageSize pageSize, PageSize imageSize)
     {
-      Rectangle imageRect = new Rectangle();
-
-      imageRect.Width = img.Width;
-      imageRect.Height = img.Height;
-      imageRect.X = (int)(img.Width * (pageSize.Width / imageSize.Width - 1) / 2);
-      imageRect.Y = (int)(img.Height * (pageSize.Height / imageSize.Height - 1) / 2);
-
       Rectangle pageRect = new Rectangle();
 
       pageRect.Width = (int)(pageSize.Width * img.Width / imageSize.Width);
       pageRect.Height = (int)(pageSize.Height * img.Height / imageSize.Height);
       pageRect.X = 0;
       pageRect.Y = 0;
+
+      Rectangle imageRect = new Rectangle();
+
+      imageRect.Width = img.Width;
+      imageRect.Height = img.Height;
+      imageRect.X = (int)((pageRect.Width - img.Width) / 2);
+      imageRect.Y = (int)((pageRect.Height - img.Height) / 2);
 
       Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
 
@@ -378,21 +378,19 @@ namespace PDFScanningApp
     {
       if(ListViewPages.Items.Count > 0)
       {
-        int margin = 5;
-        int height = ImageListPages.ImageSize.Height - 2 * margin;
-        int width = ImageListPages.ImageSize.Width - 2 * margin;
-
         // if selected, mark the background differently
         if(e.Item.Selected)
         {
           e.Graphics.FillRectangle(Brushes.CornflowerBlue, e.Bounds);
         }
 
+        int margin = 5;
+        int maxSize = e.Bounds.Height - 2 * margin;
+
         Rectangle rectPic = new Rectangle( e.Bounds.X + e.Bounds.Width / 5,
                                            e.Bounds.Y + margin,
-                                           width,
-                                           height );
-
+                                           maxSize,
+                                           maxSize);
 
         int infoColumnLeft = rectPic.X + rectPic.Width + 10;
 
@@ -411,31 +409,27 @@ namespace PDFScanningApp
         Image img = GetPageImage(page.Thumbnail, page.Size, page.ImageSize);
 
         double image_aspect_ratio = img.Width / (double)img.Height;
-        double page_aspect_ratio = rectPic.Width / rectPic.Height;
 
         double imageWidth;
         double imageHeight;
 
-        if(image_aspect_ratio > page_aspect_ratio)
+        if(image_aspect_ratio > 1) // same as page.IsLandscape
         {
-          // means our image has the width as the maximum dimension
-          imageWidth = rectPic.Width;
-          imageHeight = rectPic.Width / image_aspect_ratio;
+          imageWidth = maxSize;
+          imageHeight = maxSize / image_aspect_ratio;
         }
         else
         {
-          // means our image has the height as the maximum dimension
-          imageWidth = rectPic.Height * image_aspect_ratio;
-          imageHeight = rectPic.Height;
+          imageWidth = maxSize * image_aspect_ratio;
+          imageHeight = maxSize;
         }
 
         Rectangle imageRect = new Rectangle();
 
         imageRect.Width = (int)imageWidth;
         imageRect.Height = (int)imageHeight;
-        imageRect.X = rectPic.X + (int)(imageWidth * (rectPic.Width / imageWidth - 1) / 2);
-        imageRect.Y = rectPic.Y + (int)(imageHeight * (rectPic.Height / imageHeight - 1) / 2);
-
+        imageRect.X = rectPic.X + (int)((rectPic.Width - imageWidth) / 2);
+        imageRect.Y = rectPic.Y + (int)((rectPic.Height - imageHeight) / 2);
 
         e.Graphics.DrawImage(img, imageRect);
         e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), imageRect.X, imageRect.Y, imageRect.Width, imageRect.Height);
