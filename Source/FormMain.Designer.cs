@@ -44,6 +44,7 @@
       this.splitContainer1 = new System.Windows.Forms.SplitContainer();
       this.ListViewPages = new System.Windows.Forms.ListView();
       this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+      this.PanelPreview = new System.Windows.Forms.Panel();
       this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
       this.ButtonRotateClockwise = new System.Windows.Forms.Button();
       this.ButtonRotateCounterClockwise = new System.Windows.Forms.Button();
@@ -60,7 +61,6 @@
       this.ButtonLoadPdf = new System.Windows.Forms.Button();
       this.ButtonSavePdf = new System.Windows.Forms.Button();
       this.ButtonPrint = new System.Windows.Forms.Button();
-      this.PanelPreview = new System.Windows.Forms.Panel();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -97,7 +97,6 @@
       this.ComboBoxScanners.DropDownWidth = 100;
       this.ComboBoxScanners.Name = "ComboBoxScanners";
       this.ComboBoxScanners.Size = new System.Drawing.Size(250, 25);
-      this.ComboBoxScanners.SelectedIndexChanged += new System.EventHandler(this.ComboBoxScanners_SelectedIndexChanged);
       // 
       // MenuSettings
       // 
@@ -215,6 +214,14 @@
       // columnHeader1
       // 
       this.columnHeader1.Width = 128;
+      // 
+      // PanelPreview
+      // 
+      this.PanelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
+      this.PanelPreview.Location = new System.Drawing.Point(0, 39);
+      this.PanelPreview.Name = "PanelPreview";
+      this.PanelPreview.Size = new System.Drawing.Size(538, 319);
+      this.PanelPreview.TabIndex = 4;
       // 
       // flowLayoutPanel2
       // 
@@ -409,14 +416,6 @@
       this.ButtonPrint.Text = "Print";
       this.ButtonPrint.UseVisualStyleBackColor = true;
       this.ButtonPrint.Click += new System.EventHandler(this.ButtonPrint_Click);
-      // 
-      // PanelPreview
-      // 
-      this.PanelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
-      this.PanelPreview.Location = new System.Drawing.Point(0, 39);
-      this.PanelPreview.Name = "PanelPreview";
-      this.PanelPreview.Size = new System.Drawing.Size(538, 319);
-      this.PanelPreview.TabIndex = 4;
       // 
       // FormMain
       // 

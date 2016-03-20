@@ -69,7 +69,13 @@ namespace PDFScanningApp
           ComboBoxScanners.Items.Add(item);
         }
 
-        RefreshScanner(fAppSettings.CurrentScanner);
+        for(int i = 0; i < ComboBoxScanners.Items.Count; i++)
+        {
+          if(ComboBoxScanners.Items[i].ToString() == fAppSettings.CurrentScanner)
+          {
+            ComboBoxScanners.SelectedIndex = i;
+          }
+        }
       }
 
       StatusLabel1.Text = "";
@@ -96,25 +102,19 @@ namespace PDFScanningApp
     }
 
 
-    private void RefreshScanner(string selectedScanner)
+    private void RefreshScanner()
     {
+      string selectedScanner = (string)ComboBoxScanners.SelectedItem;
       fScanner.SelectActiveDataSource(selectedScanner);
-
       fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
-
-      for(int i = 0; i < ComboBoxScanners.Items.Count; i++)
-      {
-        if(ComboBoxScanners.Items[i].ToString() == fAppSettings.CurrentScanner)
-        {
-          ComboBoxScanners.SelectedIndex = i;
-        }
-      }
     }
 
 
     private bool ExecuteDataSourceSettingsDialog()
     {
       bool result = false;
+
+      RefreshScanner();
 
       string dataSourceName = fScanner.GetActiveDataSourceName();
 
@@ -158,6 +158,8 @@ namespace PDFScanningApp
 
     private void Scan(PageTypeEnum pageType)
     {
+      RefreshScanner();
+
       if(fScanner.DataSourceReady())
       {
         ScanSettings settings = new ScanSettings();
@@ -438,12 +440,6 @@ namespace PDFScanningApp
         e.Graphics.DrawString("Page " + (e.Item.Index + 1),  ListViewPages.Font, Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, Brushes.DarkGray, rectLine2);
       }
-    }
-
-
-    private void ComboBoxScanners_SelectedIndexChanged(object sender, EventArgs e)
-    {
-      RefreshScanner(ComboBoxScanners.SelectedItem.ToString());
     }
 
 
