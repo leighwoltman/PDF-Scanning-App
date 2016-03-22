@@ -21,7 +21,7 @@ namespace Model
     private int fImageVerticalResolutionDpi;
     private int fImageHorizontalResolutionDpi;
     private int fOrientation;
-    private int fMirror;
+    private bool fMirrored;
     private PageSize fSize;
 
 
@@ -34,7 +34,7 @@ namespace Model
       fImageVerticalResolutionDpi = 0;
       fImageHorizontalResolutionDpi = 0;
       fOrientation = 0;
-      fMirror = 0;
+      fMirrored = false;
       fSize = null;
     }
 
@@ -89,6 +89,11 @@ namespace Model
       RotateFlipType.Rotate90FlipNone,
       RotateFlipType.Rotate180FlipNone,
       RotateFlipType.Rotate270FlipNone,
+    };
+
+
+    readonly RotateFlipType[] rf_mirrored_table =
+    { 
       RotateFlipType.RotateNoneFlipX,
       RotateFlipType.Rotate90FlipY,
       RotateFlipType.Rotate180FlipX,
@@ -98,18 +103,14 @@ namespace Model
 
     protected void TransformImage(Image image)
     {
-      int index;
-
-      switch(fMirror)
+      if(fMirrored)
       {
-        case 0: index = fOrientation; break;
-        case 1: index = fOrientation + 4; break;
-        case 2: index = (fOrientation + 2) % 4 + 4; break;
-        case 3: index = (fOrientation + 2) % 4; break;
-        default: index = 0; break;
+        image.RotateFlip(rf_mirrored_table[fOrientation]);
       }
-      
-      image.RotateFlip(rf_table[index]);
+      else
+      {
+        image.RotateFlip(rf_table[fOrientation]);
+      }
     }
 
 
@@ -165,28 +166,26 @@ namespace Model
 
     public void MirrorHorizontally()
     {
-      if(IsFlipped)
+      fMirrored = !fMirrored;
+
+      if(IsFlipped == false)
       {
-        fMirror ^= 1;
+        fOrientation = (fOrientation + 2) % 4;
       }
-      else
-      {
-        fMirror ^= 2;
-      }
+
       RefreshThumbnail();
     }
 
 
     public void MirrorVertically()
     {
-      if(IsFlipped)
+      fMirrored = !fMirrored;
+
+      if(IsFlipped == true)
       {
-        fMirror ^= 2;
+        fOrientation = (fOrientation + 2) % 4;
       }
-      else
-      {
-        fMirror ^= 1;
-      }
+
       RefreshThumbnail();
     }
 
@@ -199,7 +198,7 @@ namespace Model
 
     public bool IsMirrored
     {
-      get { return (bool)(fMirror != 0); }
+      get { return fMirrored; }
     }
 
 
