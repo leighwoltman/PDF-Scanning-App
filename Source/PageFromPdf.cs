@@ -70,7 +70,7 @@ namespace Model
           {
             // we need to load it from the file
             System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            Stream myStream = myAssembly.GetManifestResourceStream("PDF_Scanner_App_WPF.PdfNotAvailableBanner.png");
+            Stream myStream = myAssembly.GetManifestResourceStream("PDF_Scanner_App_WPF.Resources.PdfNotAvailableBanner.png");
             image = Image.FromStream(myStream);
           }
 

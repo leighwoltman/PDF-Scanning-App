@@ -179,7 +179,7 @@
     <Resource Include="External\Icons8\Print-96.png" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="PdfNotAvailableBanner.png" />
+    <EmbeddedResource Include="Resources\PdfNotAvailableBanner.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
