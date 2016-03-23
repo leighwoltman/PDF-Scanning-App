@@ -152,6 +152,7 @@ namespace PDF_Scanner_App_WPF
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
     }
 
+
     private void RefreshScanner(string selectedScanner)
     {
       fScanner.SelectActiveDataSource(selectedScanner);
@@ -320,53 +321,26 @@ namespace PDF_Scanner_App_WPF
       else
       {
         Model.Page page = fDocument.GetPage(item.Index);
-        PageSize pageSize = page.Size;
-
-        int pageWidth = (int)(100 * pageSize.Width); // Convert to Hundreth of Inch
-        int pageHeight = (int)(100 * pageSize.Height); // Convert to Hundreth of Inch
-        int imageWidth;
-        int imageHeight;
-
-        double image_aspect_ratio = page.ImageWidthPixels / (double)page.ImageHeightPixels;
-        double page_aspect_ratio = pageSize.Width / pageSize.Height;
-
-        if (image_aspect_ratio > page_aspect_ratio)
-        {
-          // means our image has the width as the maximum dimension
-          imageWidth = pageWidth;
-          imageHeight = (int)(pageWidth / image_aspect_ratio);
-        }
-        else
-        {
-          // means our image has the height as the maximum dimension
-          imageWidth = (int)(pageHeight * image_aspect_ratio);
-          imageHeight = pageHeight;
-        }
-
-        Bitmap pageBitmap = new Bitmap(pageWidth, pageHeight);
-
-        using (Graphics g = Graphics.FromImage(pageBitmap))
-        {
-          System.Drawing.Rectangle pageRect = new System.Drawing.Rectangle(0, 0, pageWidth, pageHeight);
-          g.FillRectangle(System.Drawing.Brushes.White, pageRect);
-
-          System.Drawing.Rectangle imageRect = new System.Drawing.Rectangle();
-          imageRect.X = (pageWidth - imageWidth) / 2;
-          imageRect.Y = (pageHeight - imageHeight) / 2;
-          imageRect.Width = imageWidth;
-          imageRect.Height = imageHeight;
-
-          System.Drawing.Image img = page.GetImage();
-          g.DrawImage(img, imageRect);
-        }
-
-        PictureBoxPreview.Image = pageBitmap;
-
+        PictureBoxPreview.Image = GetPageImage(page.GetImage(), page.Bounds, page.ImageBounds);
         PictureBoxPreview.ZoomToFit();
       }
     }
 
 
+    private Bitmap GetPageImage(System.Drawing.Image img, System.Drawing.Rectangle pageRect, System.Drawing.Rectangle imageRect)
+    {
+      Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
+
+      using(Graphics g = Graphics.FromImage(pageBitmap))
+      {
+        g.FillRectangle(System.Drawing.Brushes.White, pageRect);
+        g.DrawImage(img, imageRect);
+      }
+
+      return pageBitmap;
+    }
+
+    
     private void ListViewPages_Layout(object sender, LayoutEventArgs e)
     {
       ListViewPages.Columns[0].Width = ListViewPages.ClientSize.Width;
@@ -447,20 +421,19 @@ namespace PDF_Scanner_App_WPF
     {
       if (ListViewPages.Items.Count > 0)
       {
-        int margin = 5;
-        int height = ImageListPages.ImageSize.Height - 2 * margin;
-        int width = ImageListPages.ImageSize.Width - 2 * margin;
-
         // if selected, mark the background differently
-        if (e.Item.Selected)
+        if(e.Item.Selected)
         {
           e.Graphics.FillRectangle(System.Drawing.Brushes.CornflowerBlue, e.Bounds);
         }
 
+        int margin = 5;
+        int maxSize = e.Bounds.Height - 2 * margin;
+
         System.Drawing.Rectangle rectPic = new System.Drawing.Rectangle(e.Bounds.X + e.Bounds.Width / 5,
                                            e.Bounds.Y + margin,
-                                           width,
-                                           height);
+                                           maxSize,
+                                           maxSize);
 
 
         int infoColumnLeft = rectPic.X + rectPic.Width + 10;
@@ -476,9 +449,34 @@ namespace PDF_Scanner_App_WPF
                                              ListViewPages.Font.Height + 5);
 
         Model.Page page = fDocument.GetPage(e.Item.Index);
-        e.Graphics.DrawImage(page.Thumbnail, rectPic);
-        // e.Graphics.FillRectangle(Brushes.Red, rectLine1);
-        // e.Graphics.FillRectangle(Brushes.Black, rectLine2);
+
+        System.Drawing.Image img = GetPageImage(page.Thumbnail, page.Bounds, page.ImageBounds);
+
+        double image_aspect_ratio = img.Width / (double)img.Height;
+
+        double imageWidth;
+        double imageHeight;
+
+        if(image_aspect_ratio > 1) // same as page.IsLandscape
+        {
+          imageWidth = maxSize;
+          imageHeight = maxSize / image_aspect_ratio;
+        }
+        else
+        {
+          imageWidth = maxSize * image_aspect_ratio;
+          imageHeight = maxSize;
+        }
+
+        System.Drawing.Rectangle imageRect = new System.Drawing.Rectangle();
+
+        imageRect.Width = (int)imageWidth;
+        imageRect.Height = (int)imageHeight;
+        imageRect.X = rectPic.X + (int)((rectPic.Width - imageWidth) / 2);
+        imageRect.Y = rectPic.Y + (int)((rectPic.Height - imageHeight) / 2);
+
+        e.Graphics.DrawImage(img, imageRect);
+        e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), imageRect.X, imageRect.Y, imageRect.Width, imageRect.Height);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, System.Drawing.Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, System.Drawing.Brushes.DarkGray, rectLine2);
       }

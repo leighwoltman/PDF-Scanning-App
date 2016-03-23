@@ -22,8 +22,10 @@ namespace Model
     private int fImageHorizontalResolutionDpi;
     private int fOrientation;
     private bool fMirrored;
-    private PageSize fSize;
-
+    private PageSize fSizeInch;
+    private PageSize fImageSizeInch;
+    private Rectangle fBoundsPixel;
+    private Rectangle fImageBoundsPixel;
 
     public Page()
     {
@@ -35,7 +37,10 @@ namespace Model
       fImageHorizontalResolutionDpi = 0;
       fOrientation = 0;
       fMirrored = false;
-      fSize = null;
+      fSizeInch = null;
+      fImageSizeInch = null;
+      fBoundsPixel = new Rectangle();
+      fImageBoundsPixel = new Rectangle();
     }
 
 
@@ -49,7 +54,67 @@ namespace Model
         fImageHorizontalResolutionDpi = horizontalDpi;
         fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
       }
-      RefreshThumbnail();
+      RefreshImage();
+    }
+
+
+    private void RefreshImage()
+    {
+      CalculateBounds();
+      fThumbnail = (Image)fSourceThumbnail.Clone();
+      TransformImage(fThumbnail);
+    }
+
+
+    private void CalculateBounds()
+    {
+      double pageWidthInch = this.Size.Width;
+      double pageHeightInch = this.Size.Height;
+      double imageWidthInch;
+      double imageHeightInch;
+      int pageWidthPixels;
+      int pageHeightPixels;
+      int imageWidthPixels = this.ImageWidthPixels;
+      int imageHeightPixels = this.ImageHeightPixels;
+
+      if(ImageResolutionIsDefined)
+      {
+        imageWidthInch = imageWidthPixels / (double)ImageHorizontalResolutionDpi;
+        imageHeightInch = imageHeightPixels / (double)ImageVerticalResolutionDpi;
+      }
+      else
+      {
+        double image_aspect_ratio = imageWidthPixels / (double)imageHeightPixels;
+        double page_aspect_ratio = pageWidthInch / pageHeightInch;
+
+        if(image_aspect_ratio > page_aspect_ratio)
+        {
+          // means our image has the width as the maximum dimension
+          imageWidthInch = pageWidthInch;
+          imageHeightInch = pageWidthInch / image_aspect_ratio;
+        }
+        else
+        {
+          // means our image has the height as the maximum dimension
+          imageWidthInch = pageHeightInch * image_aspect_ratio;
+          imageHeightInch = pageHeightInch;
+        }
+      }
+
+      pageWidthPixels = (int)(pageWidthInch * imageWidthPixels / imageWidthInch);
+      pageHeightPixels = (int)(pageHeightInch * imageHeightPixels / imageHeightInch);
+
+      fImageSizeInch = new PageSize(imageWidthInch, imageHeightInch);
+
+      fBoundsPixel.Width = pageWidthPixels;
+      fBoundsPixel.Height = pageHeightPixels;
+      fBoundsPixel.X = 0;
+      fBoundsPixel.Y = 0;
+
+      fImageBoundsPixel.Width = imageWidthPixels;
+      fImageBoundsPixel.Height = imageHeightPixels;
+      fImageBoundsPixel.X = (pageWidthPixels - imageWidthPixels) / 2;
+      fImageBoundsPixel.Y = (pageHeightPixels - imageHeightPixels) / 2;
     }
 
 
@@ -67,13 +132,6 @@ namespace Model
     public Image Thumbnail
     {
       get { return fThumbnail; }
-    }
-
-
-    private void RefreshThumbnail()
-    {
-      fThumbnail = (Image)fSourceThumbnail.Clone();
-      TransformImage(fThumbnail);
     }
 
 
@@ -153,14 +211,14 @@ namespace Model
     public void RotateClockwise()
     {
       fOrientation = (fOrientation + 1) % 4;
-      RefreshThumbnail();
+      RefreshImage();
     }
 
 
     public void RotateCounterClockwise()
     {
       fOrientation = (fOrientation + 3) % 4;
-      RefreshThumbnail();
+      RefreshImage();
     }
 
 
@@ -173,7 +231,7 @@ namespace Model
         fOrientation = (fOrientation + 2) % 4;
       }
 
-      RefreshThumbnail();
+      RefreshImage();
     }
 
 
@@ -186,7 +244,7 @@ namespace Model
         fOrientation = (fOrientation + 2) % 4;
       }
 
-      RefreshThumbnail();
+      RefreshImage();
     }
 
 
@@ -202,20 +260,14 @@ namespace Model
     }
 
 
-    public PageSize Size
-    {
-      get { return fSize; }
-      protected set { fSize = value; }
-    }
-
-
     public void Landscape()
     {
-      if(fSize != null)
+      if(fSizeInch != null)
       {
-        double temp = fSize.Width;
-        fSize.Width = fSize.Height;
-        fSize.Height = temp;
+        double temp = fSizeInch.Width;
+        fSizeInch.Width = fSizeInch.Height;
+        fSizeInch.Height = temp;
+        RefreshImage();
       }
     }
 
@@ -224,44 +276,33 @@ namespace Model
     {
       get 
       { 
-        return (fSize != null) && (fSize.Width > fSize.Height); 
+        return (fSizeInch != null) && (fSizeInch.Width > fSizeInch.Height); 
       }
+    }
+
+
+    public PageSize Size
+    {
+      get { return fSizeInch; }
+      protected set { fSizeInch = value; }
     }
 
 
     public PageSize ImageSize
     {
-      get 
-      {
-        double imageWidth;
-        double imageHeight;
+      get { return fImageSizeInch; }
+    }
 
-        if(ImageResolutionIsDefined)
-        {
-          imageWidth = ImageWidthPixels / (double)ImageHorizontalResolutionDpi;
-          imageHeight = ImageHeightPixels / (double)ImageVerticalResolutionDpi;
-        }
-        else
-        {
-          double image_aspect_ratio = ImageWidthPixels / (double)ImageHeightPixels;
-          double page_aspect_ratio = fSize.Width / fSize.Height;
 
-          if(image_aspect_ratio > page_aspect_ratio)
-          {
-            // means our image has the width as the maximum dimension
-            imageWidth = fSize.Width;
-            imageHeight = fSize.Width / image_aspect_ratio;
-          }
-          else
-          {
-            // means our image has the height as the maximum dimension
-            imageWidth = fSize.Height * image_aspect_ratio;
-            imageHeight = fSize.Height;
-          }
-        }
+    public Rectangle Bounds
+    {
+      get { return fBoundsPixel; }
+    }
 
-        return new PageSize(imageWidth, imageHeight);
-      }
+
+    public Rectangle ImageBounds
+    {
+      get { return fImageBoundsPixel; }
     }
 
 

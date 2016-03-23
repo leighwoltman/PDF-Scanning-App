@@ -266,28 +266,14 @@ namespace PDFScanningApp
       else
       {
         Page page = fDocument.GetPage(item.Index);
-        PictureBoxPreview.Image = GetPageImage(page.GetImage(), page.Size, page.ImageSize);
+        PictureBoxPreview.Image = GetPageImage(page.GetImage(), page.Bounds, page.ImageBounds);
         PictureBoxPreview.ZoomToFit();
       }
     }
 
 
-    private Bitmap GetPageImage(Image img, PageSize pageSize, PageSize imageSize)
+    private Bitmap GetPageImage(Image img, Rectangle pageRect, Rectangle imageRect)
     {
-      Rectangle pageRect = new Rectangle();
-
-      pageRect.Width = (int)(pageSize.Width * img.Width / imageSize.Width);
-      pageRect.Height = (int)(pageSize.Height * img.Height / imageSize.Height);
-      pageRect.X = 0;
-      pageRect.Y = 0;
-
-      Rectangle imageRect = new Rectangle();
-
-      imageRect.Width = img.Width;
-      imageRect.Height = img.Height;
-      imageRect.X = (int)((pageRect.Width - img.Width) / 2);
-      imageRect.Y = (int)((pageRect.Height - img.Height) / 2);
-
       Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
 
       using(Graphics g = Graphics.FromImage(pageBitmap))
@@ -408,7 +394,7 @@ namespace PDFScanningApp
 
         Page page = fDocument.GetPage(e.Item.Index);
 
-        Image img = GetPageImage(page.Thumbnail, page.Size, page.ImageSize);
+        Image img = GetPageImage(page.Thumbnail, page.Bounds, page.ImageBounds);
 
         double image_aspect_ratio = img.Width / (double)img.Height;
 
