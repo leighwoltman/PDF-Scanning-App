@@ -564,7 +564,7 @@ namespace PDF_Scanner_App_WPF
 
         Thread.Sleep(5000);
 
-        fDocument.RemoveAll();
+//        fDocument.RemoveAll();
 
         fAppSettings.LastDirectory = System.IO.Path.GetDirectoryName(fileName);
       }

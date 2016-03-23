@@ -421,8 +421,6 @@ namespace PDFScanningApp
 
         e.Graphics.DrawImage(img, imageRect);
         e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), imageRect.X, imageRect.Y, imageRect.Width, imageRect.Height);
-        // e.Graphics.FillRectangle(Brushes.Red, rectLine1);
-        // e.Graphics.FillRectangle(Brushes.Black, rectLine2);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1),  ListViewPages.Font, Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, Brushes.DarkGray, rectLine2);
       }
@@ -504,7 +502,7 @@ namespace PDFScanningApp
 
         Thread.Sleep(5000);
 
-        fDocument.RemoveAll();
+        // fDocument.RemoveAll();
 
         fAppSettings.LastDirectory = Path.GetDirectoryName(fileName);
       }
