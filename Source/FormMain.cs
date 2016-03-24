@@ -291,7 +291,7 @@ namespace PDFScanningApp
 
     private void ListViewPages_ItemDrag(object sender, ItemDragEventArgs e)
     {
-      this.DoDragDrop(e.Item, DragDropEffects.Move);
+      ListViewPages.DoDragDrop(e.Item, DragDropEffects.Move);
     }
 
 

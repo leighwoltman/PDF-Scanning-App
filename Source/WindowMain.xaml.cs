@@ -351,7 +351,7 @@ namespace PDF_Scanner_App_WPF
 
     private void ListViewPages_ItemDrag(object sender, ItemDragEventArgs e)
     {
-      //this.DoDragDrop(e.Item, System.Windows.Forms.DragDropEffects.Move);
+      ListViewPages.DoDragDrop(e.Item, System.Windows.Forms.DragDropEffects.Move);
     }
 
 
@@ -436,7 +436,6 @@ namespace PDF_Scanner_App_WPF
                                            e.Bounds.Y + margin,
                                            maxSize,
                                            maxSize);
-
 
         int infoColumnLeft = rectPic.X + rectPic.Width + 10;
 
