@@ -454,31 +454,10 @@ namespace PDF_Scanner_App_WPF
 
         System.Drawing.Image img = GetPageImage(page.Thumbnail, page.Bounds, page.ImageBounds);
 
-        double image_aspect_ratio = img.Width / (double)img.Height;
-
-        double imageWidth;
-        double imageHeight;
-
-        if(image_aspect_ratio > 1) // same as page.IsLandscape
-        {
-          imageWidth = maxSize;
-          imageHeight = maxSize / image_aspect_ratio;
-        }
-        else
-        {
-          imageWidth = maxSize * image_aspect_ratio;
-          imageHeight = maxSize;
-        }
-
-        System.Drawing.Rectangle imageRect = new System.Drawing.Rectangle();
-
-        imageRect.Width = (int)imageWidth;
-        imageRect.Height = (int)imageHeight;
-        imageRect.X = rectPic.X + (int)((rectPic.Width - imageWidth) / 2);
-        imageRect.Y = rectPic.Y + (int)((rectPic.Height - imageHeight) / 2);
+        System.Drawing.Rectangle imageRect = UtilImaging.FitToArea(img.Width, img.Height, rectPic);
 
         e.Graphics.DrawImage(img, imageRect);
-        e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), imageRect.X, imageRect.Y, imageRect.Width, imageRect.Height);
+        e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), imageRect);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, System.Drawing.Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, System.Drawing.Brushes.DarkGray, rectLine2);
       }

@@ -58,5 +58,37 @@ namespace Utils
     {
       return false;
     }
+
+
+    public static Rectangle FitToArea(int imageWidth, int imageHeight, Rectangle area)
+    {
+      double image_aspect_ratio = imageWidth / (double)imageHeight;
+      double area_aspect_ratio = area.Width / (double)area.Height;
+
+      int fittedWidth;
+      int fittedHeight;
+
+      if(image_aspect_ratio > area_aspect_ratio) // same as page.IsLandscape
+      {
+        // means our image has the width as the maximum dimension
+        fittedWidth = area.Width;
+        fittedHeight = (int)(area.Width / image_aspect_ratio);
+      }
+      else
+      {
+        // means our image has the height as the maximum dimension
+        fittedWidth = (int)(area.Height * image_aspect_ratio);
+        fittedHeight = area.Height;
+      }
+
+      Rectangle result = new Rectangle();
+
+      result.Width = fittedWidth;
+      result.Height = fittedHeight;
+      result.X = area.X + ((area.Width - fittedWidth) / 2);
+      result.Y = area.Y + ((area.Height - fittedHeight) / 2);
+
+      return result;
+    }
   }
 }
