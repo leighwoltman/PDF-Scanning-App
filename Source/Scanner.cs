@@ -137,7 +137,7 @@ namespace Model
 
     public bool DataSourceReady()
     {
-      return (bool)(String.IsNullOrEmpty(GetActiveDataSourceName()) == false);
+      return (bool)(fActiveDataSource != null);
     }
 
 

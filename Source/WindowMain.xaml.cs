@@ -20,6 +20,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using Utils;
 
+
 namespace PDF_Scanner_App_WPF
 {
   /// <summary>
@@ -38,6 +39,7 @@ namespace PDF_Scanner_App_WPF
     private System.Windows.Forms.ImageList ImageListPages;
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
     private System.Windows.Forms.ColumnHeader columnHeader1;
+
 
     public WindowMain()
     {
@@ -67,6 +69,7 @@ namespace PDF_Scanner_App_WPF
       fDocument.OnPageMoved += fDocument_OnPageMoved;
     }
 
+
     private void RibbonWin_Loaded(object sender, RoutedEventArgs e)
     {
       Grid child = VisualTreeHelper.GetChild((DependencyObject)sender, 0) as Grid;
@@ -75,6 +78,7 @@ namespace PDF_Scanner_App_WPF
         child.RowDefinitions[0].Height = new GridLength(0);
       }
     }
+
 
     private void Window_Loaded(object sender, RoutedEventArgs e)
     {
@@ -140,6 +144,7 @@ namespace PDF_Scanner_App_WPF
       //StatusLabel2.Text = "";
       RefreshControls();
     }
+
 
     void fScanner_OnScanningComplete(object sender, EventArgs e)
     {
@@ -215,25 +220,22 @@ namespace PDF_Scanner_App_WPF
 
     private void Scan(PageTypeEnum pageType)
     {
-      if (fScanner.DataSourceReady())
+      ScanSettings settings = new ScanSettings();
+
+      settings.EnableFeeder = fAppSettings.EnableFeeder;
+      settings.ColorMode = fAppSettings.ColorMode;
+      settings.PageType = pageType;// fAppSettings.PageType;
+      settings.Resolution = fAppSettings.Resolution;
+      settings.Threshold = fAppSettings.Threshold;
+      settings.Brightness = fAppSettings.Brightness;
+      settings.Contrast = fAppSettings.Contrast;
+
+      if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
       {
-        ScanSettings settings = new ScanSettings();
-
-        settings.EnableFeeder = fAppSettings.EnableFeeder;
-        settings.ColorMode = fAppSettings.ColorMode;
-        settings.PageType = pageType;// fAppSettings.PageType;
-        settings.Resolution = fAppSettings.Resolution;
-        settings.Threshold = fAppSettings.Threshold;
-        settings.Brightness = fAppSettings.Brightness;
-        settings.Contrast = fAppSettings.Contrast;
-
-        if (fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
-        {
-          UtilDialogs.ShowError("Scanner failed to start");
-        }
-
-        RefreshControls();
+        UtilDialogs.ShowError("Scanner failed to start");
       }
+
+      RefreshControls();
     }
 
 

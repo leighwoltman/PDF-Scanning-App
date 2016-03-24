@@ -160,25 +160,22 @@ namespace PDFScanningApp
     {
       RefreshScanner();
 
-      if(fScanner.DataSourceReady())
+      ScanSettings settings = new ScanSettings();
+
+      settings.EnableFeeder = fAppSettings.EnableFeeder;
+      settings.ColorMode = fAppSettings.ColorMode;
+      settings.PageType = pageType;// fAppSettings.PageType;
+      settings.Resolution = fAppSettings.Resolution;
+      settings.Threshold = fAppSettings.Threshold;
+      settings.Brightness = fAppSettings.Brightness;
+      settings.Contrast = fAppSettings.Contrast;
+
+      if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
       {
-        ScanSettings settings = new ScanSettings();
-
-        settings.EnableFeeder = fAppSettings.EnableFeeder;
-        settings.ColorMode = fAppSettings.ColorMode;
-        settings.PageType = pageType;// fAppSettings.PageType;
-        settings.Resolution = fAppSettings.Resolution;
-        settings.Threshold = fAppSettings.Threshold;
-        settings.Brightness = fAppSettings.Brightness;
-        settings.Contrast = fAppSettings.Contrast;
-
-        if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
-        {
-          UtilDialogs.ShowError("Scanner failed to start");
-        }
-
-        RefreshControls();
+        UtilDialogs.ShowError("Scanner failed to start");
       }
+
+      RefreshControls();
     }
 
     
