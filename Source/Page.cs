@@ -26,6 +26,9 @@ namespace Model
     private PageSize fImageSizeInch;
     private Rectangle fBoundsPixel;
     private Rectangle fImageBoundsPixel;
+    private double fResolutionDpiX;
+    private double fResolutionDpiY;
+
 
     public Page()
     {
@@ -41,6 +44,8 @@ namespace Model
       fImageSizeInch = null;
       fBoundsPixel = new Rectangle();
       fImageBoundsPixel = new Rectangle();
+      fResolutionDpiX = 0;
+      fResolutionDpiY = 0;
     }
 
 
@@ -79,8 +84,10 @@ namespace Model
 
       if(ImageResolutionIsDefined)
       {
-        imageWidthInch = imageWidthPixels / (double)ImageHorizontalResolutionDpi;
-        imageHeightInch = imageHeightPixels / (double)ImageVerticalResolutionDpi;
+        fResolutionDpiX = ImageHorizontalResolutionDpi;
+        fResolutionDpiY = ImageVerticalResolutionDpi;
+        imageWidthInch = imageWidthPixels / fResolutionDpiX;
+        imageHeightInch = imageHeightPixels / fResolutionDpiY;
       }
       else
       {
@@ -99,10 +106,13 @@ namespace Model
           imageWidthInch = pageHeightInch * image_aspect_ratio;
           imageHeightInch = pageHeightInch;
         }
+
+        fResolutionDpiX = imageWidthPixels / imageWidthInch;
+        fResolutionDpiY = imageHeightPixels / imageHeightInch;
       }
 
-      pageWidthPixels = (int)(pageWidthInch * imageWidthPixels / imageWidthInch);
-      pageHeightPixels = (int)(pageHeightInch * imageHeightPixels / imageHeightInch);
+      pageWidthPixels = (int)(pageWidthInch * fResolutionDpiX);
+      pageHeightPixels = (int)(pageHeightInch * fResolutionDpiY);
 
       fImageSizeInch = new PageSize(imageWidthInch, imageHeightInch);
 
@@ -303,6 +313,18 @@ namespace Model
     public Rectangle ImageBounds
     {
       get { return fImageBoundsPixel; }
+    }
+
+
+    public double ResolutionDpiX
+    {
+      get { return fResolutionDpiX; }
+    }
+
+
+    public double ResolutionDpiY
+    {
+      get { return fResolutionDpiY; }
     }
 
 

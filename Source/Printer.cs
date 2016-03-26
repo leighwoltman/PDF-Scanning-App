@@ -69,36 +69,20 @@ namespace Model
     {
       int pageIndex = fPrintCurrentPage - 1;
       Page page = fDocument.GetPage(pageIndex);
-      PageSize pageSize = page.Size;
 
-      int pageWidth = (int)(100 * pageSize.Width); // Convert to Hundreth of Inch
-      int pageHeight = (int)(100 * pageSize.Height); // Convert to Hundreth of Inch
-      int imageWidth;
-      int imageHeight;
+      Rectangle imageRect = page.ImageBounds;
 
-      double image_aspect_ratio = page.ImageWidthPixels / (double)page.ImageHeightPixels;
-      double page_aspect_ratio = pageSize.Width / pageSize.Height;
+      double scaleX = e.Graphics.DpiX / page.ResolutionDpiX;
+      double scaleY = e.Graphics.DpiY / page.ResolutionDpiY;
 
-      if(image_aspect_ratio > page_aspect_ratio)
-      {
-        // means our image has the width as the maximum dimension
-        imageWidth = pageWidth;
-        imageHeight = (int)(pageWidth / image_aspect_ratio);
-      }
-      else
-      {
-        // means our image has the height as the maximum dimension
-        imageWidth = (int)(pageHeight * image_aspect_ratio);
-        imageHeight = pageHeight;
-      }
-
-      Rectangle imageRect = new Rectangle();
-      imageRect.X = (pageWidth - imageWidth) / 2;
-      imageRect.Y = (pageHeight - imageHeight) / 2;
-      imageRect.Width = imageWidth;
-      imageRect.Height = imageHeight;
+      // Convert the image boundaries to output resolution
+      imageRect.X = (int)(imageRect.X * scaleX);
+      imageRect.Y = (int)(imageRect.Y * scaleY); 
+      imageRect.Width = (int)(imageRect.Width * scaleX);
+      imageRect.Height = (int)(imageRect.Height * scaleY);
 
       Image img = page.GetImage();
+      e.Graphics.PageUnit = GraphicsUnit.Pixel;
       e.Graphics.DrawImage(img, imageRect);
 
       e.HasMorePages = fPrintCurrentPage < fPrintToPage;
