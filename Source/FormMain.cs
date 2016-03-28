@@ -391,13 +391,13 @@ namespace PDFScanningApp
 
         Page page = fDocument.GetPage(e.Item.Index);
 
-        Image img = GetPageImage(page.Thumbnail, page.Bounds, page.ImageBounds);
+        Rectangle miniPageBounds = UtilImaging.FitToArea(page.Bounds.Width, page.Bounds.Height, rectPic);
+        Rectangle miniImageBounds = UtilImaging.FitToArea(page.ImageBounds.Width, page.ImageBounds.Height, miniPageBounds);
 
-        Rectangle imageRect = UtilImaging.FitToArea(img.Width, img.Height, rectPic);
-
-        e.Graphics.DrawImage(img, imageRect);
-        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), imageRect);
-        e.Graphics.DrawString("Page " + (e.Item.Index + 1),  ListViewPages.Font, Brushes.Black, rectLine1);
+        e.Graphics.FillRectangle(Brushes.White, miniPageBounds);
+        e.Graphics.DrawImage(page.Thumbnail, miniImageBounds);
+        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), miniPageBounds);
+        e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, Brushes.DarkGray, rectLine2);
       }
     }

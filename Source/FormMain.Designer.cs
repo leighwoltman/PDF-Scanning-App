@@ -88,7 +88,7 @@
       // toolStripLabel1
       // 
       this.toolStripLabel1.Name = "toolStripLabel1";
-      this.toolStripLabel1.Size = new System.Drawing.Size(49, 22);
+      this.toolStripLabel1.Size = new System.Drawing.Size(46, 22);
       this.toolStripLabel1.Text = "Scanner";
       // 
       // ComboBoxScanners
@@ -107,7 +107,7 @@
       this.MenuSettings.Image = ((System.Drawing.Image)(resources.GetObject("MenuSettings.Image")));
       this.MenuSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.MenuSettings.Name = "MenuSettings";
-      this.MenuSettings.Size = new System.Drawing.Size(62, 22);
+      this.MenuSettings.Size = new System.Drawing.Size(59, 22);
       this.MenuSettings.Text = "Settings";
       // 
       // MenuSettingsScanner
@@ -130,7 +130,7 @@
       // 
       this.MenuSettingsPrinterUsePreview.CheckOnClick = true;
       this.MenuSettingsPrinterUsePreview.Name = "MenuSettingsPrinterUsePreview";
-      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(137, 22);
+      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(133, 22);
       this.MenuSettingsPrinterUsePreview.Text = "Use Preview";
       // 
       // ImageListPages
@@ -155,13 +155,13 @@
       // StatusLabel1
       // 
       this.StatusLabel1.Name = "StatusLabel1";
-      this.StatusLabel1.Size = new System.Drawing.Size(73, 17);
+      this.StatusLabel1.Size = new System.Drawing.Size(69, 17);
       this.StatusLabel1.Text = "StatusLabel1";
       // 
       // StatusLabel2
       // 
       this.StatusLabel2.Name = "StatusLabel2";
-      this.StatusLabel2.Size = new System.Drawing.Size(73, 17);
+      this.StatusLabel2.Size = new System.Drawing.Size(69, 17);
       this.StatusLabel2.Text = "StatusLabel2";
       // 
       // splitContainer1
@@ -226,7 +226,7 @@
       // flowLayoutPanel2
       // 
       this.flowLayoutPanel2.AutoSize = true;
-      this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.ActiveCaption;
+      this.flowLayoutPanel2.BackColor = System.Drawing.SystemColors.Control;
       this.flowLayoutPanel2.Controls.Add(this.ButtonRotateClockwise);
       this.flowLayoutPanel2.Controls.Add(this.ButtonRotateCounterClockwise);
       this.flowLayoutPanel2.Controls.Add(this.ButtonMirrorHorizontally);
@@ -341,7 +341,7 @@
       // flowLayoutPanel1
       // 
       this.flowLayoutPanel1.AutoSize = true;
-      this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.ActiveCaption;
+      this.flowLayoutPanel1.BackColor = System.Drawing.SystemColors.Control;
       this.flowLayoutPanel1.Controls.Add(this.ButtonScanLetter);
       this.flowLayoutPanel1.Controls.Add(this.ButtonScanLegal);
       this.flowLayoutPanel1.Controls.Add(this.ButtonLoadImages);
