@@ -77,7 +77,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NativeMethods.cs" />
+    <Compile Include="NativeMethods.Pdfium.cs" />
     <Compile Include="PageFromPdf.cs" />
+    <Compile Include="PdfEngine.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScanningInterfaces.cs" />
     <Compile Include="TwainCapability.cs" />
@@ -181,7 +184,13 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\PdfNotAvailableBanner.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Content Include="External\Pdfium\pdfium.dll" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>xcopy /d "$(ProjectDir)\External\Pdfium\pdfium.dll" "$(TargetDir)"</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
