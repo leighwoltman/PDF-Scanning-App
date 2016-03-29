@@ -8,6 +8,7 @@ using System.IO;
 using System.Text;
 using System.Windows.Forms;
 using Utils;
+using PdfProcessing;
 
 
 namespace Model
@@ -47,40 +48,39 @@ namespace Model
 
     protected override Image CreateImage()
     {
+      Image result;
+
       if(myImageFile != null)
       {
-        return myImageFile;
+        result = myImageFile;
       }
       else
       {
         if(fRasterize)
         {
-          Image image = null;
+          PdfEngine engine = PdfEngine.GetInstance();
 
-          try
-          {
-            using (var rasterizer = new GhostscriptRasterizer())
-            {
-              rasterizer.Open(fFilename);
-              // Ghostscript uses 1 based page indexing
-              image = rasterizer.GetPage(300, 300, (int)fPageNumber + 1);
-            }
-          }
-          catch (Exception e)
-          {
-            // we need to load it from the file
-            System.Reflection.Assembly myAssembly = System.Reflection.Assembly.GetExecutingAssembly();
-            Stream myStream = myAssembly.GetManifestResourceStream("PDF_Scanner_App_WPF.Resources.PdfNotAvailableBanner.png");
-            image = Image.FromStream(myStream);
-          }
+          IntPtr docPtr = engine.LoadDocument(fFilename);
+          IntPtr pagePtr = engine.LoadPage(docPtr, (int)fPageNumber);
 
-          return image;
+          double width = engine.GetPageWidth(pagePtr);
+          double height = engine.GetPageHeight(pagePtr);
+
+          int pixWidth = (int)(width * 300);
+          int pixHeight = (int)(height * 300);
+
+          result = engine.Render(pagePtr, pixWidth, pixHeight);
+
+          engine.ClosePage(pagePtr);
+          engine.CloseDocument(docPtr);
         }
         else
         {
-          return PdfImporter.GetSingleImageFromPdfPage(PdfImporter.GetSinglePdfPageFromPdfDocument(fFilename, fPageNumber));
+          result = PdfImporter.GetSingleImageFromPdfPage(PdfImporter.GetSinglePdfPageFromPdfDocument(fFilename, fPageNumber));
         }
       }
+
+      return result;
     }
 
 
