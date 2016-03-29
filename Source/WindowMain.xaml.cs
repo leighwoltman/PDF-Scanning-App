@@ -451,12 +451,12 @@ namespace PDF_Scanner_App_WPF
 
         Model.Page page = fDocument.GetPage(e.Item.Index);
 
-        System.Drawing.Image img = GetPageImage(page.Thumbnail, page.Bounds, page.ImageBounds);
+        System.Drawing.Rectangle miniPageBounds = UtilImaging.FitToArea(page.Bounds.Width, page.Bounds.Height, rectPic);
+        System.Drawing.Rectangle miniImageBounds = UtilImaging.FitToArea(page.ImageBounds.Width, page.ImageBounds.Height, miniPageBounds);
 
-        System.Drawing.Rectangle imageRect = UtilImaging.FitToArea(img.Width, img.Height, rectPic);
-
-        e.Graphics.DrawImage(img, imageRect);
-        e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), imageRect);
+        e.Graphics.FillRectangle(System.Drawing.Brushes.White, miniPageBounds);
+        e.Graphics.DrawImage(page.Thumbnail, miniImageBounds);
+        e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), miniPageBounds); 
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, System.Drawing.Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, System.Drawing.Brushes.DarkGray, rectLine2);
       }
