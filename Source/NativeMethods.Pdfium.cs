@@ -395,6 +395,24 @@ namespace PdfiumViewer
                 return Imports.FPDFAction_GetType(action);
         }
 
+        public static bool FPDF_ImportPages(IntPtr destDoc, IntPtr sourceDoc, string pageRange, int index)
+        {
+          lock(LockString)
+            return Imports.FPDF_ImportPages(destDoc, sourceDoc, pageRange, index);
+        }
+
+        public static IntPtr FPDF_CreateNewDocument()
+        {
+          lock(LockString)
+            return Imports.FPDF_CreateNewDocument();
+        }
+
+        public static bool FPDF_SaveAsFile(IntPtr document, string filename, uint permissions, byte[] userPwd, uint userPwdlen, byte[] ownerPwd, uint ownerPwdlen)
+        {
+          lock(LockString)
+            return Imports.FPDF_SaveAsFile(document, filename, permissions, userPwd, userPwdlen, ownerPwd, ownerPwdlen);
+        }
+
         private static class Imports
         {
             [DllImport("pdfium.dll")]
@@ -543,6 +561,15 @@ namespace PdfiumViewer
 
             [DllImport("pdfium.dll")]
             public static extern uint FPDFAction_GetType(IntPtr action);
+
+            [DllImport("pdfium.dll")]
+            public static extern bool FPDF_ImportPages(IntPtr destDoc, IntPtr sourceDoc, string pageRange, int index);
+
+            [DllImport("pdfium.dll")]
+            public static extern IntPtr FPDF_CreateNewDocument();
+
+            [DllImport("pdfium.dll")]
+            public static extern bool FPDF_SaveAsFile(IntPtr document, string filename, uint permissions, byte[] userPwd, uint userPwdlen, byte[] ownerPwd, uint ownerPwdlen);
         }
 
         [StructLayout(LayoutKind.Sequential)]

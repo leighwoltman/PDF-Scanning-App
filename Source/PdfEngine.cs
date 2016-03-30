@@ -92,6 +92,24 @@ namespace PdfProcessing
     }
 
 
+    public bool CopyPage(IntPtr destDoc, IntPtr sourceDoc, int pageNumber)
+    {
+      return NativeMethods.FPDF_ImportPages(destDoc, sourceDoc, pageNumber.ToString(), GetPageCount(destDoc));
+    }
+
+
+    public IntPtr CreateNewDocument()
+    {
+      return NativeMethods.FPDF_CreateNewDocument();
+    }
+
+
+    public bool SaveDocument(IntPtr document, string filename)
+    {
+      return NativeMethods.FPDF_SaveAsFile(document, filename, 0, null, 0, null, 0);
+    }
+
+
     public double GetPageWidth(IntPtr page)
     {
       // Convert points to inches
