@@ -127,6 +127,7 @@ namespace PDF_Scanner_App_WPF
 
       this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
       this.PictureBoxPreview.TabStop = false;
+      this.PictureBoxPreview.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
 
       RightBarWindowsFormsHost.Child = PictureBoxPreview;
 
