@@ -49,25 +49,29 @@ namespace Model
 
     private void DrawPage(PdfDocument pdfDocument, Page page)
     {
-      Image image = page.GetImage();
-
       // Create an empty page
       PdfPage pdfPage = pdfDocument.AddPage();
 
-      if(image.Width > image.Height)
-      {
-        pdfPage.Orientation = PageOrientation.Landscape;
-      }
-      else
-      {
-        pdfPage.Orientation = PageOrientation.Portrait;
-      }
+      pdfPage.Width = page.Size.Width * 72; // Inches to Point
+      pdfPage.Height = page.Size.Height * 72; // Inches to Point
 
       // Get an XGraphics object for drawing
       XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
 
+      Rectangle imageRect = page.ImageBounds;
+
+      double pixToPointsX = 72 / page.ResolutionDpiX;
+      double pixToPointsY = 72 / page.ResolutionDpiY;
+
+      // Convert the image boundaries to points
+      imageRect.X = (int)(imageRect.X * pixToPointsX);
+      imageRect.Y = (int)(imageRect.Y * pixToPointsY);
+      imageRect.Width = (int)(imageRect.Width * pixToPointsX);
+      imageRect.Height = (int)(imageRect.Height * pixToPointsY);
+
+      Image image = page.GetImage();
       XImage ximage = XImage.FromGdiPlusImage(image);
-      //gfx.DrawImage(ximage, this.ImageBounds);
+      gfx.DrawImage(ximage, imageRect);
       image.Dispose();
     }
 

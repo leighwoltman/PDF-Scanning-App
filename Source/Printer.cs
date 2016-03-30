@@ -81,9 +81,10 @@ namespace Model
       imageRect.Width = (int)(imageRect.Width * scaleX);
       imageRect.Height = (int)(imageRect.Height * scaleY);
 
-      Image img = page.GetImage();
+      Image image = page.GetImage();
       e.Graphics.PageUnit = GraphicsUnit.Pixel;
-      e.Graphics.DrawImage(img, imageRect);
+      e.Graphics.DrawImage(image, imageRect);
+      image.Dispose();
 
       e.HasMorePages = fPrintCurrentPage < fPrintToPage;
       fPrintCurrentPage++;
