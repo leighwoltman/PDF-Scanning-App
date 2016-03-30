@@ -1,7 +1,4 @@
-﻿using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
-using Ghostscript.NET.Rasterizer;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
@@ -15,34 +12,49 @@ namespace Model
 {
   public class PageFromPdf : Page
   {
-    private Image myImageFile;
-    private bool fRasterize;
+    private bool fSingleImageMode;
     private string fFilename;
-    private long fPageNumber;
+    private int fPageIndex;
 
-    public PageFromPdf(string filename, long pageNumber, Image image)
+
+    public string SourceFilename
+    {
+      get { return fFilename; }
+    }
+
+
+    public int SourcePageIndex
+    {
+      get { return fPageIndex; }
+    }
+
+
+    public bool SingleImageMode
+    {
+      get { return fSingleImageMode; }
+    }
+
+
+    public PageFromPdf(string filename, int pageIndex, Image image)
     {
       fFilename = filename;
-      fPageNumber = pageNumber;
+      fPageIndex = pageIndex;
 
       if(image == null)
       {
-        fRasterize = true;
-        this.myImageFile = CreateImage();
+        fSingleImageMode = false;
       }
       else
       {
-        fRasterize = false;
-        this.myImageFile = image;
+        fSingleImageMode = true;
+        // we want to save memory
+        image.Dispose();
+        image = null;
       }
       
       this.Size = PageSize.Letter;
 
       InitializeImage(0, 0);
-
-      // we want to save memory
-      this.myImageFile.Dispose();
-      this.myImageFile = null;
     }
 
 
@@ -50,64 +62,17 @@ namespace Model
     {
       Image result;
 
-      if(myImageFile != null)
+      if(fSingleImageMode)
       {
-        result = myImageFile;
+        result = PdfImporter.GetSingleImageFromPdfDocument(fFilename, fPageIndex);
       }
       else
       {
-        if(fRasterize)
-        {
-          PdfEngine engine = PdfEngine.GetInstance();
-
-          IntPtr docPtr = engine.LoadDocument(fFilename);
-          IntPtr pagePtr = engine.LoadPage(docPtr, (int)fPageNumber);
-
-          double width = engine.GetPageWidth(pagePtr);
-          double height = engine.GetPageHeight(pagePtr);
-
-          int pixWidth = (int)(width * 300);
-          int pixHeight = (int)(height * 300);
-
-          result = engine.Render(pagePtr, pixWidth, pixHeight);
-
-          engine.ClosePage(pagePtr);
-          engine.CloseDocument(docPtr);
-        }
-        else
-        {
-          result = PdfImporter.GetSingleImageFromPdfPage(PdfImporter.GetSinglePdfPageFromPdfDocument(fFilename, fPageNumber));
-        }
+        // TODO: For thumbnail purpose rendering can be made to smaller size
+        result = PdfImporter.RenderPage(fFilename, fPageIndex, 300, 300);
       }
 
       return result;
-    }
-
-
-    public override void AddPdfPage(PdfDocument pdfDocument)
-    {
-      if (fRasterize)
-      {
-        PdfDocument inputDocument = PdfReader.Open(fFilename, PdfDocumentOpenMode.Import);
-
-        // otherwise we just want to add the document from the original document
-        pdfDocument.AddPage(inputDocument.Pages[(int)fPageNumber]);
-      }
-      else
-      {
-        base.AddPdfPage(pdfDocument);
-      }
-    }
-
-    public override void CleanUp()
-    {
-      if (this.myImageFile != null)
-      {
-        this.myImageFile.Dispose();
-        this.myImageFile = null;
-      }
-
-      base.CleanUp();
     }
   }
 }

@@ -1,12 +1,7 @@
-﻿using PdfSharp;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.IO;
 using System.Text;
-using System.Windows.Forms;
 using Utils;
 
 
@@ -325,38 +320,6 @@ namespace Model
     public double ResolutionDpiY
     {
       get { return fResolutionDpiY; }
-    }
-
-
-    virtual public void AddPdfPage(PdfDocument pdfDocument)
-    {
-      // Create an empty page
-      PdfPage pdfPage = pdfDocument.AddPage();
-
-      if (this.Size == PageSize.Legal)
-      {
-        pdfPage.Size = PdfSharp.PageSize.Legal;
-      }
-      else
-      {
-        pdfPage.Size = PdfSharp.PageSize.Letter;
-      }
-
-      if (this.IsLandscape)
-      {
-        pdfPage.Orientation = PageOrientation.Landscape;
-      }
-      else
-      {
-        pdfPage.Orientation = PageOrientation.Portrait;
-      }
-
-      // Get an XGraphics object for drawing
-      XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
-
-      XImage image = XImage.FromGdiPlusImage(this.GetImage());
-      gfx.DrawImage(image, this.ImageBounds);
-      image.Dispose();
     }
   }
 }

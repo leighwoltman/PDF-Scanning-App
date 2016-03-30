@@ -7,7 +7,7 @@ using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
 using BitMiracle.LibTiff.Classic;
-using System.Runtime.InteropServices;
+using PdfProcessing;
 
 
 namespace Model
@@ -20,16 +20,12 @@ namespace Model
       {
         PdfDocument pdfDocument = PdfReader.Open(filename);
 
-        long pageNumber = 0;
-
-        // Iterate pages
-        foreach(PdfPage page in pdfDocument.Pages)
+        for(int i = 0; i < pdfDocument.PageCount; i++)
         {
-          Image image = PdfImporter.GetSingleImageFromPdfPage(page);
-          Page myPage = new PageFromPdf(filename, pageNumber, image);
+          PdfPage pdfPage = pdfDocument.Pages[i];
+          Image image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
+          Page myPage = new PageFromPdf(filename, i, image);
           document.AddPage(myPage);
-          
-          pageNumber++;
         }
       }
       catch(Exception ex)
@@ -39,12 +35,34 @@ namespace Model
     }
 
 
-    static public PdfPage GetSinglePdfPageFromPdfDocument(string filename, long pageNumber)
+    static public Image RenderPage(string filename, int pageIndex, float dpiX, float dpiY)
+    {
+      PdfEngine engine = PdfEngine.GetInstance();
+
+      IntPtr docPtr = engine.LoadDocument(filename);
+      IntPtr pagePtr = engine.LoadPage(docPtr, pageIndex);
+
+      double width = engine.GetPageWidth(pagePtr);
+      double height = engine.GetPageHeight(pagePtr);
+
+      int pixWidth = (int)(width * dpiX);
+      int pixHeight = (int)(height * dpiY);
+
+      Image result = engine.Render(pagePtr, pixWidth, pixHeight);
+
+      engine.ClosePage(pagePtr);
+      engine.CloseDocument(docPtr);
+
+      return result;
+    }
+
+
+    static public Image GetSingleImageFromPdfDocument(string filename, int pageIndex)
     {
       PdfDocument pdfDocument = PdfReader.Open(filename);
-
-      return pdfDocument.Pages[(int)pageNumber];
+      return GetSingleImageFromPdfPage(pdfDocument.Pages[pageIndex]);
     }
+    
 
     static public Image GetSingleImageFromPdfPage(PdfPage page)
     {
