@@ -6,7 +6,6 @@ using PdfSharp.Pdf;
 using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
-using BitMiracle.LibTiff.Classic;
 using PdfProcessing;
 
 
@@ -155,38 +154,6 @@ namespace Model
                         {
                           // do nothing
                         }
-                      }
-                      break;
-                    case "/CCITTFaxDecode":
-                      {
-                        byte[] data = xObject.Stream.Value;
-
-                        string fFilename = Path.GetTempFileName();
-
-                        Tiff tiff = Tiff.Open(fFilename, "w");
-
-                        tiff.SetField(TiffTag.IMAGEWIDTH, xObject.Elements.GetInteger("/Width"));
-                        tiff.SetField(TiffTag.IMAGELENGTH, xObject.Elements.GetInteger("/Height"));
-                        tiff.SetField(TiffTag.COMPRESSION, Compression.CCITTFAX4);
-                        tiff.SetField(TiffTag.BITSPERSAMPLE, xObject.Elements.GetInteger("/BitsPerComponent"));
-                        tiff.SetField(TiffTag.SAMPLESPERPIXEL, 1);
-                        tiff.WriteRawStrip(0, data, data.Length);
-                        tiff.Close();
-
-                        Image image = Image.FromFile(fFilename);
-
-                        // once loaded, try and delete the temp file
-                        try
-                        {
-                          File.Delete(fFilename);
-                        }
-                        catch(Exception e)
-                        {
-                          // do nothing
-                        }
-
-                        imagesFound++;
-                        imageLargest = image;
                       }
                       break;
                   }

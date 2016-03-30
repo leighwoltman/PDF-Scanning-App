@@ -34,9 +34,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="BitMiracle.LibTiff.NET">
-      <HintPath>External\LibTiff\BitMiracle.LibTiff.NET.dll</HintPath>
-    </Reference>
     <Reference Include="Cyotek.Windows.Forms.ImageBox">
       <HintPath>External\ImageBox\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
     </Reference>
