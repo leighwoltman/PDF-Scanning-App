@@ -35,7 +35,7 @@ namespace Model
     }
 
 
-    public PageFromPdf(string filename, int pageIndex, Image image)
+    public PageFromPdf(string filename, int pageIndex, PageSize size, Image image)
     {
       fFilename = filename;
       fPageIndex = pageIndex;
@@ -52,7 +52,7 @@ namespace Model
         image = null;
       }
       
-      this.Size = PageSize.Letter;
+      this.Size = size;
 
       InitializeImage(0, 0);
     }

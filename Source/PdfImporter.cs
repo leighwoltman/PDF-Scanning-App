@@ -23,8 +23,11 @@ namespace Model
         for(int i = 0; i < pdfDocument.PageCount; i++)
         {
           PdfPage pdfPage = pdfDocument.Pages[i];
+          double height = pdfPage.Height / 72; // PointsToInches
+          double width = pdfPage.Width / 72; // PointsToInches
+          PageSize pageSize = new PageSize(width, height);
           Image image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
-          Page myPage = new PageFromPdf(filename, i, image);
+          Page myPage = new PageFromPdf(filename, i, pageSize, image);
           document.AddPage(myPage);
         }
       }
