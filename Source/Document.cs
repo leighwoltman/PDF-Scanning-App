@@ -77,7 +77,7 @@ namespace Model
       int loc_of_next = 1;
       while(loc_of_next < this.NumPages - 1)
       {
-        this.MovePage(this.NumPages, loc_of_next);
+        this.MovePage(this.NumPages - 1, loc_of_next);
         loc_of_next += 2;
       }
     }
