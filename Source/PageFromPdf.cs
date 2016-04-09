@@ -35,7 +35,7 @@ namespace Model
     }
 
 
-    public PageFromPdf(string filename, int pageIndex, PageSize size, Image image)
+    public PageFromPdf(string filename, int pageIndex, SizeInches size, Image image)
     {
       fFilename = filename;
       fPageIndex = pageIndex;

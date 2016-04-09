@@ -48,6 +48,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />
+    <Compile Include="BoundsInches.cs" />
     <Compile Include="Document.cs" />
     <Compile Include="FormDataSourceSelectionDialog.cs">
       <SubType>Form</SubType>
@@ -81,7 +82,8 @@
     <Compile Include="PageFromImage.cs" />
     <Compile Include="PageFromPdf.cs" />
     <Compile Include="PageFromScanner.cs" />
-    <Compile Include="PageSize.cs" />
+    <Compile Include="ResolutionDpi.cs" />
+    <Compile Include="SizeInches.cs" />
     <Compile Include="PdfExporter.cs" />
     <Compile Include="PdfEngine.cs" />
     <Compile Include="PdfImporter.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scanner.cs" />
     <Compile Include="ScanningInterfaces.cs" />
+    <Compile Include="SizePixels.cs" />
     <Compile Include="TwainCapability.cs" />
     <Compile Include="TwainDataSource.cs" />
     <Compile Include="TwainDataSourceManager.cs" />

@@ -15,13 +15,13 @@ namespace Model
 
 
     public PageFromFile(string fileName)
-      : this(fileName, PageSize.Letter)
+      : this(fileName, SizeInches.Letter)
     {
       // nothing extra
     }
 
 
-    public PageFromFile(string fileName, PageSize size)
+    public PageFromFile(string fileName, SizeInches size)
     {
       this.fileName = fileName;
       this.Size = size;

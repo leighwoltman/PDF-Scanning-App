@@ -58,7 +58,7 @@ namespace Model
     {
       int pageIndex = fPrintCurrentPage - 1;
       Page page = fDocument.GetPage(pageIndex);
-      PageSize pageSize = page.Size;
+      SizeInches pageSize = page.Size;
       int pageWidth = (int)(100 * pageSize.Width); // Convert to Hundreth of Inch
       int pageHeight = (int)(100 * pageSize.Height); // Convert to Hundreth of Inch
       e.PageSettings.PaperSize = new PaperSize("Custom", pageWidth, pageHeight);
@@ -70,16 +70,14 @@ namespace Model
       int pageIndex = fPrintCurrentPage - 1;
       Page page = fDocument.GetPage(pageIndex);
 
-      Rectangle imageRect = page.ImageBounds;
-
-      double scaleX = e.Graphics.DpiX / page.ResolutionDpiX;
-      double scaleY = e.Graphics.DpiY / page.ResolutionDpiY;
+      Rectangle imageRect = new Rectangle();
+      BoundsInches imageBounds = page.ImageBoundsInches;
 
       // Convert the image boundaries to output resolution
-      imageRect.X = (int)(imageRect.X * scaleX);
-      imageRect.Y = (int)(imageRect.Y * scaleY); 
-      imageRect.Width = (int)(imageRect.Width * scaleX);
-      imageRect.Height = (int)(imageRect.Height * scaleY);
+      imageRect.X = (int)(imageBounds.X * e.Graphics.DpiX);
+      imageRect.Y = (int)(imageBounds.Y * e.Graphics.DpiY);
+      imageRect.Width = (int)(imageBounds.Width * e.Graphics.DpiX);
+      imageRect.Height = (int)(imageBounds.Height * e.Graphics.DpiY);
 
       Image image = page.GetImage();
       e.Graphics.PageUnit = GraphicsUnit.Pixel;

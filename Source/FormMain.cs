@@ -39,6 +39,7 @@ namespace PDFScanningApp
       this.PictureBoxPreview.Dock = System.Windows.Forms.DockStyle.Fill;
       this.PictureBoxPreview.TabStop = false;
       this.PictureBoxPreview.BorderStyle = BorderStyle.None;
+      this.PictureBoxPreview.InterpolationMode = System.Drawing.Drawing2D.InterpolationMode.HighQualityBicubic;
       this.PanelPreview.Controls.Add(this.PictureBoxPreview);
 
       fAppSettings = new AppSettings();
@@ -263,23 +264,9 @@ namespace PDFScanningApp
       else
       {
         Page page = fDocument.GetPage(item.Index);
-        PictureBoxPreview.Image = GetPageImage(page.GetImage(), page.Bounds, page.ImageBounds);
+        PictureBoxPreview.Image = page.GetLayoutImage();
         PictureBoxPreview.ZoomToFit();
       }
-    }
-
-
-    private Bitmap GetPageImage(Image img, Rectangle pageRect, Rectangle imageRect)
-    {
-      Bitmap pageBitmap = new Bitmap(pageRect.Width, pageRect.Height);
-
-      using(Graphics g = Graphics.FromImage(pageBitmap))
-      {
-        g.FillRectangle(Brushes.White, pageRect);
-        g.DrawImage(img, imageRect);
-      }
-
-      return pageBitmap;
     }
 
 
@@ -390,13 +377,11 @@ namespace PDFScanningApp
                                              ListViewPages.Font.Height + 5);
 
         Page page = fDocument.GetPage(e.Item.Index);
-
-        Rectangle miniPageBounds = UtilImaging.FitToArea(page.Bounds.Width, page.Bounds.Height, rectPic);
-        Rectangle miniImageBounds = UtilImaging.FitToArea(page.ImageBounds.Width, page.ImageBounds.Height, miniPageBounds);
-
-        e.Graphics.FillRectangle(Brushes.White, miniPageBounds);
-        e.Graphics.DrawImage(page.Thumbnail, miniImageBounds);
-        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), miniPageBounds);
+        Image layoutThumbnail = page.LayoutThumbnail;
+        Rectangle layoutBounds = UtilImaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
+        //e.Graphics.FillRectangle(Brushes.Red, rectPic);
+        e.Graphics.DrawImage(layoutThumbnail, layoutBounds);
+        e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), layoutBounds);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, Brushes.DarkGray, rectLine2);
       }

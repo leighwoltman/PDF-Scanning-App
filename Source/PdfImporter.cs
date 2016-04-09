@@ -24,7 +24,7 @@ namespace Model
           PdfPage pdfPage = pdfDocument.Pages[i];
           double height = pdfPage.Height / 72; // PointsToInches
           double width = pdfPage.Width / 72; // PointsToInches
-          PageSize pageSize = new PageSize(width, height);
+          SizeInches pageSize = new SizeInches(width, height);
           Image image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
           Page myPage = new PageFromPdf(filename, i, pageSize, image);
           document.AddPage(myPage);

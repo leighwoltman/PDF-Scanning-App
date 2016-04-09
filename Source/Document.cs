@@ -87,7 +87,7 @@ namespace Model
     public void RotatePageClockwise(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.RotateClockwise();
+      targetPage.ImageRotateClockwise();
       RaisePageUpdated(index);
     }
 
@@ -95,7 +95,7 @@ namespace Model
     public void RotatePageCounterClockwise(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.RotateCounterClockwise();
+      targetPage.ImageRotateCounterClockwise();
       RaisePageUpdated(index);
     }
 
@@ -103,7 +103,7 @@ namespace Model
     public void MirrorPageHorizontally(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.MirrorHorizontally();
+      targetPage.ImageMirrorHorizontally();
       RaisePageUpdated(index);
     }
 
@@ -111,7 +111,7 @@ namespace Model
     public void MirrorPageVertically(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.MirrorVertically();
+      targetPage.ImageMirrorVertically();
       RaisePageUpdated(index);
     }
 
@@ -119,7 +119,7 @@ namespace Model
     public void LandscapePage(int index)
     {
       Page targetPage = fPages[index];
-      targetPage.Landscape();
+      targetPage.RotateSideways();
       RaisePageUpdated(index);
     }
 

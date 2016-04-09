@@ -11,115 +11,40 @@ namespace Model
   {
     private Image fSourceThumbnail;
     private Image fThumbnail;
-    private int fImageHeightPixels;
-    private int fImageWidthPixels;
-    private int fImageVerticalResolutionDpi;
-    private int fImageHorizontalResolutionDpi;
+    private Image fLayoutThumbnail;
+    private SizePixels fImageSizePixels;
+    private ResolutionDpi fImageResolutionDpi;
+    private BoundsInches fImageBoundsInches;
+    private SizeInches fSizeInch;
+    private ResolutionDpi fResolutionDpi;
     private int fOrientation;
-    private bool fMirrored;
-    private PageSize fSizeInch;
-    private PageSize fImageSizeInch;
-    private Rectangle fBoundsPixel;
-    private Rectangle fImageBoundsPixel;
-    private double fResolutionDpiX;
-    private double fResolutionDpiY;
+    private bool fIsMirrored;
 
 
     public Page()
     {
       fSourceThumbnail = null;
       fThumbnail = null;
-      fImageHeightPixels = 0;
-      fImageWidthPixels = 0;
-      fImageVerticalResolutionDpi = 0;
-      fImageHorizontalResolutionDpi = 0;
-      fOrientation = 0;
-      fMirrored = false;
+      fLayoutThumbnail = null;
+      fImageSizePixels = null;
+      fImageResolutionDpi = null;
+      fImageBoundsInches = null;
       fSizeInch = null;
-      fImageSizeInch = null;
-      fBoundsPixel = new Rectangle();
-      fImageBoundsPixel = new Rectangle();
-      fResolutionDpiX = 0;
-      fResolutionDpiY = 0;
+      fResolutionDpi = null;
+      fOrientation = 0;
+      fIsMirrored = false;
     }
 
 
-    protected void InitializeImage(int verticalDpi, int horizontalDpi)
+    protected void InitializeImage(int horizontalDpi, int verticalDpi)
     {
       using(Image myImage = CreateImage())
       {
-        fImageHeightPixels = myImage.Size.Height;
-        fImageWidthPixels = myImage.Size.Width;
-        fImageVerticalResolutionDpi = verticalDpi;
-        fImageHorizontalResolutionDpi = horizontalDpi;
+        fImageSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
+        fImageResolutionDpi = new ResolutionDpi(horizontalDpi, verticalDpi);
         fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
       }
       RefreshImage();
-    }
-
-
-    private void RefreshImage()
-    {
-      CalculateBounds();
-      fThumbnail = (Image)fSourceThumbnail.Clone();
-      TransformImage(fThumbnail);
-    }
-
-
-    private void CalculateBounds()
-    {
-      double pageWidthInch = this.Size.Width;
-      double pageHeightInch = this.Size.Height;
-      double imageWidthInch;
-      double imageHeightInch;
-      int pageWidthPixels;
-      int pageHeightPixels;
-      int imageWidthPixels = this.ImageWidthPixels;
-      int imageHeightPixels = this.ImageHeightPixels;
-
-      if(ImageResolutionIsDefined)
-      {
-        fResolutionDpiX = ImageHorizontalResolutionDpi;
-        fResolutionDpiY = ImageVerticalResolutionDpi;
-        imageWidthInch = imageWidthPixels / fResolutionDpiX;
-        imageHeightInch = imageHeightPixels / fResolutionDpiY;
-      }
-      else
-      {
-        double image_aspect_ratio = imageWidthPixels / (double)imageHeightPixels;
-        double page_aspect_ratio = pageWidthInch / pageHeightInch;
-
-        if(image_aspect_ratio > page_aspect_ratio)
-        {
-          // means our image has the width as the maximum dimension
-          imageWidthInch = pageWidthInch;
-          imageHeightInch = pageWidthInch / image_aspect_ratio;
-        }
-        else
-        {
-          // means our image has the height as the maximum dimension
-          imageWidthInch = pageHeightInch * image_aspect_ratio;
-          imageHeightInch = pageHeightInch;
-        }
-
-        fResolutionDpiX = imageWidthPixels / imageWidthInch;
-        fResolutionDpiY = imageHeightPixels / imageHeightInch;
-      }
-
-      pageWidthPixels = (int)(pageWidthInch * fResolutionDpiX);
-      pageHeightPixels = (int)(pageHeightInch * fResolutionDpiY);
-
-      fImageSizeInch = new PageSize(imageWidthInch, imageHeightInch);
-
-      fBoundsPixel.Width = pageWidthPixels;
-      fBoundsPixel.Height = pageHeightPixels;
-      fBoundsPixel.X = 0;
-      fBoundsPixel.Y = 0;
-
-      fImageBoundsPixel.Width = imageWidthPixels;
-      fImageBoundsPixel.Height = imageHeightPixels;
-      fImageBoundsPixel.X = (pageWidthPixels - imageWidthPixels) / 2;
-      fImageBoundsPixel.Y = (pageHeightPixels - imageHeightPixels) / 2;
     }
 
 
@@ -134,15 +59,129 @@ namespace Model
     }
 
 
-    public Image Thumbnail
+    public Image ImageThumbnail
     {
       get { return fThumbnail; }
     }
 
 
+    public Image GetLayoutImage()
+    {
+      return MakeLayoutImage(GetImage());
+    }
+
+
+    public Image LayoutThumbnail
+    {
+      get { return fLayoutThumbnail; }
+    }
+
+
+    private void RefreshImage()
+    {
+      fThumbnail = (Image)fSourceThumbnail.Clone();
+      TransformImage(fThumbnail);
+      CalculateBounds();
+      fLayoutThumbnail = MakeLayoutImage(fThumbnail);
+    }
+
+
+    private void CalculateBounds()
+    {
+      SizePixels imageSizePixels = fImageSizePixels.Transform(IsFlipped);
+      SizeInches pageSizeInches = fSizeInch;
+
+      if(ImageResolutionIsDefined)
+      {
+        fResolutionDpi = fImageResolutionDpi.Transform(IsFlipped);
+      }
+      else
+      {
+        double image_aspect_ratio = imageSizePixels.Width / (double)imageSizePixels.Height;
+        double page_aspect_ratio = pageSizeInches.Width / pageSizeInches.Height;
+
+        double res;
+
+        if(image_aspect_ratio > page_aspect_ratio)
+        {
+          // means our image has the width as the maximum dimension
+          res = imageSizePixels.Width / pageSizeInches.Width;
+        }
+        else
+        {
+          // means our image has the height as the maximum dimension
+          res = imageSizePixels.Height / pageSizeInches.Height;
+        }
+
+        fResolutionDpi = new ResolutionDpi(res, res);
+      }
+
+      // Calculate Image Layout
+      double imageWidthInch = imageSizePixels.Width / fResolutionDpi.Horizontal;
+      double imageHeightInch = imageSizePixels.Height / fResolutionDpi.Vertical;
+
+      double x = (pageSizeInches.Width - imageWidthInch) / 2;
+      double y = (pageSizeInches.Height - imageHeightInch) / 2;
+
+      fImageBoundsInches = new BoundsInches(x, y, imageWidthInch, imageHeightInch);
+    }
+
+
+    private Image MakeLayoutImage(Image img)
+    {
+      int width;
+      int height;
+
+      double image_aspect_ratio = img.Width / (double)img.Height;
+      double page_aspect_ratio = this.Size.Width / this.Size.Height;
+
+      if(image_aspect_ratio > page_aspect_ratio)
+      {
+        // means our image has the width as the maximum dimension
+        width = (int)img.Width;
+        height = (int)(img.Width / page_aspect_ratio);
+      }
+      else
+      {
+        // means our image has the height as the maximum dimension
+        width = (int)(img.Height * page_aspect_ratio);
+        height = (int)img.Height;
+      }
+
+      Bitmap pageBitmap = new Bitmap(width, height);
+
+      Rectangle pageBounds = new Rectangle(0, 0, pageBitmap.Width, pageBitmap.Height);
+      Rectangle imageBounds = UtilImaging.FitToArea(img.Width, img.Height, pageBounds);
+
+      using(Graphics g = Graphics.FromImage(pageBitmap))
+      {
+        g.FillRectangle(Brushes.White, pageBounds);
+        g.DrawImage(img, imageBounds);
+      }
+
+      return pageBitmap;
+    }
+
+
     virtual public void CleanUp()
     {
-      fThumbnail.Dispose();
+      if(fSourceThumbnail != null)
+      {
+        fSourceThumbnail.Dispose();
+        fSourceThumbnail = null;
+      }
+
+      if(fThumbnail != null)
+      {
+        fThumbnail.Dispose();
+        fThumbnail = null;
+      }
+
+      if(fLayoutThumbnail != null)
+      {
+        fLayoutThumbnail.Dispose();
+        fLayoutThumbnail = null;
+      }
     }
 
 
@@ -166,7 +205,7 @@ namespace Model
 
     protected void TransformImage(Image image)
     {
-      if(fMirrored)
+      if(fIsMirrored)
       {
         image.RotateFlip(rf_mirrored_table[fOrientation]);
       }
@@ -179,70 +218,33 @@ namespace Model
 
     private bool IsFlipped
     {
-      get { return (bool)((fOrientation & 1) == 0); }
+      get { return ((fOrientation & 1) == 1); }
     }
 
 
-    public int ImageHeightPixels
+    private bool ImageResolutionIsDefined
     {
-      get { return IsFlipped ? fImageHeightPixels : fImageWidthPixels; }
+      get { return (fImageResolutionDpi != null); }
     }
 
 
-    public int ImageWidthPixels
-    {
-      get { return IsFlipped ? fImageWidthPixels : fImageHeightPixels; }
-    }
-
-
-    public int ImageVerticalResolutionDpi
-    {
-      get { return IsFlipped ? fImageVerticalResolutionDpi : fImageHorizontalResolutionDpi; }
-    }
-
-
-    public int ImageHorizontalResolutionDpi
-    {
-      get { return IsFlipped ? fImageHorizontalResolutionDpi : fImageVerticalResolutionDpi; }
-    }
-
-
-    public bool ImageResolutionIsDefined
-    {
-      get { return (bool)((fImageVerticalResolutionDpi != 0) && (fImageHorizontalResolutionDpi != 0)); }
-    }
-
-
-    public void RotateClockwise()
+    public void ImageRotateClockwise()
     {
       fOrientation = (fOrientation + 1) % 4;
       RefreshImage();
     }
 
 
-    public void RotateCounterClockwise()
+    public void ImageRotateCounterClockwise()
     {
       fOrientation = (fOrientation + 3) % 4;
       RefreshImage();
     }
 
 
-    public void MirrorHorizontally()
+    public void ImageMirrorHorizontally()
     {
-      fMirrored = !fMirrored;
-
-      if(IsFlipped == false)
-      {
-        fOrientation = (fOrientation + 2) % 4;
-      }
-
-      RefreshImage();
-    }
-
-
-    public void MirrorVertically()
-    {
-      fMirrored = !fMirrored;
+      fIsMirrored = !fIsMirrored;
 
       if(IsFlipped == true)
       {
@@ -253,73 +255,41 @@ namespace Model
     }
 
 
-    public int Orientation
+    public void ImageMirrorVertically()
     {
-      get { return fOrientation * 90; }
-    }
+      fIsMirrored = !fIsMirrored;
 
-
-    public bool IsMirrored
-    {
-      get { return fMirrored; }
-    }
-
-
-    public void Landscape()
-    {
-      if(fSizeInch != null)
+      if(IsFlipped == false)
       {
-        double temp = fSizeInch.Width;
-        fSizeInch.Width = fSizeInch.Height;
-        fSizeInch.Height = temp;
-        RefreshImage();
+        fOrientation = (fOrientation + 2) % 4;
       }
+
+      RefreshImage();
     }
 
 
-    public bool IsLandscape
+    public void RotateSideways()
     {
-      get 
-      { 
-        return (fSizeInch != null) && (fSizeInch.Width > fSizeInch.Height); 
-      }
+      Size = Size.Transform(true);
     }
 
 
-    public PageSize Size
+    public SizeInches Size
     {
       get { return fSizeInch; }
-      protected set { fSizeInch = value; }
+      set { fSizeInch = value; RefreshImage(); }
     }
 
 
-    public PageSize ImageSize
+    public BoundsInches ImageBoundsInches
     {
-      get { return fImageSizeInch; }
+      get { return fImageBoundsInches; }
     }
 
 
-    public Rectangle Bounds
+    public ResolutionDpi ResolutionDpi
     {
-      get { return fBoundsPixel; }
-    }
-
-
-    public Rectangle ImageBounds
-    {
-      get { return fImageBoundsPixel; }
-    }
-
-
-    public double ResolutionDpiX
-    {
-      get { return fResolutionDpiX; }
-    }
-
-
-    public double ResolutionDpiY
-    {
-      get { return fResolutionDpiY; }
+      get { return fResolutionDpi; }
     }
   }
 }

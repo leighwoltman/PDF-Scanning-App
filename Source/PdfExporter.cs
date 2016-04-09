@@ -58,16 +58,14 @@ namespace Model
       // Get an XGraphics object for drawing
       XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
 
-      Rectangle imageRect = page.ImageBounds;
-
-      double pixToPointsX = 72 / page.ResolutionDpiX;
-      double pixToPointsY = 72 / page.ResolutionDpiY;
+      Rectangle imageRect = new Rectangle();
+      BoundsInches imageBounds = page.ImageBoundsInches;
 
       // Convert the image boundaries to points
-      imageRect.X = (int)(imageRect.X * pixToPointsX);
-      imageRect.Y = (int)(imageRect.Y * pixToPointsY);
-      imageRect.Width = (int)(imageRect.Width * pixToPointsX);
-      imageRect.Height = (int)(imageRect.Height * pixToPointsY);
+      imageRect.X = (int)(imageBounds.X * 72);
+      imageRect.Y = (int)(imageBounds.Y * 72);
+      imageRect.Width = (int)(imageBounds.Width * 72);
+      imageRect.Height = (int)(imageBounds.Height * 72);
 
       Image image = page.GetImage();
       XImage ximage = XImage.FromGdiPlusImage(image);

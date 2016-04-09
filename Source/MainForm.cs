@@ -184,7 +184,7 @@ namespace PDFScanningApp
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
       Page page = fDocument.GetPage(args.Index);
       PictureBox myPictureBox = new PictureBox();
-      myPictureBox.Image = page.Thumbnail;
+      myPictureBox.Image = page.ImageThumbnail;
       myPictureBox.Height = 180;
       myPictureBox.Width = 180;
       myPictureBox.SizeMode = PictureBoxSizeMode.Zoom;
