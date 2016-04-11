@@ -72,12 +72,6 @@
     <Compile Include="NativeMethods.cs" />
     <Compile Include="NativeMethods.Pdfium.cs" />
     <Compile Include="Page.cs" />
-    <Compile Include="MainForm.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="MainForm.Designer.cs">
-      <DependentUpon>MainForm.cs</DependentUpon>
-    </Compile>
     <Compile Include="PageFromFile.cs" />
     <Compile Include="PageFromImage.cs" />
     <Compile Include="PageFromPdf.cs" />
@@ -116,9 +110,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="MainForm.resx">
-      <DependentUpon>MainForm.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
