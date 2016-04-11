@@ -52,9 +52,7 @@ namespace Model
         image = null;
       }
       
-      this.Size = size;
-
-      InitializeImage(0, 0);
+      Initialize(size, 0, 0);
     }
 
 

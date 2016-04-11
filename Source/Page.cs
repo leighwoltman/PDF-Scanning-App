@@ -36,12 +36,13 @@ namespace Model
     }
 
 
-    protected void InitializeImage(int horizontalDpi, int verticalDpi)
+    protected void Initialize(SizeInches pageSizeInches, int imageHorizontalDpi, int imageVerticalDpi)
     {
       using(Image myImage = CreateImage())
       {
+        fSizeInch = pageSizeInches;
         fImageSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
-        fImageResolutionDpi = new ResolutionDpi(horizontalDpi, verticalDpi);
+        fImageResolutionDpi = new ResolutionDpi(imageHorizontalDpi, imageVerticalDpi);
         fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
       }
       RefreshImage();

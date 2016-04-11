@@ -24,9 +24,7 @@ namespace Model
     public PageFromFile(string fileName, SizeInches size)
     {
       this.fileName = fileName;
-      this.Size = size;
-     
-      InitializeImage(0, 0);
+      Initialize(size, 0, 0);
     }
 
 
