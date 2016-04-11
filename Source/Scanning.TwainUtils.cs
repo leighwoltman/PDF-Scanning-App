@@ -7,9 +7,9 @@ using System.IO;
 using System.Text;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager
+  partial class TwainDataSourceManager
   {
     private class TwainUtils
     {

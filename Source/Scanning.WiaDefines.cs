@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace WiaInterface
+namespace Scanning
 {
-  public partial class WiaDataSourceManager
+  partial class WiaDataSourceManager
   {
     enum WiaProperty
     {

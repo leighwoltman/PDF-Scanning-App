@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Utils
+namespace Defines
 {
   public enum ColorModeEnum { BW, Gray, RGB };
 

@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Utils
 {
-  class UtilImaging
+  class Imaging
   {
     public static void SaveImageAsJpeg(Image image, string fileName, long quality)
     {

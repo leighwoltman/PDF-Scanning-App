@@ -1,4 +1,4 @@
-﻿namespace Source
+﻿namespace PDFScanningApp
 {
   partial class FormDataSourceSettingsDialog
   {

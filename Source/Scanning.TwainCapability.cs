@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager
+  partial class TwainDataSourceManager
   {
     private class TwainCapability
     {

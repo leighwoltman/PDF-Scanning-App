@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 
 
-namespace Model
+namespace Utils
 {
   public class ResolutionDpi
   {

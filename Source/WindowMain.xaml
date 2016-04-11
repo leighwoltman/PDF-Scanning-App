@@ -1,4 +1,4 @@
-﻿<Window x:Class="PDF_Scanner_App_WPF.WindowMain"
+﻿<Window x:Class="PDFScanningApp.WindowMain"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="PDF-Scanning-App" Height="583.333" Width="816.667" Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" Loaded="Window_Loaded">

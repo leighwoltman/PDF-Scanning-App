@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Scanning;
 
 
-namespace WiaInterface
+namespace Scanning
 {
-  public partial class WiaDataSourceManager : InterfaceDataSourceManager
+  partial class WiaDataSourceManager : InterfaceDataSourceManager
   {
     private WIA.DeviceManager fWia;
 

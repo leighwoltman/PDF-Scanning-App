@@ -7,7 +7,7 @@ using System.IO.Ports;
 
 namespace Utils
 {
-  class UtilDialogs
+  class Dialogs
   {
     static public IntPtr MainWindow = IntPtr.Zero;
 

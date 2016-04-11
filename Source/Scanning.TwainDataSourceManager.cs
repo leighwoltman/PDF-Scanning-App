@@ -1,12 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Scanning;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager : InterfaceDataSourceManager
+  partial class TwainDataSourceManager : InterfaceDataSourceManager
   {
     private TwainDevice fTwain;
     private bool fIsOpen;

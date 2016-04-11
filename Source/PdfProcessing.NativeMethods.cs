@@ -9,7 +9,8 @@ using System.Text;
 using System.Windows.Forms;
 using Microsoft.Win32.SafeHandles;
 
-namespace PdfiumViewer
+
+namespace PdfProcessing
 {
     internal static partial class NativeMethods
     {

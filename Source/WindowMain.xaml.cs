@@ -1,7 +1,4 @@
-﻿using Microsoft.Windows.Controls.Ribbon;
-using Model;
-using PDFScanningApp;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -18,10 +15,13 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using Microsoft.Windows.Controls.Ribbon;
+using Model;
+using Defines;
 using Utils;
 
 
-namespace PDF_Scanner_App_WPF
+namespace PDFScanningApp
 {
   /// <summary>
   /// Interaction logic for WindowMain.xaml
@@ -47,11 +47,11 @@ namespace PDF_Scanner_App_WPF
 
       string settingsFilename;
 
-      settingsFilename = System.IO.Path.Combine(UtilApp.GetUserAppDataFolder(), System.Windows.Forms.Application.ProductName, "Settings.xml");
+      settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), System.Windows.Forms.Application.ProductName, "Settings.xml");
 
       AppSettings.Initialize(settingsFilename);
 
-      UtilDialogs.MainWindow = new WindowInteropHelper(this).Handle;
+      Utils.Dialogs.MainWindow = new WindowInteropHelper(this).Handle;
       
       fAppSettings = new AppSettings();
 
@@ -233,7 +233,7 @@ namespace PDF_Scanner_App_WPF
 
       if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
       {
-        UtilDialogs.ShowError("Scanner failed to start");
+        Utils.Dialogs.ShowError("Scanner failed to start");
       }
 
       RefreshControls();
@@ -438,7 +438,7 @@ namespace PDF_Scanner_App_WPF
 
         Model.Page page = fDocument.GetPage(e.Item.Index);
         System.Drawing.Image layoutThumbnail = page.LayoutThumbnail;
-        System.Drawing.Rectangle layoutBounds = UtilImaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
+        System.Drawing.Rectangle layoutBounds = Utils.Imaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
         e.Graphics.DrawImage(layoutThumbnail, layoutBounds);
         e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), layoutBounds); 
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, System.Drawing.Brushes.Black, rectLine1);

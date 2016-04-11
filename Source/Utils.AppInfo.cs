@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 namespace Utils
 {
-  class UtilApp
+  class AppInfo
   {
     static public string GetApplicationName()
     {

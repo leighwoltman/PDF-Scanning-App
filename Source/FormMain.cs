@@ -7,8 +7,8 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
-using Source;
 using Model;
+using Defines;
 using Utils;
 
 
@@ -31,8 +31,8 @@ namespace PDFScanningApp
     public FormMain()
     {
       InitializeComponent();
-      UtilDialogs.MainWindow = this.Handle;
-      this.Text = UtilApp.GetApplicationName();
+      Utils.Dialogs.MainWindow = this.Handle;
+      this.Text = AppInfo.GetApplicationName();
 
       // Create PictureBoxPreview from special component;
       this.PictureBoxPreview = new Cyotek.Windows.Forms.ImageBox();
@@ -173,7 +173,7 @@ namespace PDFScanningApp
 
       if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
       {
-        UtilDialogs.ShowError("Scanner failed to start");
+        Utils.Dialogs.ShowError("Scanner failed to start");
       }
 
       RefreshControls();
@@ -378,7 +378,7 @@ namespace PDFScanningApp
 
         Page page = fDocument.GetPage(e.Item.Index);
         Image layoutThumbnail = page.LayoutThumbnail;
-        Rectangle layoutBounds = UtilImaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
+        Rectangle layoutBounds = Utils.Imaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
         //e.Graphics.FillRectangle(Brushes.Red, rectPic);
         e.Graphics.DrawImage(layoutThumbnail, layoutBounds);
         e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), layoutBounds);

@@ -6,7 +6,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PDF_Scanner_App_WPF
+namespace PDFScanningApp
 {
   /// <summary>
   /// Interaction logic for App.xaml

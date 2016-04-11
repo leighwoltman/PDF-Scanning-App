@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
-using Utils;
+using Defines;
 
 
 namespace Scanning

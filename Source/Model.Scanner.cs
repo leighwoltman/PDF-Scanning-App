@@ -4,10 +4,8 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
-using TwainInterface;
-using WiaInterface;
 using Scanning;
-using Utils;
+using Defines;
 
 
 namespace Model
@@ -29,7 +27,7 @@ namespace Model
 
     public Scanner()
     {
-      fTwain = new TwainDataSourceManager(UtilDialogs.MainWindow);
+      fTwain = new TwainDataSourceManager(Utils.Dialogs.MainWindow);
       fWia = new WiaDataSourceManager();
       fDataSources = null;
       fActiveDataSource = null;

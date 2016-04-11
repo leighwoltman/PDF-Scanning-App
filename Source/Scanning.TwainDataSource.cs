@@ -4,12 +4,12 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Scanning;
-using Utils;
+using Defines;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager
+  partial class TwainDataSourceManager
   {
     private class DataSource : InterfaceDataSource, IMessageFilter
     {

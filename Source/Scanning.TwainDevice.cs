@@ -4,9 +4,9 @@ using System.Text;
 using System.Runtime.InteropServices;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager
+  partial class TwainDataSourceManager
   {
     private class TwainDevice
     {

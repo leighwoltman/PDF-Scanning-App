@@ -43,7 +43,7 @@ namespace Model
         fSizeInch = pageSizeInches;
         fImageSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
         fImageResolutionDpi = new ResolutionDpi(imageHorizontalDpi, imageVerticalDpi);
-        fSourceThumbnail = UtilImaging.CreateThumbnail(myImage, 200);
+        fSourceThumbnail = Utils.Imaging.CreateThumbnail(myImage, 200);
       }
       RefreshImage();
     }
@@ -152,7 +152,7 @@ namespace Model
       Bitmap pageBitmap = new Bitmap(width, height);
 
       Rectangle pageBounds = new Rectangle(0, 0, pageBitmap.Width, pageBitmap.Height);
-      Rectangle imageBounds = UtilImaging.FitToArea(img.Width, img.Height, pageBounds);
+      Rectangle imageBounds = Utils.Imaging.FitToArea(img.Width, img.Height, pageBounds);
 
       using(Graphics g = Graphics.FromImage(pageBitmap))
       {

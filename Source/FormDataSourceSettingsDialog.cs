@@ -6,10 +6,10 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 using Model;
-using Utils;
+using Defines;
 
 
-namespace Source
+namespace PDFScanningApp
 {
   public partial class FormDataSourceSettingsDialog : Form
   {

@@ -6,7 +6,7 @@ using System.Drawing;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Source
+namespace PDFScanningApp
 {
   public partial class FormDataSourceSelectionDialog : Form
   {

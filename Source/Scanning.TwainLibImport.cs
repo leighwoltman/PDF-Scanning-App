@@ -4,9 +4,9 @@ using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 
-namespace TwainInterface
+namespace Scanning
 {
-  public partial class TwainDataSourceManager
+  partial class TwainDataSourceManager
   {
     class LibUser32
     {

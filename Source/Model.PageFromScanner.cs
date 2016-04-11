@@ -18,7 +18,7 @@ namespace Model
       // get a temporary path
       fFilename = Path.GetTempFileName();
 
-      UtilImaging.SaveImageAsJpeg(image, fFilename, 75L);
+      Utils.Imaging.SaveImageAsJpeg(image, fFilename, 75L);
 
       double pageWidth = image.Width / (double)dpi;
       double pageHeight = image.Height / (double)dpi;

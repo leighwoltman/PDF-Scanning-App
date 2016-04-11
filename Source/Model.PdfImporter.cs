@@ -7,6 +7,7 @@ using PdfSharp.Pdf.IO;
 using PdfSharp.Pdf.Advanced;
 using PdfSharp.Pdf.Filters;
 using PdfProcessing;
+using Utils;
 
 
 namespace Model

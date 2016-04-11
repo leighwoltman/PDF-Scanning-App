@@ -5,12 +5,12 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
 using Scanning;
-using Utils;
+using Defines;
 
 
-namespace WiaInterface
+namespace Scanning
 {
-  public partial class WiaDataSourceManager
+  partial class WiaDataSourceManager
   {
     class WiaDataSource : InterfaceDataSource
     {

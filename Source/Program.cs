@@ -23,7 +23,7 @@ namespace PDFScanningApp
       }
       else
       {
-        settingsFilename = Path.Combine(UtilApp.GetUserAppDataFolder(), Application.ProductName, "Settings.xml");
+        settingsFilename = Path.Combine(AppInfo.GetUserAppDataFolder(), Application.ProductName, "Settings.xml");
       }
 
       AppSettings.Initialize(settingsFilename);

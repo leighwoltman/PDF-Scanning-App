@@ -7,18 +7,18 @@ using System.Xml;
 
 namespace Utils
 {
-  class UtilSettings
+  class SettingsTable
   {
     private Dictionary<string, string> fItems;
     private string fFilename;
     private bool fHasChanges;
 
 
-    public UtilSettings() : this(null)
+    public SettingsTable() : this(null)
     {}
 
 
-    public UtilSettings(string filename)
+    public SettingsTable(string filename)
     {
       fItems = new Dictionary<string, string>();
       fFilename = filename;
