@@ -142,7 +142,7 @@ namespace PDF_Scanner_App_WPF
     //  }
 
       lblCursorPosition.Text = "";
-      //StatusLabel2.Text = "";
+      lblDragDropInfo.Text = "";
       RefreshControls();
     }
 
@@ -386,7 +386,7 @@ namespace PDF_Scanner_App_WPF
         }
       }
 
-      //StatusLabel2.Text = "Page " + (draggedItem.Index + 1) + " >> " + (targetIndex + 1);
+      lblDragDropInfo.Text = "Page " + (draggedItem.Index + 1) + " >> " + (targetIndex + 1) + " : " + targetPoint.X + "," + targetPoint.Y;
     }
 
 
@@ -402,7 +402,7 @@ namespace PDF_Scanner_App_WPF
 
       // Clear the insertion mark and the status
       ListViewPages.InsertionMark.Index = -1;
-      //StatusLabel2.Text = "";
+      lblDragDropInfo.Text = "";
     }
 
 
@@ -439,7 +439,7 @@ namespace PDF_Scanner_App_WPF
         Model.Page page = fDocument.GetPage(e.Item.Index);
         System.Drawing.Image layoutThumbnail = page.LayoutThumbnail;
         System.Drawing.Rectangle layoutBounds = UtilImaging.FitToArea(layoutThumbnail.Width, layoutThumbnail.Height, rectPic);
-        e.Graphics.DrawImage(layoutThumbnail, rectPic);
+        e.Graphics.DrawImage(layoutThumbnail, layoutBounds);
         e.Graphics.DrawRectangle(new System.Drawing.Pen(System.Drawing.Brushes.Black, 1), layoutBounds); 
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, System.Drawing.Brushes.Black, rectLine1);
         e.Graphics.DrawString("Details", ListViewPages.Font, System.Drawing.Brushes.DarkGray, rectLine2);

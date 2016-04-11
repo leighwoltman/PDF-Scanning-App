@@ -82,6 +82,9 @@
             <StatusBarItem>
                 <TextBlock Name="lblCursorPosition" />
             </StatusBarItem>
+            <StatusBarItem>
+                <TextBlock Name="lblDragDropInfo" />
+            </StatusBarItem>
         </StatusBar>
         <WindowsFormsHost x:Name="LeftBarWindowsFormsHost" Grid.Row="1" Margin="0,0,0,23"/>
         <WindowsFormsHost x:Name="RightBarWindowsFormsHost" Grid.Column="1" Grid.Row="1" Margin="0,0,0,23"/>

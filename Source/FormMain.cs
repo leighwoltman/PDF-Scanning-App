@@ -326,7 +326,7 @@ namespace PDFScanningApp
         }
       }
 
-      StatusLabel2.Text = "Page " + (draggedItem.Index + 1) + " >> " + (targetIndex + 1);
+      StatusLabel2.Text = "Page " + (draggedItem.Index + 1) + " >> " + (targetIndex + 1) + " : " + targetPoint.X + "," + targetPoint.Y;
     }
 
 
