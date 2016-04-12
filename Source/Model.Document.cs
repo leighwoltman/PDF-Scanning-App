@@ -18,7 +18,7 @@ namespace Model
   }
 
 
-  class Document
+  public class Document
   {
     private List<Page> fPages;
 
