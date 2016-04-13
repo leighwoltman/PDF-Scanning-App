@@ -206,6 +206,30 @@ namespace PDFScanningApp
 
     private void fDocument_OnPageMoved(object sender, EventArgs e)
     {
+      DocumentPageMoveEventArgs args = (DocumentPageMoveEventArgs)e;
+
+      int firstIndex;
+      int lastIndex;
+
+      if(args.SourceIndex < args.TargetIndex)
+      {
+        firstIndex = args.SourceIndex;
+        lastIndex = args.TargetIndex;
+      }
+      else
+      {
+        firstIndex = args.TargetIndex;
+        lastIndex = args.SourceIndex;
+      }
+
+      for(int i = firstIndex; i <= lastIndex; i++)
+      {
+        ListViewPage listViewItem = (ListViewPage)ListViewPages.Items[i];
+        listViewItem.Refresh();
+      }
+
+      ListViewPages.SelectedIndex = args.TargetIndex;
+      RefreshControls();
     }
     
 
@@ -455,6 +479,13 @@ namespace PDFScanningApp
     {
       _doc = doc;
       _index = index;
+    }
+
+    public void Refresh()
+    {
+      OnPropertyChanged("PageNumber");
+      OnPropertyChanged("Icon");
+      OnPropertyChanged("Info");
     }
 
     public void RefreshIcon()
