@@ -82,7 +82,14 @@
         <ColumnDefinition Width="3"/>
         <ColumnDefinition Width="5*"/>
       </Grid.ColumnDefinitions>
-      <ListView x:Name="ListViewPages" Grid.Column="0" Margin="10" SelectionChanged="ListViewPages_SelectionChanged">
+      <ListView x:Name="ListViewPages" Grid.Column="0" Margin="10" 
+                SelectionChanged="ListViewPages_SelectionChanged" 
+                MouseMove="ListViewPages_MouseMove" 
+                DragEnter="ListViewPages_DragEnter" 
+                DragLeave="ListViewPages_DragLeave" 
+                DragOver="ListViewPages_DragOver" 
+                Drop="ListViewPages_Drop"
+                AllowDrop="True">
         <ListView.Resources>
           <med:ImageConverter x:Key="imageConverter" />
         </ListView.Resources>

@@ -259,31 +259,6 @@ namespace PDFScanningApp
     }
 
 
-    private void ListViewPages_ItemDrag(object sender, ItemDragEventArgs e)
-    {
-    }
-
-
-    private void ListViewPages_DragEnter(object sender, System.Windows.Forms.DragEventArgs e)
-    {
-    }
-
-
-    private void ListViewPages_DragLeave(object sender, EventArgs e)
-    {
-    }
-
-
-    private void ListViewPages_DragOver(object sender, System.Windows.Forms.DragEventArgs e)
-    {
-    }
-
-
-    private void ListViewPages_DragDrop(object sender, System.Windows.Forms.DragEventArgs e)
-    {
-    }
-
-
     private void ButtonScanLetter_Click(object sender, EventArgs e)
     {
       Scan(PageTypeEnum.Letter);
@@ -466,6 +441,68 @@ namespace PDFScanningApp
       {
         fDocument.RemoveAll();
       }
+    }
+
+    private void ListViewPages_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
+    {
+      System.Windows.Controls.ListView listView = sender as System.Windows.Controls.ListView;
+      if((listView != null) && (e.LeftButton == MouseButtonState.Pressed))
+      {
+        DragDrop.DoDragDrop(listView,
+                            listView.SelectedItem,
+                            System.Windows.DragDropEffects.Copy);
+      }
+    }
+
+    private void ListViewPages_DragEnter(object sender, System.Windows.DragEventArgs e)
+    {
+      ListViewPage draggedItem = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
+      lblDragDropInfo.Text = lblDragDropInfo.Text + "Enter" + draggedItem.Index;
+    }
+
+    private void ListViewPages_DragLeave(object sender, System.Windows.DragEventArgs e)
+    {
+      lblDragDropInfo.Text = "Leave";
+    }
+
+    private void ListViewPages_DragOver(object sender, System.Windows.DragEventArgs e)
+    {
+      System.Windows.Point pt = e.GetPosition(ListViewPages);
+
+      ListViewPage item = (ListViewPage)GetListViewItemAtPoint(ListViewPages, pt);
+
+      lblDragDropInfo.Text = pt.X + " : " + pt.Y + " : " + item.Index;
+    }
+
+    object GetListViewItemAtPoint(System.Windows.Controls.ListView listView, System.Windows.Point pt)
+    {
+      HitTestResult hitTest = System.Windows.Media.VisualTreeHelper.HitTest(listView, pt);
+
+      DependencyObject depObj = hitTest.VisualHit as DependencyObject;
+
+      if(depObj != null)
+      {
+        // go up the visual hierarchy until we find the list view item the click came from  
+        // the click might have been on the grid or column headers so we need to cater for this  
+        DependencyObject current = depObj;
+        while((current != null) && (current != listView))
+        {
+          System.Windows.Controls.ListViewItem ListViewItem = current as System.Windows.Controls.ListViewItem;
+          if(ListViewItem != null)
+          {
+            return ListViewItem.Content;
+          }
+          current = VisualTreeHelper.GetParent(current);
+        }
+      }
+
+      return null;
+    }
+    
+    private void ListViewPages_Drop(object sender, System.Windows.DragEventArgs e)
+    {
+      ListViewPage draggedItem = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
+      lblDragDropInfo.Text = "Drop" + draggedItem.Index;
     }
   }
 
