@@ -96,12 +96,14 @@
         </ListView.Resources>
         <ListView.ItemTemplate>
           <DataTemplate>
-            <Grid Margin="5">
+            <Grid Margin="5" Height="80">
               <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="80"/>
                 <ColumnDefinition/>
               </Grid.ColumnDefinitions>
-              <Image Grid.Column="0" Source="{Binding Path=Icon, Converter={StaticResource imageConverter}}" Width="64" Height="64"/>
+              <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Grid.Column="0" Source="{Binding Path=Icon, Converter={StaticResource imageConverter}}"/>
+              </Border>
               <TextBlock Grid.Column="1" Text="{Binding PageNumber}" VerticalAlignment="Top" Margin="10,0,0,0"/>
               <TextBlock Grid.Column="1" Text="{Binding Info}" VerticalAlignment="Center" Margin="10,0,0,0"/>
             </Grid>
