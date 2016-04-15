@@ -12,26 +12,25 @@ namespace Model
 {
   public class PageFromFile : Page
   {
-    private string fileName;
-
-
-    public PageFromFile(string fileName)
-      : this(fileName, SizeInches.Letter)
-    {
-      // nothing extra
-    }
+    private string fFileName;
 
 
     public PageFromFile(string fileName, SizeInches size)
     {
-      this.fileName = fileName;
+      fFileName = fileName;
       Initialize(size, 0, 0);
+    }
+
+
+    public override string Name
+    {
+      get { return System.IO.Path.GetFileName(fFileName); }
     }
 
 
     protected override Image CreateImage()
     {
-      return Image.FromFile(fileName);
+      return Image.FromFile(fFileName);
     }
   }
 }

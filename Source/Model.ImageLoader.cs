@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Utils;
 
 
 namespace Model
@@ -18,7 +19,7 @@ namespace Model
 
     public void LoadFromFile(Document document, string filename)
     {
-      Page myPage = new PageFromFile(filename);
+      Page myPage = new PageFromFile(filename, SizeInches.Letter);
       document.AddPage(myPage);
     }
   }

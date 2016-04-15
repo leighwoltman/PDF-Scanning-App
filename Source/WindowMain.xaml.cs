@@ -634,7 +634,8 @@ namespace PDFScanningApp
     {
       get
       {
-        return "Details";
+        Model.Page page = fPage.GetPage(fIndex);
+        return page.Name;
       }
     }
 

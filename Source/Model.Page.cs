@@ -36,6 +36,12 @@ namespace Model
     }
 
 
+    public virtual string Name
+    {
+      get { return "Hello"; }
+    }
+
+
     protected void Initialize(SizeInches pageSizeInches, int imageHorizontalDpi, int imageVerticalDpi)
     {
       using(Image myImage = CreateImage())
