@@ -503,6 +503,24 @@ namespace PDFScanningApp
 
     private void ListViewPages_DragOver(object sender, System.Windows.DragEventArgs e)
     {
+      // Auto-scroll list view
+      ListView li = sender as ListView;
+      ScrollViewer sv = WpfAssist.FindVisualChild<ScrollViewer>(ListViewPages);
+
+      double tolerance = 10;
+      double verticalPos = e.GetPosition(li).Y;
+      double offset = 3;
+
+      if(verticalPos < tolerance) // Top of visible list?
+      {
+        sv.ScrollToVerticalOffset(sv.VerticalOffset - offset); //Scroll up.
+      }
+      else if(verticalPos > li.ActualHeight - tolerance) //Bottom of visible list?
+      {
+        sv.ScrollToVerticalOffset(sv.VerticalOffset + offset); //Scroll down.    
+      }
+
+      // Enable/disable drop
       if(e.Data.GetDataPresent(typeof(ListViewPage)))
       {
         if(fInsertionMark.IsVisible)
@@ -536,7 +554,7 @@ namespace PDFScanningApp
 
         if(draggedItem != null)
         {
-          lblDragDropInfo.Text = "Drop" + draggedItem.Index + " : " + targetIndex;
+          //lblDragDropInfo.Text = "Drop" + draggedItem.Index + " : " + targetIndex;
           fDocument.MovePage(draggedItem.Index, targetIndex);
         }
       }
