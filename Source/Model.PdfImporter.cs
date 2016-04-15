@@ -14,6 +14,15 @@ namespace Model
 {
   class PdfImporter
   {
+    public void LoadPagesFromFiles(Document document, string[] filenames)
+    {
+      foreach(string filename in filenames)
+      {
+        LoadDocument(document, filename);
+      }
+    }
+
+
     public void LoadDocument(Document document, string filename)
     {
       try

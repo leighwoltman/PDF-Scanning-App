@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -10,7 +9,6 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
-using System.Windows.Forms;
 using System.Windows.Input;
 using System.Windows.Interop;
 using System.Windows.Media;
@@ -36,6 +34,8 @@ namespace PDFScanningApp
     private PdfImporter fPdfImporter;
     private ImageLoader fImageLoader;
     private Document fDocument;
+    private InsertionMark  fInsertionMark;
+    private Point fDragStartPosition;
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -46,7 +46,7 @@ namespace PDFScanningApp
 
       string settingsFilename;
 
-      settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), System.Windows.Forms.Application.ProductName, "Settings.xml");
+      settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), AppInfo.GetApplicationName(), "Settings.xml");
 
       AppSettings.Initialize(settingsFilename);
 
@@ -66,6 +66,9 @@ namespace PDFScanningApp
       fDocument.OnPageRemoved += fDocument_OnPageRemoved;
       fDocument.OnPageUpdated += fDocument_OnPageUpdated;
       fDocument.OnPageMoved += fDocument_OnPageMoved;
+       
+      fInsertionMark = new InsertionMark();
+      fDragStartPosition = new Point(0, 0);
     }
 
 
@@ -273,7 +276,7 @@ namespace PDFScanningApp
 
     private void ButtonLoadImages_Click(object sender, EventArgs e)
     {
-      OpenFileDialog openFileDialog1 = new OpenFileDialog();
+      System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 
       // Set the file dialog to filter for graphics files. 
       openFileDialog1.Filter =
@@ -295,7 +298,7 @@ namespace PDFScanningApp
 
     private void ButtonLoadPdf_Click(object sender, EventArgs e)
     {
-      OpenFileDialog openFileDialog1 = new OpenFileDialog();
+      System.Windows.Forms.OpenFileDialog openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
 
       // Set the file dialog to filter for graphics files. 
       openFileDialog1.Filter =
@@ -315,7 +318,7 @@ namespace PDFScanningApp
 
     private void ButtonSavePdf_Click(object sender, EventArgs e)
     {
-      SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+      System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 
       if(!System.IO.Directory.Exists(fAppSettings.LastDirectory))
       {
@@ -416,7 +419,7 @@ namespace PDFScanningApp
 
     private void Button2Sided_Click(object sender, EventArgs e)
     {
-      if(System.Windows.Forms.DialogResult.Yes == System.Windows.Forms.MessageBox.Show("This will sort the images in front/back order", "Confirm", MessageBoxButtons.YesNo))
+      if(MessageBoxResult.OK == MessageBox.Show("This will sort the images in front/back order", "Confirm", MessageBoxButton.YesNo))
       {
         fDocument.RearrangePages2Sided();
       }
@@ -427,7 +430,7 @@ namespace PDFScanningApp
     {
       if(ListViewSelectedItem != null)
       {
-        if(System.Windows.Forms.DialogResult.OK == System.Windows.Forms.MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButtons.OKCancel))
+        if(MessageBoxResult.OK == MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButton.OKCancel))
         {
           fDocument.DeletePage(ListViewSelectedItem.Index);
         }
@@ -437,85 +440,144 @@ namespace PDFScanningApp
 
     private void ButtonDeleteAll_Click(object sender, EventArgs e)
     {
-      if(System.Windows.Forms.DialogResult.OK == System.Windows.Forms.MessageBox.Show("Remove all pages?", "Delete?", MessageBoxButtons.OKCancel))
+      if(MessageBoxResult.OK == MessageBox.Show("Remove all pages?", "Delete?", MessageBoxButton.OKCancel))
       {
         fDocument.RemoveAll();
       }
     }
 
+
+    private void ListViewPages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      fDragStartPosition = e.GetPosition(null);
+    }
+
+    
     private void ListViewPages_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
     {
       System.Windows.Controls.ListView listView = sender as System.Windows.Controls.ListView;
-      if((listView != null) && (e.LeftButton == MouseButtonState.Pressed))
+      if((listView != null) && (listView.SelectedItem != null) && (e.LeftButton == MouseButtonState.Pressed))
       {
-        DragDrop.DoDragDrop(listView,
-                            listView.SelectedItem,
-                            System.Windows.DragDropEffects.Copy);
+        Point mousePos = e.GetPosition(null);
+        Vector diff = fDragStartPosition - mousePos;
+
+        if(diff.Length > 15)
+        {
+          DragDrop.DoDragDrop(listView, listView.SelectedItem, DragDropEffects.All);
+        }
       }
     }
+
 
     private void ListViewPages_DragEnter(object sender, System.Windows.DragEventArgs e)
     {
-      ListViewPage draggedItem = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
-      lblDragDropInfo.Text = lblDragDropInfo.Text + "Enter" + draggedItem.Index;
-    }
+      ListViewPage sourceData = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
 
-    private void ListViewPages_DragLeave(object sender, System.Windows.DragEventArgs e)
-    {
-      lblDragDropInfo.Text = "Leave";
-    }
+      Point pt = e.GetPosition(ListViewPages);
+      ListViewItem item = WpfAssist.GetListViewItemAtPoint(ListViewPages, pt);
 
-    private void ListViewPages_DragOver(object sender, System.Windows.DragEventArgs e)
-    {
-      System.Windows.Point pt = e.GetPosition(ListViewPages);
-
-      ListViewPage item = (ListViewPage)GetListViewItemAtPoint(ListViewPages, pt);
-
-      lblDragDropInfo.Text = pt.X + " : " + pt.Y + " : " + item.Index;
-    }
-
-    object GetListViewItemAtPoint(System.Windows.Controls.ListView listView, System.Windows.Point pt)
-    {
-      HitTestResult hitTest = System.Windows.Media.VisualTreeHelper.HitTest(listView, pt);
-
-      DependencyObject depObj = hitTest.VisualHit as DependencyObject;
-
-      if(depObj != null)
+      if((sourceData != null) && (item != null))
       {
-        // go up the visual hierarchy until we find the list view item the click came from  
-        // the click might have been on the grid or column headers so we need to cater for this  
-        DependencyObject current = depObj;
-        while((current != null) && (current != listView))
+        int targetIndex = ((ListViewPage)item.Content).Index;
+        int sourceIndex = sourceData.Index;
+
+        if(targetIndex != sourceIndex)
         {
-          System.Windows.Controls.ListViewItem ListViewItem = current as System.Windows.Controls.ListViewItem;
-          if(ListViewItem != null)
-          {
-            return ListViewItem.Content;
-          }
-          current = VisualTreeHelper.GetParent(current);
+          fInsertionMark.Show(item, targetIndex < sourceIndex);
+        }
+        else
+        {
+          fInsertionMark.Hide();
         }
       }
 
-      return null;
+      e.Handled = true;
     }
-    
+
+
+    private void ListViewPages_DragLeave(object sender, System.Windows.DragEventArgs e)
+    {
+      fInsertionMark.Hide();
+    }
+
+
+    private void ListViewPages_DragOver(object sender, System.Windows.DragEventArgs e)
+    {
+      if(e.Data.GetDataPresent(typeof(ListViewPage)))
+      {
+        if(fInsertionMark.IsVisible)
+        {
+          e.Effects = DragDropEffects.Move;
+        }
+        else 
+        {
+          e.Effects = DragDropEffects.None;
+        }
+      }
+      else if(e.Data.GetDataPresent(DataFormats.FileDrop, false))
+      {
+        e.Effects = DragDropEffects.Copy;
+      }
+      else
+      {
+        e.Effects = DragDropEffects.None;
+      }
+      e.Handled = true;
+    }
+
+
     private void ListViewPages_Drop(object sender, System.Windows.DragEventArgs e)
     {
-      ListViewPage draggedItem = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
-      lblDragDropInfo.Text = "Drop" + draggedItem.Index;
+      int targetIndex = fInsertionMark.Index;
+
+      if(targetIndex >= 0)
+      {
+        ListViewPage draggedItem = (ListViewPage)e.Data.GetData(typeof(ListViewPage));
+
+        if(draggedItem != null)
+        {
+          lblDragDropInfo.Text = "Drop" + draggedItem.Index + " : " + targetIndex;
+          fDocument.MovePage(draggedItem.Index, targetIndex);
+        }
+      }
+
+      fInsertionMark.Hide();
+
+      string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop, false);
+
+      if(fileNames != null)
+      {
+        foreach(string filename in fileNames)
+        {
+          string ext = System.IO.Path.GetExtension(filename).ToUpper();
+
+          if(ext == ".PDF")
+          {
+            fPdfImporter.LoadDocument(fDocument, filename);
+          }
+          else if((ext == ".BMP") || (ext == ".JPG") || (ext == ".GIF") || (ext == ".PNG"))
+          {
+            fImageLoader.LoadFromFile(fDocument, filename);
+          }
+          else
+          {
+            // Not a valid file
+          }
+        }
+      }
     }
   }
 
 
   public class ListViewPage : INotifyPropertyChanged
   {
-    private Document _doc;
-    private int _index;
+    private Document fPage;
+    private int fIndex;
 
     public ListViewPage(Document doc, int index)
     {
-      _doc = doc;
-      _index = index;
+      fPage = doc;
+      fIndex = index;
     }
 
     public void Refresh()
@@ -532,20 +594,20 @@ namespace PDFScanningApp
 
     public int Index
     {
-      get { return _index; }
-      set { if(_index != value) { _index = value; OnPropertyChanged("PageNumber"); } }
+      get { return fIndex; }
+      set { if(fIndex != value) { fIndex = value; OnPropertyChanged("PageNumber"); } }
     }
 
     public int PageNumber
     {
-      get { return _index + 1; }
+      get { return fIndex + 1; }
     }
 
     public System.Drawing.Image Icon 
     {
       get 
       {
-        Model.Page page = _doc.GetPage(_index);
+        Model.Page page = fPage.GetPage(fIndex);
         return page.LayoutThumbnail; 
       }
     }
@@ -567,5 +629,85 @@ namespace PDFScanningApp
     }
     
     public event PropertyChangedEventHandler PropertyChanged;
+  }
+
+
+  class InsertionMark
+  {
+    private InsertionMarkAdorner fAdorner;
+    private ListViewItem fItem;
+
+    public InsertionMark()
+    {
+      fAdorner = null;
+      fItem = null;
+    }
+
+    public int Index
+    {
+      get 
+      {
+        int result = -1;
+
+        if(fItem != null)
+        {
+          result = ((ListViewPage)fItem.Content).Index;
+        }
+
+        return result;
+      }
+    }
+
+    public void Show(ListViewItem item, bool before)
+    {
+      Hide();
+      fItem = item;
+      fAdorner = new InsertionMarkAdorner(fItem, before);
+    }
+
+    public void Hide()
+    {
+      if(fAdorner != null)
+      {
+        fAdorner.Close(fItem);
+        fAdorner = null;
+        fItem = null;
+      }
+    }
+
+    public bool IsVisible
+    {
+      get { return (fAdorner != null); }
+    }
+  }
+
+
+  class InsertionMarkAdorner : Adorner
+  {
+    private bool _before;
+
+    public InsertionMarkAdorner(ListViewItem item, bool before) :
+      base(item)
+    {
+      _before = before;
+      AdornerLayer.GetAdornerLayer(item).Add(this);
+    }
+
+    public void Close(ListViewItem item)
+    {
+      AdornerLayer.GetAdornerLayer(item).Remove(this);
+    }
+
+    protected override void OnRender(System.Windows.Media.DrawingContext drawingContext)
+    {
+      if(_before)
+      {
+        drawingContext.DrawRectangle(System.Windows.Media.Brushes.Gray, null, new System.Windows.Rect(0, 0, ActualWidth, 3));
+      }
+      else
+      {
+        drawingContext.DrawRectangle(System.Windows.Media.Brushes.Gray, null, new System.Windows.Rect(0, ActualHeight - 3, ActualWidth, 3));
+      }
+    }
   }
 }

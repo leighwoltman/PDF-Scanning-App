@@ -71,7 +71,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="Utils.ImageConverter.cs" />
+    <Compile Include="Utils.WpfImageConverter.cs" />
     <Compile Include="Defines.cs" />
     <Compile Include="Model.Document.cs" />
     <Compile Include="Model.ImageLoader.cs" />
@@ -106,6 +106,7 @@
     <Compile Include="Utils.SettingsTable.cs" />
     <Compile Include="Utils.SizeInches.cs" />
     <Compile Include="Utils.SizePixels.cs" />
+    <Compile Include="Utils.WpfAssist.cs" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AppSettings.cs" />

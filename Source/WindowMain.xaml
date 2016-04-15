@@ -82,8 +82,9 @@
         <ColumnDefinition Width="3"/>
         <ColumnDefinition Width="5*"/>
       </Grid.ColumnDefinitions>
-      <ListView x:Name="ListViewPages" Grid.Column="0" Margin="10" 
+      <ListView x:Name="ListViewPages" Grid.Column="0" 
                 SelectionChanged="ListViewPages_SelectionChanged" 
+                PreviewMouseLeftButtonDown="ListViewPages_PreviewMouseLeftButtonDown"
                 MouseMove="ListViewPages_MouseMove" 
                 DragEnter="ListViewPages_DragEnter" 
                 DragLeave="ListViewPages_DragLeave" 
@@ -91,7 +92,7 @@
                 Drop="ListViewPages_Drop"
                 AllowDrop="True">
         <ListView.Resources>
-          <med:ImageConverter x:Key="imageConverter" />
+          <med:WpfImageConverter x:Key="imageConverter" />
         </ListView.Resources>
         <ListView.ItemTemplate>
           <DataTemplate>
