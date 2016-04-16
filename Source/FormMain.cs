@@ -31,7 +31,6 @@ namespace PDFScanningApp
     public FormMain()
     {
       InitializeComponent();
-      Utils.Dialogs.MainWindow = this.Handle;
       this.Text = AppInfo.GetApplicationName();
 
       // Create PictureBoxPreview from special component;

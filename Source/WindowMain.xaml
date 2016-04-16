@@ -35,7 +35,7 @@
       <RibbonTab Header="Home" KeyTip="H" >
         <!-- Home  group-->
         <RibbonGroup x:Name="AcquireGroup" Header="Acquire">
-          <RibbonMenuButton LargeImageSource="External\Icons8\Scanner-96.png" Label="Scan" KeyTip="S">
+          <RibbonMenuButton x:Name="ButtonScan" LargeImageSource="External\Icons8\Scanner-96.png" Label="Scan" KeyTip="S">
             <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 11" KeyTip="L" Click="ButtonScanLetter_Click"/>
             <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 14" KeyTip="B" Click="ButtonScanLegal_Click"/>
           </RibbonMenuButton>

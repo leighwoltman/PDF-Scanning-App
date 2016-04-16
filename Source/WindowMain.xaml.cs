@@ -44,14 +44,6 @@ namespace PDFScanningApp
     {
       InitializeComponent();
 
-      string settingsFilename;
-
-      settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), AppInfo.GetApplicationName(), "Settings.xml");
-
-      AppSettings.Initialize(settingsFilename);
-
-      Utils.Dialogs.MainWindow = new WindowInteropHelper(this).Handle;
-      
       fAppSettings = new AppSettings();
 
       fScanner = new Scanner();
@@ -94,15 +86,15 @@ namespace PDFScanningApp
 
       RightBarWindowsFormsHost.Child = PictureBoxPreview;
 
-    //  if(fScanner.Open())
-    //  {
-    //    foreach (string item in fScanner.GetDataSourceNames())
-    //    {
-    //      //ComboBoxScanners.Items.Add(item);
-    //    }
+      if(fScanner.Open())
+      {
+        fScanner.SelectActiveDataSource(fAppSettings.CurrentScanner);
+      }
 
-    //    //RefreshScanner(fAppSettings.CurrentScanner);
-    //  }
+      if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
+      {
+        ButtonScan.IsEnabled = false;
+      }
 
       lblCursorPosition.Text = "";
       lblDragDropInfo.Text = "";
@@ -119,22 +111,6 @@ namespace PDFScanningApp
     void RefreshControls()
     {
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
-    }
-
-
-    private void RefreshScanner(string selectedScanner)
-    {
-      fScanner.SelectActiveDataSource(selectedScanner);
-
-      fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
-
-      //for (int i = 0; i < ComboBoxScanners.Items.Count; i++)
-      //{
-      //  if(ComboBoxScanners.Items[i].ToString() == fAppSettings.CurrentScanner)
-      //  {
-      //    ComboBoxScanners.SelectedIndex = i;
-      //  }
-      //}
     }
 
 

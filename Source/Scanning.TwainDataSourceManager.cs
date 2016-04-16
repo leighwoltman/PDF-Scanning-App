@@ -10,9 +10,10 @@ namespace Scanning
     private TwainDevice fTwain;
     private bool fIsOpen;
 
-    public TwainDataSourceManager(IntPtr windowHandle)
+    public TwainDataSourceManager()
     {
-      fTwain = new TwainDevice(windowHandle);
+      System.Windows.Forms.Form F = new System.Windows.Forms.Form();
+      fTwain = new TwainDevice(F.Handle);
     }
 
     public bool IsOpen

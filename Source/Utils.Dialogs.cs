@@ -9,9 +9,6 @@ namespace Utils
 {
   class Dialogs
   {
-    static public IntPtr MainWindow = IntPtr.Zero;
-
-
     static public void AdoptForm(Form form, Control parent)
     {
       form.TopLevel = false;
