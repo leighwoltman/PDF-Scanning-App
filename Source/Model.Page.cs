@@ -231,7 +231,7 @@ namespace Model
 
     private bool ImageResolutionIsDefined
     {
-      get { return (fImageResolutionDpi != null); }
+      get { return ((fImageResolutionDpi.Horizontal != 0) && (fImageResolutionDpi.Vertical != 0)); }
     }
 
 
