@@ -176,7 +176,7 @@ namespace Model
     }
 
 
-    public bool Acquire(Document document, ScanSettings settings, bool showSettingsUI, bool showTransferUI)
+    public bool Acquire(Document document, ScanSettings settings)
     {
       bool result = false;
 
@@ -189,7 +189,7 @@ namespace Model
 
           fDocument = document;
 
-          result = fActiveDataSource.Acquire(settings, showSettingsUI, showTransferUI);
+          result = fActiveDataSource.Acquire(settings);
 
           if(result == false)
           {

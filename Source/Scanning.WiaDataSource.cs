@@ -84,7 +84,7 @@ namespace Scanning
       }
 
 
-      public bool Acquire(ScanSettings settings, bool showSettingsUI, bool showTransferUI)
+      public bool Acquire(ScanSettings settings)
       {
         bool result = false;
 
@@ -125,7 +125,7 @@ namespace Scanning
 
           while(morePages)
           {
-            Image newImage = Scan(showTransferUI);
+            Image newImage = Scan(settings.ShowTransferUI);
 
             if(newImage != null)
             {

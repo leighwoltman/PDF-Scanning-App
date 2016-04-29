@@ -35,7 +35,7 @@ namespace Scanning
 
     void Close();
 
-    bool Acquire(ScanSettings settings, bool showSettingsUI, bool showTransferUI);
+    bool Acquire(ScanSettings settings);
 
     event NewPictureEventHandler OnNewPictureData;
 
@@ -45,6 +45,8 @@ namespace Scanning
 
   public class ScanSettings
   {
+    public bool ShowSettingsUI;
+    public bool ShowTransferUI;
     public bool EnableFeeder;
     public ColorModeEnum ColorMode;
     public PageTypeEnum PageType;
@@ -56,6 +58,8 @@ namespace Scanning
 
     public ScanSettings()
     {
+      ShowSettingsUI = false;
+      ShowTransferUI = true;
       EnableFeeder = false;
       ColorMode = ColorModeEnum.BW;
       PageType = PageTypeEnum.Letter;

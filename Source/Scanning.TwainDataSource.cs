@@ -19,7 +19,6 @@ namespace Scanning
       private TwIdentity fIdent;
       private StateType fState;
       private ScanSettings fSettings;
-      private bool fUseSettingsUI;
 
 
       public DataSource(TwainDevice twain, TwIdentity identity)
@@ -28,7 +27,6 @@ namespace Scanning
         fIdent = identity;
         fState = StateType.Closed;
         fSettings = null;
-        fUseSettingsUI = false;
       }
 
 
@@ -146,14 +144,13 @@ namespace Scanning
       }
 
 
-      public bool Acquire(ScanSettings settings, bool showSettingsUI, bool showTransferUI)
+      public bool Acquire(ScanSettings settings)
       {
         bool success = false;
 
         if(IsOpen)
         {
           fSettings = settings;
-          fUseSettingsUI = showSettingsUI;
 
           if(fSettings != null)
           {
@@ -218,7 +215,7 @@ namespace Scanning
           Application.AddMessageFilter(this);
           fState = StateType.Active; // This makes IsActive = true
 
-          if(fTwain.StartDataSession(fIdent, showSettingsUI, showTransferUI))
+          if(fTwain.StartDataSession(fIdent, settings.ShowSettingsUI, settings.ShowTransferUI))
           {
             success = true;
           }
@@ -275,7 +272,7 @@ namespace Scanning
                 {
                   bool success = TransferPictures();
 
-                  if((success == false) || (fUseSettingsUI == false))
+                  if((success == false) || (fSettings.ShowSettingsUI == false))
                   {
                     Stop(); // Need this only if UI is not enabled
                   }
