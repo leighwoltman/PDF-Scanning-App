@@ -37,7 +37,7 @@ namespace Scanning
 
     bool Acquire(ScanSettings settings);
 
-    event NewPictureEventHandler OnNewPictureData;
+    event EventHandler OnNewPictureData;
 
     event EventHandler OnScanningComplete;
   }
@@ -70,9 +70,6 @@ namespace Scanning
     }
   }
 
-  
-  public delegate void NewPictureEventHandler(object sender, NewPictureEventArgs e);
-  
   
   public class NewPictureEventArgs : EventArgs
   {

@@ -343,7 +343,7 @@ namespace Scanning
       }
 
 
-      public event NewPictureEventHandler OnNewPictureData;
+      public event EventHandler OnNewPictureData;
 
       private void Raise_OnNewPictureData(Image image, ScanSettings theSettings)
       {
