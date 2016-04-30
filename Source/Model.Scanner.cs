@@ -10,7 +10,8 @@ using Defines;
 
 namespace Model
 {
-  public class ScanSettings : Scanning.ScanSettings { }
+  public class ScanSettings : Scanning.DataSourceSettings { }
+  public class ScanCapabilities : Scanning.DataSourceCapabilities { }
   
 
   class Scanner
@@ -19,9 +20,7 @@ namespace Model
     private InterfaceDataSourceManager fWia;
     private List<InterfaceDataSource> fDataSources;
     private InterfaceDataSource fActiveDataSource;
-    private List<ColorModeEnum> fAvailableValuesForColorMode;
-    private List<PageTypeEnum> fAvailableValuesForPageType;
-    private List<int> fAvailableValuesForResolution;
+    private DataSourceCapabilities fScanCapabilities;
     private Document fDocument;
 
 
@@ -31,9 +30,7 @@ namespace Model
       fWia = new WiaDataSourceManager();
       fDataSources = null;
       fActiveDataSource = null;
-      fAvailableValuesForColorMode = null;
-      fAvailableValuesForPageType = null;
-      fAvailableValuesForResolution = null;
+      fScanCapabilities = null;
     }
 
 
@@ -116,13 +113,10 @@ namespace Model
 
         if(ds != null)
         {
-          if(ds.Open())
-          {
-            fAvailableValuesForColorMode = ds.GetAvailableValuesForColorMode();
-            fAvailableValuesForPageType = ds.GetAvailableValuesForPageType();
-            fAvailableValuesForResolution = ds.GetAvailableValuesForResolution();
-            ds.Close();
+          fScanCapabilities = ds.GetCapabilities();
 
+          if(fScanCapabilities != null)
+          {
             fActiveDataSource = ds;
             success = true;
           }
@@ -130,12 +124,6 @@ namespace Model
       }
 
       return success;
-    }
-
-
-    public bool DataSourceReady()
-    {
-      return (bool)(fActiveDataSource != null);
     }
 
 
@@ -158,21 +146,9 @@ namespace Model
     }
 
 
-    public List<ColorModeEnum> GetAvailableValuesForColorMode()
+    public ScanCapabilities GetActiveDataSourceCapabilities()
     {
-      return fAvailableValuesForColorMode;
-    }
-
-
-    public List<PageTypeEnum> GetAvailableValuesForPageType()
-    {
-      return fAvailableValuesForPageType;
-    }
-
-
-    public List<int> GetAvailableValuesForResolution()
-    {
-      return fAvailableValuesForResolution;
+      return (ScanCapabilities)fScanCapabilities;
     }
 
 
@@ -182,20 +158,12 @@ namespace Model
 
       if(fActiveDataSource != null)
       {
-        if(fActiveDataSource.Open())
-        {
-          fActiveDataSource.OnNewPictureData += fActiveDataSource_OnNewPictureData;
-          fActiveDataSource.OnScanningComplete += fActiveDataSource_OnScanningComplete;
+        fDocument = document;
 
-          fDocument = document;
+        fActiveDataSource.OnNewPictureData += fActiveDataSource_OnNewPictureData;
+        fActiveDataSource.OnScanningComplete += fActiveDataSource_OnScanningComplete;
 
-          result = fActiveDataSource.Acquire(settings);
-
-          if(result == false)
-          {
-            fActiveDataSource.Close();
-          }
-        }
+        result = fActiveDataSource.Acquire(settings);
       }
 
       return result;
@@ -212,7 +180,6 @@ namespace Model
 
     private void fActiveDataSource_OnScanningComplete(object sender, EventArgs e)
     {
-      fActiveDataSource.Close();
       Raise_OnScanningComplete();
     }
 

@@ -122,9 +122,11 @@ namespace PDFScanningApp
       {
         FormDataSourceSettingsDialog F = new FormDataSourceSettingsDialog(dataSourceName);
 
-        F.SetAvailableValuesForColorMode(fScanner.GetAvailableValuesForColorMode());
-        F.SetAvailableValuesForPageType(fScanner.GetAvailableValuesForPageType());
-        F.SetAvailableValuesForResolution(fScanner.GetAvailableValuesForResolution());
+        ScanCapabilities Cap = fScanner.GetActiveDataSourceCapabilities();
+
+        F.SetAvailableValuesForColorMode(Cap.ColorModes);
+        F.SetAvailableValuesForPageType(Cap.PageTypes);
+        F.SetAvailableValuesForResolution(Cap.Resolutions);
 
         F.UseNativeUI = fAppSettings.UseScannerNativeUI;
         F.EnableFeeder = fAppSettings.EnableFeeder;

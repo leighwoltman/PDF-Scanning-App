@@ -35,31 +35,32 @@ namespace Scanning
       }
 
 
-      public List<ColorModeEnum> GetAvailableValuesForColorMode()
+      public DataSourceCapabilities GetCapabilities()
       {
-        return new List<ColorModeEnum>() { ColorModeEnum.BW, ColorModeEnum.Gray, ColorModeEnum.RGB };
+        DataSourceCapabilities result = null;
+
+        if(this.Open())
+        {
+          result = new DataSourceCapabilities();
+
+          result.ColorModes = new List<ColorModeEnum>() { ColorModeEnum.BW, ColorModeEnum.Gray, ColorModeEnum.RGB };
+          result.PageTypes = new List<PageTypeEnum>() { PageTypeEnum.Letter, PageTypeEnum.Legal };
+          result.Resolutions = new List<int>() { 100, 200, 300 };
+
+          this.Close();
+        }
+
+        return result;
       }
 
 
-      public List<PageTypeEnum> GetAvailableValuesForPageType()
-      {
-        return new List<PageTypeEnum>() { PageTypeEnum.Letter, PageTypeEnum.Legal };
-      }
-
-
-      public List<int> GetAvailableValuesForResolution()
-      {
-        return new List<int>() { 100, 200, 300 };
-      }
-
-
-      public bool IsOpen
+      private bool IsOpen
       {
         get { return (bool)(fDevice != null); }
       }
 
 
-      public bool Open()
+      private bool Open()
       {
         if(IsOpen == false)
         {
@@ -71,7 +72,7 @@ namespace Scanning
       }
 
 
-      public void Close()
+      private void Close()
       {
         if(IsOpen)
         {
@@ -84,11 +85,11 @@ namespace Scanning
       }
 
 
-      public bool Acquire(ScanSettings settings)
+      public bool Acquire(DataSourceSettings settings)
       {
         bool result = false;
 
-        if(IsOpen)
+        if(this.Open())
         {
           double width;
           double height;
@@ -135,9 +136,14 @@ namespace Scanning
             morePages = HasMorePages();
           }
 
+          this.Close();
           Raise_OnScanningComplete();
 
           result = true;
+        }
+        else
+        {
+          this.Close();
         }
 
         return result;
@@ -243,7 +249,7 @@ namespace Scanning
 
       public event EventHandler OnNewPictureData;
 
-      private void Raise_OnNewPictureData(Image image, ScanSettings theSettings)
+      private void Raise_OnNewPictureData(Image image, DataSourceSettings theSettings)
       {
         if(OnNewPictureData != null)
         {

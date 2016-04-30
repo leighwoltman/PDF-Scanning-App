@@ -23,19 +23,9 @@ namespace Scanning
   {
     string Name { get; }
 
-    List<ColorModeEnum> GetAvailableValuesForColorMode();
+    DataSourceCapabilities GetCapabilities();
 
-    List<PageTypeEnum> GetAvailableValuesForPageType();
-
-    List<int> GetAvailableValuesForResolution();
-
-    bool IsOpen { get; }
-
-    bool Open();
-
-    void Close();
-
-    bool Acquire(ScanSettings settings);
+    bool Acquire(DataSourceSettings settings);
 
     event EventHandler OnNewPictureData;
 
@@ -43,7 +33,7 @@ namespace Scanning
   }
 
 
-  public class ScanSettings
+  public class DataSourceSettings
   {
     public bool ShowSettingsUI;
     public bool ShowTransferUI;
@@ -56,7 +46,7 @@ namespace Scanning
     public double Contrast;    // 0 to 1
 
 
-    public ScanSettings()
+    public DataSourceSettings()
     {
       ShowSettingsUI = false;
       ShowTransferUI = true;
@@ -70,10 +60,18 @@ namespace Scanning
     }
   }
 
-  
+
+  public class DataSourceCapabilities
+  {
+    public List<ColorModeEnum> ColorModes;
+    public List<PageTypeEnum> PageTypes;
+    public List<int> Resolutions;
+  }
+
+
   public class NewPictureEventArgs : EventArgs
   {
     public Image TheImage;
-    public ScanSettings TheSettings;
+    public DataSourceSettings TheSettings;
   }
 }

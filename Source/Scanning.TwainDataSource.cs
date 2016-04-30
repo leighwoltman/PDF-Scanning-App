@@ -18,7 +18,7 @@ namespace Scanning
       private TwainDevice fTwain;
       private TwIdentity fIdent;
       private StateType fState;
-      private ScanSettings fSettings;
+      private DataSourceSettings fSettings;
 
 
       public DataSource(TwainDevice twain, TwIdentity identity)
@@ -49,7 +49,26 @@ namespace Scanning
       private TwainCapability fCapabilityContrast;
 
 
-      public List<ColorModeEnum> GetAvailableValuesForColorMode()
+      public DataSourceCapabilities GetCapabilities()
+      {
+        DataSourceCapabilities result = null;
+
+        if(this.Open())
+        {
+          result = new DataSourceCapabilities();
+
+          result.ColorModes = GetAvailableValuesForColorMode();
+          result.PageTypes = GetAvailableValuesForPageType();
+          result.Resolutions = GetAvailableValuesForResolution();
+
+          this.Close();
+        }
+
+        return result;
+      }
+
+
+      private List<ColorModeEnum> GetAvailableValuesForColorMode()
       {
         List<ColorModeEnum> result = new List<ColorModeEnum>();
 
@@ -68,7 +87,7 @@ namespace Scanning
       }
 
 
-      public List<PageTypeEnum> GetAvailableValuesForPageType()
+      private List<PageTypeEnum> GetAvailableValuesForPageType()
       {
         List<PageTypeEnum> result = new List<PageTypeEnum>();
 
@@ -86,7 +105,7 @@ namespace Scanning
       }
 
 
-      public List<int> GetAvailableValuesForResolution()
+      private List<int> GetAvailableValuesForResolution()
       {
         List<int> result = new List<int>();
 
@@ -99,13 +118,13 @@ namespace Scanning
       }
 
 
-      public bool IsOpen
+      private bool IsOpen
       {
         get { return (bool)(fState > StateType.Closed); }
       }
 
 
-      public bool Open()
+      private bool Open()
       {
         if(fTwain.OpenDataSource(fIdent))
         {
@@ -127,7 +146,7 @@ namespace Scanning
       }
 
 
-      public void Close()
+      private void Close()
       {
         if(IsOpen)
         {
@@ -144,11 +163,11 @@ namespace Scanning
       }
 
 
-      public bool Acquire(ScanSettings settings)
+      public bool Acquire(DataSourceSettings settings)
       {
         bool success = false;
 
-        if(IsOpen)
+        if(this.Open())
         {
           fSettings = settings;
 
@@ -224,6 +243,10 @@ namespace Scanning
             Stop(); // TODO: Is this OK?
           }
         }
+        else
+        {
+          this.Close();
+        }
 
         return success;
       }
@@ -239,6 +262,7 @@ namespace Scanning
           fTwain.CloseDataSource(fIdent);
           Application.RemoveMessageFilter(this);
           fState = StateType.Idle;
+          this.Close();
           Raise_OnScanningComplete();
         }
       }
@@ -345,7 +369,7 @@ namespace Scanning
 
       public event EventHandler OnNewPictureData;
 
-      private void Raise_OnNewPictureData(Image image, ScanSettings theSettings)
+      private void Raise_OnNewPictureData(Image image, DataSourceSettings theSettings)
       {
         if(OnNewPictureData != null)
         {
