@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Text;
 
 
@@ -18,6 +19,23 @@ namespace Utils
     }
 
 
+    public static void SaveImageAsJpeg(Image image, Stream stream, long quality)
+    {
+      EncoderParameters encoderParams = new EncoderParameters(1);
+      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+      ImageCodecInfo codecInfo = GetEncoderInfo(ImageFormat.Jpeg);
+      image.Save(stream, codecInfo, encoderParams);
+    }
+
+
+    public static Image EncodeImageAsJpeg(Image image, long quality)
+    {
+      MemoryStream stream = new MemoryStream();
+      SaveImageAsJpeg(image, stream, quality);
+      return Image.FromStream(stream);
+    }
+
+    
     private static ImageCodecInfo GetEncoderInfo(ImageFormat format)
     {
       ImageCodecInfo result = null;
