@@ -79,8 +79,6 @@ namespace Scanning
           fDevice = null;
           fItem = null;
           fCommonDialog = null;
-          this.OnNewPictureData = null;
-          this.OnScanningComplete = null;
         }
       }
 
@@ -140,10 +138,6 @@ namespace Scanning
           Raise_OnScanningComplete();
 
           result = true;
-        }
-        else
-        {
-          this.Close();
         }
 
         return result;

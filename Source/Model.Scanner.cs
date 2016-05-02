@@ -54,6 +54,12 @@ namespace Model
         {
           fDataSources.AddRange(fWia.GetDataSources());
         }
+
+        foreach(InterfaceDataSource ds in fDataSources)
+        {
+          ds.OnNewPictureData += fActiveDataSource_OnNewPictureData;
+          ds.OnScanningComplete += fActiveDataSource_OnScanningComplete;
+        }
       }
       return IsOpen;
     }
@@ -159,10 +165,6 @@ namespace Model
       if(fActiveDataSource != null)
       {
         fDocument = document;
-
-        fActiveDataSource.OnNewPictureData += fActiveDataSource_OnNewPictureData;
-        fActiveDataSource.OnScanningComplete += fActiveDataSource_OnScanningComplete;
-
         result = fActiveDataSource.Acquire(settings);
       }
 

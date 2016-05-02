@@ -151,8 +151,7 @@ namespace Scanning
         if(IsOpen)
         {
           fTwain.CloseDataSource(fIdent);
-          this.OnNewPictureData = null;
-          this.OnScanningComplete = null;
+          fState = StateType.Closed;
         }
       }
 
@@ -243,10 +242,6 @@ namespace Scanning
             Stop(); // TODO: Is this OK?
           }
         }
-        else
-        {
-          this.Close();
-        }
 
         return success;
       }
@@ -259,10 +254,8 @@ namespace Scanning
           fTwain.TransferEnd(fIdent);
           fTwain.DiscardPendingTransfers(fIdent);
           fTwain.FinishDataSession(fIdent);
-          fTwain.CloseDataSource(fIdent);
-          Application.RemoveMessageFilter(this);
-          fState = StateType.Idle;
           this.Close();
+          Application.RemoveMessageFilter(this);
           Raise_OnScanningComplete();
         }
       }
