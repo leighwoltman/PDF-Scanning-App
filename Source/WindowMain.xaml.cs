@@ -125,8 +125,10 @@ namespace PDFScanningApp
       settings.Threshold = fAppSettings.Threshold;
       settings.Brightness = fAppSettings.Brightness;
       settings.Contrast = fAppSettings.Contrast;
+      settings.ShowSettingsUI = fAppSettings.UseScannerNativeUI;
+      settings.ShowTransferUI = true;
 
-      if(fScanner.Acquire(fDocument, settings, fAppSettings.UseScannerNativeUI, true) == false)
+      if(fScanner.Acquire(fDocument, settings) == false)
       {
         Utils.Dialogs.ShowError("Scanner failed to start");
       }
