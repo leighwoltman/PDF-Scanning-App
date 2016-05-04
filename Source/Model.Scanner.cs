@@ -40,7 +40,9 @@ namespace Model
     }
 
 
-    public bool Open()
+    public delegate void OpenCallback(bool success);
+
+    public void Open(OpenCallback callback)
     {
       if(IsOpen == false)
       {
@@ -61,17 +63,28 @@ namespace Model
           ds.OnScanningComplete += fActiveDataSource_OnScanningComplete;
         }
       }
-      return IsOpen;
+
+      if(callback != null)
+      {
+        callback(IsOpen);
+      }
     }
 
 
-    public void Close()
+    public delegate void CloseCallback();
+
+    public void Close(CloseCallback callback)
     {
       if(IsOpen)
       {
         fTwain.Close();
         fWia.Close();
         fDataSources = null;
+      }
+
+      if(callback != null)
+      {
+        callback();
       }
     }
 
@@ -105,7 +118,9 @@ namespace Model
     }
 
 
-    public bool SelectActiveDataSource(string name)
+    public delegate void SetActiveDataSourceCallback(bool success);
+
+    public void SetActiveDataSource(string name, SetActiveDataSourceCallback callback)
     {
       bool success = false;
 
@@ -129,7 +144,10 @@ namespace Model
         }
       }
 
-      return success;
+      if(callback != null)
+      {
+        callback(success);
+      }
     }
 
 
@@ -158,17 +176,19 @@ namespace Model
     }
 
 
-    public bool Acquire(Document document, ScanSettings settings)
-    {
-      bool result = false;
+    public delegate void AcquireCallback(bool success);
 
+    public void Acquire(Document document, ScanSettings settings, AcquireCallback callback)
+    {
       if(fActiveDataSource != null)
       {
         fDocument = document;
-        result = fActiveDataSource.Acquire(settings);
-      }
 
-      return result;
+        if(fActiveDataSource.Acquire(settings) == false)
+        {
+          Raise_OnScanningComplete(false);
+        }
+      }
     }
 
 
@@ -182,17 +202,17 @@ namespace Model
 
     private void fActiveDataSource_OnScanningComplete(object sender, EventArgs e)
     {
-      Raise_OnScanningComplete();
+      Raise_OnScanningComplete(true);
     }
 
 
-    public event EventHandler OnScanningComplete;
+    private AcquireCallback OnScanningComplete;
 
-    private void Raise_OnScanningComplete()
+    private void Raise_OnScanningComplete(bool success)
     {
       if(OnScanningComplete != null)
       {
-        OnScanningComplete(this, EventArgs.Empty);
+        OnScanningComplete(success);
       }
     }
   }

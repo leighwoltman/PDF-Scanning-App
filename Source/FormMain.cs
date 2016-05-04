@@ -23,6 +23,7 @@ namespace PDFScanningApp
     private PdfImporter fPdfImporter;
     private ImageLoader fImageLoader;
     private Document fDocument;
+    private bool fClosing;
 
     // Special UI
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
@@ -44,7 +45,6 @@ namespace PDFScanningApp
       fAppSettings = new AppSettings();
 
       fScanner = new Scanner();
-      fScanner.OnScanningComplete += fScanner_OnScanningComplete;
       fPrinter = new Printer();
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
@@ -56,13 +56,25 @@ namespace PDFScanningApp
       fDocument.OnPageUpdated += fDocument_OnPageUpdated;
       fDocument.OnPageMoved += fDocument_OnPageMoved;
 
+      fClosing = false;
+
       MenuSettingsPrinterUsePreview.Checked = true;
     }
 
 
     private void FormMain_Load(object sender, EventArgs e)
     {
-      if(fScanner.Open())
+      StatusLabel1.Text = "";
+      StatusLabel2.Text = "";
+      RefreshControls();
+
+      fScanner.Open(fScanner_OpenCallback);
+    }
+
+
+    private void fScanner_OpenCallback(bool success)
+    {
+      if(success)
       {
         foreach(string item in fScanner.GetDataSourceNames())
         {
@@ -77,22 +89,26 @@ namespace PDFScanningApp
           }
         }
       }
-
-      StatusLabel1.Text = "";
-      StatusLabel2.Text = "";
-      RefreshControls();
     }
 
 
     private void FormMain_FormClosing(object sender, FormClosingEventArgs e)
     {
-      fScanner.Close();
+      if(fClosing == false)
+      {
+        fClosing = true;
+        e.Cancel = true;
+        fScanner.Close(fScanner_CloseCallback);
+      }
     }
 
 
-    void fScanner_OnScanningComplete(object sender, EventArgs e)
+    private void fScanner_CloseCallback()
     {
-      // Nothing to do
+      if(fClosing)
+      {
+        Close();
+      }
     }
 
 
@@ -105,7 +121,12 @@ namespace PDFScanningApp
     private void RefreshScanner()
     {
       string selectedScanner = (string)ComboBoxScanners.SelectedItem;
-      fScanner.SelectActiveDataSource(selectedScanner);
+      fScanner.SetActiveDataSource(selectedScanner, fScanner_SetActiveDataSourceCallback);
+    }
+
+
+    private void fScanner_SetActiveDataSourceCallback(bool success)
+    {
       fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
     }
 
@@ -174,15 +195,19 @@ namespace PDFScanningApp
       settings.ShowSettingsUI = fAppSettings.UseScannerNativeUI;
       settings.ShowTransferUI = true;
 
-      if(fScanner.Acquire(fDocument, settings) == false)
+      fScanner.Acquire(fDocument, settings, fScanner_AcquireCallback);
+    }
+
+
+    private void fScanner_AcquireCallback(bool success)
+    {
+      if(success == false)
       {
         Utils.Dialogs.ShowError("Scanner failed to start");
       }
-
-      RefreshControls();
     }
 
-    
+
     private void fDocument_OnPageAdded(object sender, EventArgs e)
     {
       DocumentPageEventArgs args = (DocumentPageEventArgs)e;
@@ -394,12 +419,14 @@ namespace PDFScanningApp
     private void ButtonScanLetter_Click(object sender, EventArgs e)
     {
       Scan(PageTypeEnum.Letter);
+      RefreshControls();
     }
 
 
     private void ButtonScanLegal_Click(object sender, EventArgs e)
     {
       Scan(PageTypeEnum.Legal);
+      RefreshControls();
     }
 
 

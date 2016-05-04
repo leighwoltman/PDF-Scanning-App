@@ -36,6 +36,7 @@ namespace PDFScanningApp
     private Document fDocument;
     private InsertionMark  fInsertionMark;
     private Point fDragStartPosition;
+    private bool fClosing;
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -47,7 +48,6 @@ namespace PDFScanningApp
       fAppSettings = new AppSettings();
 
       fScanner = new Scanner();
-      fScanner.OnScanningComplete += fScanner_OnScanningComplete;
       fPrinter = new Printer();
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
@@ -61,6 +61,8 @@ namespace PDFScanningApp
        
       fInsertionMark = new InsertionMark();
       fDragStartPosition = new Point(0, 0);
+
+      fClosing = false;
     }
 
 
@@ -86,30 +88,60 @@ namespace PDFScanningApp
 
       RightBarWindowsFormsHost.Child = PictureBoxPreview;
 
-      if(fScanner.Open())
-      {
-        fScanner.SelectActiveDataSource(fAppSettings.CurrentScanner);
-      }
-
-      if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
-      {
-        ButtonScan.IsEnabled = false;
-      }
-
       lblCursorPosition.Text = "";
       lblDragDropInfo.Text = "";
+      RefreshControls();
+
+      fScanner.Open(fScanner_OpenCallback);
+    }
+
+
+    private void fScanner_OpenCallback(bool success)
+    {
+      if(success)
+      {
+        fScanner.SetActiveDataSource(fAppSettings.CurrentScanner, fScanner_SetActiveDataSourceCallback);
+      }
+    }
+
+
+    private void fScanner_SetActiveDataSourceCallback(bool success)
+    {
       RefreshControls();
     }
 
 
-    void fScanner_OnScanningComplete(object sender, EventArgs e)
+    private void Window_Closing(object sender, CancelEventArgs e)
     {
-      // Nothing to do
+      if(fClosing == false)
+      {
+        fClosing = true;
+        // e.Cancel = true;
+        fScanner.Close(fScanner_CloseCallback);
+      }
     }
 
-
+    
+    private void fScanner_CloseCallback()
+    {
+      if(fClosing)
+      {
+        // Close();
+      }
+    }
+    
+    
     void RefreshControls()
     {
+      if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
+      {
+        ButtonScan.IsEnabled = false;
+      }
+      else
+      {
+        ButtonScan.IsEnabled = true;
+      }
+
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
     }
 
@@ -128,12 +160,16 @@ namespace PDFScanningApp
       settings.ShowSettingsUI = fAppSettings.UseScannerNativeUI;
       settings.ShowTransferUI = true;
 
-      if(fScanner.Acquire(fDocument, settings) == false)
+      fScanner.Acquire(fDocument, settings, fScanner_AcquireCallback);
+    }
+
+
+    private void fScanner_AcquireCallback(bool success)
+    {
+      if(success == false)
       {
         Utils.Dialogs.ShowError("Scanner failed to start");
       }
-
-      RefreshControls();
     }
 
 
