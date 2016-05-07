@@ -8,7 +8,7 @@ using Utils;
 
 namespace PDFScanningApp
 {
-  class AppSettings
+  public class AppSettings
   {
     static private SettingsTable fTable = null;
 
@@ -86,6 +86,79 @@ namespace PDFScanningApp
     {
       get { return fTable.GetDouble("Contrast", 0.5); }
       set { fTable.SetDouble("Contrast", value); }
+    }
+
+    public int ScannerCompressionFactor
+    {
+      get { return fTable.GetInteger("ScannerCompressionFactor", 80); }
+      set { fTable.SetInteger("ScannerCompressionFactor", value); }
+    }
+
+    public SizeInches DefaultPageSize
+    {
+      get {
+        return new SizeInches(fTable.GetDouble("DefaultPageSizeWidth", 8.5), fTable.GetDouble("DefaultPageSizeHeight", 11));
+      }
+      set
+      {
+        fTable.SetDouble("DefaultPageSizeWidth", value.Width);
+        fTable.SetDouble("DefaultPageSizeHeight", value.Height);
+      }
+    }
+
+    public SizeInches CustomPageSize
+    {
+      get
+      {
+        return new SizeInches(fTable.GetDouble("CustomPageSizeWidth", 7), fTable.GetDouble("CustomPageSizeHeight", 10));
+      }
+      set
+      {
+        fTable.SetDouble("CustomPageSizeWidth", value.Width);
+        fTable.SetDouble("CustomPageSizeHeight", value.Height);
+      }
+    }
+
+    public PageScalingEnum PageScaling
+    {
+      get { return (PageScalingEnum)fTable.GetInteger("PageScaling", (int)PageScalingEnum.StretchShrink); }
+      set { fTable.SetInteger("PageScaling", (int)value); }
+    }
+
+    public int PdfViewingResolution
+    {
+      get { return fTable.GetInteger("PdfViewingResolution", 300); }
+      set { fTable.SetInteger("PdfViewingResolution", value); }
+    }
+
+    public int PdfExportResolution
+    {
+      get { return fTable.GetInteger("PdfExportResolution", 300); }
+      set { fTable.SetInteger("PdfExportResolution", value); }
+    }
+
+    public bool AlwaysNativePdfImport
+    {
+      get { return fTable.GetBool("AlwaysNativePdfImport", true); }
+      set { fTable.SetBool("AlwaysNativePdfImport", value); }
+    }
+
+    public bool AttemptPdfSingleImageImport
+    {
+      get { return fTable.GetBool("AttemptPdfSingleImageImport", true); }
+      set { fTable.SetBool("AttemptPdfSingleImageImport", value); }
+    }
+
+    public bool RemovePagesAfterPdfExport
+    {
+      get { return fTable.GetBool("RemovePagesAfterPdfExport", true); }
+      set { fTable.SetBool("RemovePagesAfterPdfExport", value); }
+    }
+
+    public int ExportCompressionFactor
+    {
+      get { return fTable.GetInteger("ExportCompressionFactor", 80); }
+      set { fTable.SetInteger("ExportCompressionFactor", value); }
     }
   }
 }

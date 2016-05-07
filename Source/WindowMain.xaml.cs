@@ -598,6 +598,13 @@ namespace PDFScanningApp
         }
       }
     }
+
+    private void RibbonButton_Click(object sender, RoutedEventArgs e)
+    {
+      WindowSettings settingsDialog = new WindowSettings(fAppSettings);
+      settingsDialog.Owner = this;
+      settingsDialog.ShowDialog();
+    }
   }
 
 
