@@ -179,7 +179,8 @@ namespace PDFScanningApp
 
       settings.EnableFeeder = fAppSettings.EnableFeeder;
       settings.ColorMode = fAppSettings.ColorMode;
-      settings.PageType = pageType;// fAppSettings.PageType;
+      settings.PageType = pageType;
+      settings.CustomScanArea = new BoundsInches(0, 0, fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
       settings.Resolution = fAppSettings.Resolution;
       settings.Threshold = fAppSettings.Threshold;
       settings.Brightness = fAppSettings.Brightness;
@@ -307,15 +308,21 @@ namespace PDFScanningApp
     }
 
 
-    private void ButtonScanLetter_Click(object sender, EventArgs e)
+    private void ButtonScanLetter_Click(object sender, RoutedEventArgs e)
     {
       Scan(PageTypeEnum.Letter);
     }
 
 
-    private void ButtonScanLegal_Click(object sender, EventArgs e)
+    private void ButtonScanLegal_Click(object sender, RoutedEventArgs e)
     {
       Scan(PageTypeEnum.Legal);
+    }
+
+
+    private void ButtonScanCustomPage_Click(object sender, RoutedEventArgs e)
+    {
+      Scan(PageTypeEnum.Custom);
     }
 
 
