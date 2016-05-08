@@ -10,7 +10,7 @@ namespace Utils
 {
   class Imaging
   {
-    public static void SaveImageAsJpeg(Image image, string fileName, long quality)
+    public static void SaveImageAsJpeg(Image image, string fileName, int quality)
     {
       EncoderParameters encoderParams = new EncoderParameters(1);
       encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
@@ -19,7 +19,7 @@ namespace Utils
     }
 
 
-    public static void SaveImageAsJpeg(Image image, Stream stream, long quality)
+    public static void SaveImageAsJpeg(Image image, Stream stream, int quality)
     {
       EncoderParameters encoderParams = new EncoderParameters(1);
       encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
@@ -28,7 +28,7 @@ namespace Utils
     }
 
 
-    public static Image EncodeImageAsJpeg(Image image, long quality)
+    public static Image EncodeImageAsJpeg(Image image, int quality)
     {
       MemoryStream stream = new MemoryStream();
       SaveImageAsJpeg(image, stream, quality);

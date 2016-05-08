@@ -182,6 +182,7 @@ namespace PDFScanningApp
       settings.PageType = pageType;
       settings.CustomScanArea = new BoundsInches(0, 0, fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
       settings.Resolution = fAppSettings.Resolution;
+      settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
       settings.Threshold = fAppSettings.Threshold;
       settings.Brightness = fAppSettings.Brightness;
       settings.Contrast = fAppSettings.Contrast;

@@ -43,6 +43,7 @@ namespace Scanning
     public PageTypeEnum PageType;
     public BoundsInches CustomScanArea;
     public int Resolution;
+    public int CompressionFactor;
     public double Threshold;   // 0 to 1
     public double Brightness;  // 0 to 1
     public double Contrast;    // 0 to 1

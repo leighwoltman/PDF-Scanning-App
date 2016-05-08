@@ -13,12 +13,12 @@ namespace Model
     private string fFilename;
 
 
-    public PageFromScanner(Image image, int dpi)
+    public PageFromScanner(Image image, int dpi, int compressionFactor)
     {
       // get a temporary path
       fFilename = Path.GetTempFileName();
 
-      Utils.Imaging.SaveImageAsJpeg(image, fFilename, 75L);
+      Utils.Imaging.SaveImageAsJpeg(image, fFilename, compressionFactor);
 
       double pageWidth = image.Width / (double)dpi;
       double pageHeight = image.Height / (double)dpi;
