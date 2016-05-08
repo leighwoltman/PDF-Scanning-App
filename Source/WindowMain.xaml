@@ -100,6 +100,7 @@
         <ColumnDefinition Width="5*"/>
       </Grid.ColumnDefinitions>
       <ListView x:Name="ListViewPages" Grid.Column="0" 
+                SelectionMode="Single"
                 SelectionChanged="ListViewPages_SelectionChanged" 
                 PreviewMouseLeftButtonDown="ListViewPages_PreviewMouseLeftButtonDown"
                 MouseMove="ListViewPages_MouseMove" 
