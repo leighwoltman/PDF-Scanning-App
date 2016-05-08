@@ -6,6 +6,7 @@ using System.IO;
 using System.Text;
 using Scanning;
 using Defines;
+using Utils;
 
 
 namespace Scanning
@@ -89,18 +90,33 @@ namespace Scanning
 
         if(this.Open())
         {
+          double top;
+          double left;
           double width;
           double height;
 
           if(settings.PageType == PageTypeEnum.Legal)
           {
+            top = 0;
+            left = 0;
             width = 8.48;
             height = 14;
           }
-          else
+          else if(settings.PageType == PageTypeEnum.Letter)
           {
+            top = 0;
+            left = 0;
             width = 8.48;
             height = 11;
+          }
+          else
+          {
+            BoundsInches scanArea = settings.CustomScanArea;
+
+            top = scanArea.X;
+            left = scanArea.Y;
+            width = scanArea.Width;
+            height = scanArea.Height;
           }
 
           int colorMode;
@@ -118,7 +134,7 @@ namespace Scanning
 
           int contrast = (int)((settings.Contrast - 0.5) * 2000);
 
-          AdjustScannerSettings(resolution, 0, 0, width, height, brightness, contrast, colorMode);
+          AdjustScannerSettings(resolution, left, top, width, height, brightness, contrast, colorMode);
 
           bool morePages = true;
 
@@ -146,10 +162,10 @@ namespace Scanning
 
       private bool AdjustScannerSettings(
         int resolutionDpi,
-        int scanStartLeftPixel,
-        int scanStartTopPixel,
-        double scanWidthInches,
-        double scanHeightInches,
+        double scanAreaLeftInches,
+        double scanAreaTopInches,
+        double scanAreaWidthInches,
+        double scanAreaHeightInches,
         int brightnessPercents,
         int contrastPercents,
         int colorMode)
@@ -160,10 +176,10 @@ namespace Scanning
         {
           WiaUtils.SetProperty(fItem.Properties, WiaProperty.HorizontalResolution, resolutionDpi);
           WiaUtils.SetProperty(fItem.Properties, WiaProperty.VerticalResolution, resolutionDpi);
-          WiaUtils.SetProperty(fItem.Properties, WiaProperty.HorizontalStartPosition, scanStartLeftPixel);
-          WiaUtils.SetProperty(fItem.Properties, WiaProperty.VerticalStartPosition, scanStartTopPixel);
-          WiaUtils.SetProperty(fItem.Properties, WiaProperty.HorizontalExtent, (int)(scanWidthInches * resolutionDpi));
-          WiaUtils.SetProperty(fItem.Properties, WiaProperty.VerticalExtent, (int)(scanHeightInches * resolutionDpi));
+          WiaUtils.SetProperty(fItem.Properties, WiaProperty.HorizontalStartPosition, (int)(scanAreaLeftInches * resolutionDpi));
+          WiaUtils.SetProperty(fItem.Properties, WiaProperty.VerticalStartPosition, (int)(scanAreaTopInches * resolutionDpi));
+          WiaUtils.SetProperty(fItem.Properties, WiaProperty.HorizontalExtent, (int)(scanAreaWidthInches * resolutionDpi));
+          WiaUtils.SetProperty(fItem.Properties, WiaProperty.VerticalExtent, (int)(scanAreaHeightInches * resolutionDpi));
           WiaUtils.SetProperty(fItem.Properties, WiaProperty.Brightness, brightnessPercents);
           WiaUtils.SetProperty(fItem.Properties, WiaProperty.Contrast, contrastPercents);
           WiaUtils.SetProperty(fItem.Properties, WiaProperty.CurrentIntent, colorMode);

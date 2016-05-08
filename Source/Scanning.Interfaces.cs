@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.Text;
 using Defines;
+using Utils;
 
 
 namespace Scanning
@@ -40,6 +41,7 @@ namespace Scanning
     public bool EnableFeeder;
     public ColorModeEnum ColorMode;
     public PageTypeEnum PageType;
+    public BoundsInches CustomScanArea;
     public int Resolution;
     public double Threshold;   // 0 to 1
     public double Brightness;  // 0 to 1

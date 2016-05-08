@@ -5,6 +5,7 @@ using System.Text;
 using System.Windows.Forms;
 using Scanning;
 using Defines;
+using Utils;
 
 
 namespace Scanning
@@ -193,10 +194,12 @@ namespace Scanning
 
               if(fTwain.GetImageLayout(fIdent, ilayout))
               {
-                ilayout.Frame.Left = 2;
-                ilayout.Frame.Top = 4;
-                ilayout.Frame.Right = 6;
-                ilayout.Frame.Bottom = 8;
+                BoundsInches scanArea = settings.CustomScanArea;
+
+                ilayout.Frame.Left = (float)scanArea.X;
+                ilayout.Frame.Top = (float)scanArea.Y;
+                ilayout.Frame.Right = (float)(scanArea.X + scanArea.Width);
+                ilayout.Frame.Bottom = (float)(scanArea.Y + scanArea.Height);
                 fTwain.SetImageLayout(fIdent, ilayout);
               }
             }
