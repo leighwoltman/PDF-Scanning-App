@@ -1,8 +1,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Express 2013 for Windows Desktop
-VisualStudioVersion = 12.0.40629.0
+VisualStudioVersion = 12.0.21005.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDF-Scanner-App-WPF", "Source\PDF-Scanner-App-WPF.csproj", "{C4D1E6A2-5EE6-4A5A-9A1F-075F620F0FBC}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PDF-Scanning-App-WPF", "Source\PDF-Scanning-App-WPF.csproj", "{C4D1E6A2-5EE6-4A5A-9A1F-075F620F0FBC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
