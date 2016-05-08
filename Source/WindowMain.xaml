@@ -67,23 +67,22 @@
       <!-- Ribbon Tab #2: -->
       <RibbonTab Header="Settings" KeyTip="I">
         <RibbonGroup x:Name="SettingsGroup" Header="Settings">
-            <RibbonButton LargeImageSource="External\Icons8\Settings-96.png" Label="Settings" KeyTip="S" Click="RibbonButton_Click"/>
+            <RibbonButton LargeImageSource="External\Icons8\Settings-96.png" Label="Settings" KeyTip="S" Click="ButtonSettings_Click"/>
         </RibbonGroup>
-                <RibbonGroup x:Name="ScannerGroup" Header="Scanner">
-                    <RibbonComboBox Label="" 
-                  SelectionBoxWidth="120"
-                  VerticalAlignment="Center" 
-                  IsEditable="False"
-                  IsEnabled="False">
-                        <RibbonGallery Width="300" SelectedValue="Green"
-                          SelectedValuePath="Content"
-                          MaxColumnCount="1">
-                            <RibbonGalleryCategory x:Name="ScannerDropDownRibbonGallery">
-                            </RibbonGalleryCategory>
-                        </RibbonGallery>
-                    </RibbonComboBox>
-
-                </RibbonGroup>
+        <RibbonGroup x:Name="ScannerGroup" Header="Scanner">
+          <RibbonComboBox x:Name="ComboBoxScanners"
+              Label="" 
+              SelectionBoxWidth="250"
+              VerticalAlignment="Center" 
+              IsEditable="False">
+            <RibbonGallery x:Name="ComboBoxScannersGallery"
+                SelectionChanged="ComboBoxScanners_SelectionChanged"
+                MaxColumnCount="1">
+              <RibbonGalleryCategory x:Name="ComboBoxScannersCategory">
+              </RibbonGalleryCategory>
+            </RibbonGallery>
+          </RibbonComboBox>
+        </RibbonGroup>
       </RibbonTab>
     </Ribbon>
     <StatusBar DockPanel.Dock="Bottom" >

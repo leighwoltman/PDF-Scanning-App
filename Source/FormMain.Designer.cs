@@ -88,7 +88,7 @@
       // toolStripLabel1
       // 
       this.toolStripLabel1.Name = "toolStripLabel1";
-      this.toolStripLabel1.Size = new System.Drawing.Size(46, 22);
+      this.toolStripLabel1.Size = new System.Drawing.Size(49, 22);
       this.toolStripLabel1.Text = "Scanner";
       // 
       // ComboBoxScanners
@@ -97,6 +97,7 @@
       this.ComboBoxScanners.DropDownWidth = 100;
       this.ComboBoxScanners.Name = "ComboBoxScanners";
       this.ComboBoxScanners.Size = new System.Drawing.Size(250, 25);
+      this.ComboBoxScanners.SelectedIndexChanged += new System.EventHandler(this.ComboBoxScanners_SelectedIndexChanged);
       // 
       // MenuSettings
       // 
@@ -107,7 +108,7 @@
       this.MenuSettings.Image = ((System.Drawing.Image)(resources.GetObject("MenuSettings.Image")));
       this.MenuSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.MenuSettings.Name = "MenuSettings";
-      this.MenuSettings.Size = new System.Drawing.Size(59, 22);
+      this.MenuSettings.Size = new System.Drawing.Size(62, 22);
       this.MenuSettings.Text = "Settings";
       // 
       // MenuSettingsScanner
@@ -130,7 +131,7 @@
       // 
       this.MenuSettingsPrinterUsePreview.CheckOnClick = true;
       this.MenuSettingsPrinterUsePreview.Name = "MenuSettingsPrinterUsePreview";
-      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(133, 22);
+      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(137, 22);
       this.MenuSettingsPrinterUsePreview.Text = "Use Preview";
       // 
       // ImageListPages
@@ -155,13 +156,13 @@
       // StatusLabel1
       // 
       this.StatusLabel1.Name = "StatusLabel1";
-      this.StatusLabel1.Size = new System.Drawing.Size(69, 17);
+      this.StatusLabel1.Size = new System.Drawing.Size(73, 17);
       this.StatusLabel1.Text = "StatusLabel1";
       // 
       // StatusLabel2
       // 
       this.StatusLabel2.Name = "StatusLabel2";
-      this.StatusLabel2.Size = new System.Drawing.Size(69, 17);
+      this.StatusLabel2.Size = new System.Drawing.Size(73, 17);
       this.StatusLabel2.Text = "StatusLabel2";
       // 
       // splitContainer1

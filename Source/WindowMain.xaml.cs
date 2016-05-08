@@ -100,14 +100,18 @@ namespace PDFScanningApp
     {
       if(success)
       {
-        fScanner.SetActiveDataSource(fAppSettings.CurrentScanner, fScanner_SetActiveDataSourceCallback);
+        foreach(string item in fScanner.GetDataSourceNames())
+        {
+          ComboBoxScannersCategory.Items.Add(item);
+
+          if(item == fAppSettings.CurrentScanner)
+          {
+            ComboBoxScannersGallery.SelectedItem = item;
+          }
+        }
+
+        RefreshScanner();
       }
-    }
-
-
-    private void fScanner_SetActiveDataSourceCallback(bool success)
-    {
-      RefreshControls();
     }
 
 
@@ -129,11 +133,25 @@ namespace PDFScanningApp
         // Close();
       }
     }
-    
-    
+
+
+    private void ComboBoxScanners_SelectionChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+    {
+      RefreshScanner();
+    }
+
+
+    private void RefreshScanner()
+    {
+      string selectedScanner = (string)ComboBoxScannersGallery.SelectedItem;
+      fScanner.SetActiveDataSource(selectedScanner);
+      RefreshControls();
+    }
+
+
     void RefreshControls()
     {
-      if(String.IsNullOrEmpty(fScanner.GetActiveDataSourceName()))
+      if(String.IsNullOrEmpty((string)ComboBoxScannersGallery.SelectedItem))
       {
         ButtonScan.IsEnabled = false;
       }
@@ -142,6 +160,15 @@ namespace PDFScanningApp
         ButtonScan.IsEnabled = true;
       }
 
+      if(ComboBoxScannersCategory.Items.Count == 0)
+      {
+        ComboBoxScanners.IsEnabled = false;
+      }
+      else
+      {
+        ComboBoxScanners.IsEnabled = true;
+      }
+      
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
     }
 
@@ -166,7 +193,11 @@ namespace PDFScanningApp
 
     private void fScanner_AcquireCallback(bool success)
     {
-      if(success == false)
+      if(success)
+      {
+        fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
+      }
+      else
       {
         Utils.Dialogs.ShowError("Scanner failed to start");
       }
@@ -461,6 +492,14 @@ namespace PDFScanningApp
     }
 
 
+    private void ButtonSettings_Click(object sender, RoutedEventArgs e)
+    {
+      WindowSettings settingsDialog = new WindowSettings(fAppSettings);
+      settingsDialog.Owner = this;
+      settingsDialog.ShowDialog();
+    }
+
+
     private void ListViewPages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
     {
       fDragStartPosition = e.GetPosition(null);
@@ -597,13 +636,6 @@ namespace PDFScanningApp
           }
         }
       }
-    }
-
-    private void RibbonButton_Click(object sender, RoutedEventArgs e)
-    {
-      WindowSettings settingsDialog = new WindowSettings(fAppSettings);
-      settingsDialog.Owner = this;
-      settingsDialog.ShowDialog();
     }
   }
 

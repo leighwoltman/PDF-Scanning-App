@@ -79,15 +79,14 @@ namespace PDFScanningApp
         foreach(string item in fScanner.GetDataSourceNames())
         {
           ComboBoxScanners.Items.Add(item);
-        }
 
-        for(int i = 0; i < ComboBoxScanners.Items.Count; i++)
-        {
-          if(ComboBoxScanners.Items[i].ToString() == fAppSettings.CurrentScanner)
+          if(item == fAppSettings.CurrentScanner)
           {
-            ComboBoxScanners.SelectedIndex = i;
+            ComboBoxScanners.SelectedItem = item;
           }
         }
+
+        RefreshScanner();
       }
     }
 
@@ -112,30 +111,49 @@ namespace PDFScanningApp
     }
 
 
-    void RefreshControls()
+    private void ComboBoxScanners_SelectedIndexChanged(object sender, EventArgs e)
     {
-      StatusLabel1.Text = ListViewPages.Items.Count + " items";
+      RefreshScanner();
     }
 
 
     private void RefreshScanner()
     {
       string selectedScanner = (string)ComboBoxScanners.SelectedItem;
-      fScanner.SetActiveDataSource(selectedScanner, fScanner_SetActiveDataSourceCallback);
+      fScanner.SetActiveDataSource(selectedScanner);
+      RefreshControls();
     }
 
 
-    private void fScanner_SetActiveDataSourceCallback(bool success)
+    void RefreshControls()
     {
-      fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
+      if(String.IsNullOrEmpty((string)ComboBoxScanners.SelectedItem))
+      {
+        ButtonScanLegal.Enabled = false;
+        ButtonScanLetter.Enabled = false;
+      }
+      else
+      {
+        ButtonScanLegal.Enabled = true;
+        ButtonScanLetter.Enabled = true;
+      }
+
+      if(ComboBoxScanners.Items.Count == 0)
+      {
+        ComboBoxScanners.Enabled = false;
+      }
+      else
+      {
+        ComboBoxScanners.Enabled = true;
+      }
+
+      StatusLabel1.Text = ListViewPages.Items.Count + " items";
     }
 
 
     private bool ExecuteDataSourceSettingsDialog()
     {
       bool result = false;
-
-      RefreshScanner();
 
       string dataSourceName = fScanner.GetActiveDataSourceName();
 
@@ -181,8 +199,6 @@ namespace PDFScanningApp
 
     private void Scan(PageTypeEnum pageType)
     {
-      RefreshScanner();
-
       ScanSettings settings = new ScanSettings();
 
       settings.EnableFeeder = fAppSettings.EnableFeeder;
@@ -201,7 +217,11 @@ namespace PDFScanningApp
 
     private void fScanner_AcquireCallback(bool success)
     {
-      if(success == false)
+      if(success)
+      {
+        fAppSettings.CurrentScanner = fScanner.GetActiveDataSourceName();
+      }
+      else
       {
         Utils.Dialogs.ShowError("Scanner failed to start");
       }

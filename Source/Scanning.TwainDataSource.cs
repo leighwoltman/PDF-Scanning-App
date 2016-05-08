@@ -19,6 +19,7 @@ namespace Scanning
       private TwIdentity fIdent;
       private StateType fState;
       private DataSourceSettings fSettings;
+      private DataSourceCapabilities fCapabilities;
 
 
       public DataSource(TwainDevice twain, TwIdentity identity)
@@ -27,6 +28,7 @@ namespace Scanning
         fIdent = identity;
         fState = StateType.Closed;
         fSettings = null;
+        fCapabilities = null;
       }
 
 
@@ -51,20 +53,21 @@ namespace Scanning
 
       public DataSourceCapabilities GetCapabilities()
       {
-        DataSourceCapabilities result = null;
-
-        if(this.Open())
+        if(fCapabilities == null)
         {
-          result = new DataSourceCapabilities();
+          if(this.Open())
+          {
+            fCapabilities = new DataSourceCapabilities();
 
-          result.ColorModes = GetAvailableValuesForColorMode();
-          result.PageTypes = GetAvailableValuesForPageType();
-          result.Resolutions = GetAvailableValuesForResolution();
+            fCapabilities.ColorModes = GetAvailableValuesForColorMode();
+            fCapabilities.PageTypes = GetAvailableValuesForPageType();
+            fCapabilities.Resolutions = GetAvailableValuesForResolution();
 
-          this.Close();
+            this.Close();
+          }
         }
 
-        return result;
+        return fCapabilities;
       }
 
 

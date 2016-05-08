@@ -11,7 +11,18 @@ using Defines;
 namespace Model
 {
   public class ScanSettings : Scanning.DataSourceSettings { }
-  public class ScanCapabilities : Scanning.DataSourceCapabilities { }
+
+
+  public class ScanCapabilities : Scanning.DataSourceCapabilities 
+  {
+    public ScanCapabilities(InterfaceDataSource ds)
+    {
+      DataSourceCapabilities cap = ds.GetCapabilities();
+      this.ColorModes = cap.ColorModes;
+      this.PageTypes = cap.PageTypes;
+      this.Resolutions = cap.Resolutions;
+    }
+  }
   
 
   class Scanner
@@ -20,7 +31,6 @@ namespace Model
     private InterfaceDataSourceManager fWia;
     private List<InterfaceDataSource> fDataSources;
     private InterfaceDataSource fActiveDataSource;
-    private DataSourceCapabilities fScanCapabilities;
     private Document fDocument;
 
 
@@ -30,7 +40,6 @@ namespace Model
       fWia = new WiaDataSourceManager();
       fDataSources = null;
       fActiveDataSource = null;
-      fScanCapabilities = null;
     }
 
 
@@ -118,35 +127,13 @@ namespace Model
     }
 
 
-    public delegate void SetActiveDataSourceCallback(bool success);
-
-    public void SetActiveDataSource(string name, SetActiveDataSourceCallback callback)
+    public void SetActiveDataSource(string name)
     {
-      bool success = false;
+      InterfaceDataSource ds = GetDataSourceByName(name);
 
-      if(GetActiveDataSourceName() == name)
+      if(ds != null)
       {
-        success = true; // Already selected
-      }
-      else
-      {
-        InterfaceDataSource ds = GetDataSourceByName(name);
-
-        if(ds != null)
-        {
-          fScanCapabilities = ds.GetCapabilities();
-
-          if(fScanCapabilities != null)
-          {
-            fActiveDataSource = ds;
-            success = true;
-          }
-        }
-      }
-
-      if(callback != null)
-      {
-        callback(success);
+        fActiveDataSource = ds;
       }
     }
 
@@ -172,7 +159,14 @@ namespace Model
 
     public ScanCapabilities GetActiveDataSourceCapabilities()
     {
-      return (ScanCapabilities)fScanCapabilities;
+      ScanCapabilities result = null;
+
+      if(fActiveDataSource != null)
+      {
+        result = new ScanCapabilities(fActiveDataSource);
+      }
+
+      return result;
     }
 
 
