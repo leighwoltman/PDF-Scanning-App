@@ -472,7 +472,7 @@ namespace PDFScanningApp
 
     private void Button2Sided_Click(object sender, EventArgs e)
     {
-      if(MessageBoxResult.OK == MessageBox.Show("This will sort the images in front/back order", "Confirm", MessageBoxButton.YesNo))
+      if(MessageBoxResult.OK == MessageBox.Show("This will sort the images in front/back order", "Confirm", MessageBoxButton.OKCancel))
       {
         fDocument.RearrangePages2Sided();
       }
