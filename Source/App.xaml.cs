@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Linq;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows;
 using Utils;
 
@@ -15,23 +15,49 @@ namespace PDFScanningApp
   /// </summary>
   public partial class App : Application
   {
-    private void Application_Startup(object sender, StartupEventArgs e)
-    {
-      string settingsFilename;
+    private Mutex fMutex = null;
 
-      if(e.Args.Length > 0)
+    protected override void OnStartup(StartupEventArgs e)
+    {
+      fMutex = new Mutex(false, AppInfo.GetApplicationGuid());
+
+      if(fMutex.WaitOne(0, false))
       {
-        settingsFilename = e.Args[0];
+        string settingsFilename;
+
+        if(e.Args.Length > 0)
+        {
+          settingsFilename = e.Args[0];
+        }
+        else
+        {
+          settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), AppInfo.GetApplicationName(), "Settings.xml");
+        }
+
+        AppSettings.Initialize(settingsFilename);
+
+        Window wnd = new WindowMain();
+        wnd.Show();
+
+        base.OnStartup(e);
       }
       else
       {
-        settingsFilename = System.IO.Path.Combine(AppInfo.GetUserAppDataFolder(), AppInfo.GetApplicationName(), "Settings.xml");
+        MessageBox.Show("An instance of " + AppInfo.GetApplicationName() + " is already running, only one instance is allowed at a time.");
+        fMutex = null;
+        this.Shutdown();
+      }
+    }
+
+
+    protected override void OnExit(ExitEventArgs e)
+    {
+      if(fMutex != null)
+      {
+        fMutex.ReleaseMutex();
       }
 
-      AppSettings.Initialize(settingsFilename);
-
-      Window wnd = new WindowMain();
-      wnd.Show();
+      base.OnExit(e);
     }
   }
 }
