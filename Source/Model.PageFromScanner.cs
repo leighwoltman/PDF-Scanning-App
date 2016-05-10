@@ -35,7 +35,14 @@ namespace Model
 
     public override void CleanUp()
     {
-      File.Delete(fFilename);
+      try
+      {
+        File.Delete(fFilename);
+      }
+      catch(Exception)
+      {
+        // do nothing
+      }
       base.CleanUp();
     }
   }
