@@ -210,6 +210,13 @@ namespace Model
     };
 
 
+    public virtual bool CanModify()
+    {
+      // can normally modify 
+      return true;
+    }
+
+
     protected void TransformImage(Image image)
     {
       if(fIsMirrored)

@@ -50,19 +50,19 @@
         </RibbonGroup>
         <!-- Output group-->
         <RibbonGroup x:Name="OutputGroup" Header="Output">
-          <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="Save As PDF" KeyTip="FP" Click="ButtonSavePdf_Click"/>
-          <RibbonButton LargeImageSource="External\Icons8\Print-96.png" Label="Print" KeyTip="C" Click="ButtonPrint_Click" />
+          <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="Save As PDF" KeyTip="FP" x:Name="ButtonSavePdf" Click="ButtonSavePdf_Click"/>
+          <RibbonButton LargeImageSource="External\Icons8\Print-96.png" Label="Print" KeyTip="C" x:Name="ButtonPrint" Click="ButtonPrint_Click" />
         </RibbonGroup>
         <!-- Edit group-->
         <RibbonGroup x:Name="EditGroup" Header="Edit">
-          <RibbonButton SmallImageSource="External\Icons8\Flip Vertical-96.png" Label="Flip Horizontal" Click="ButtonMirrorHorizontally_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Flip Horizontal-96.png" Label="Flip Vertical" Click="ButtonMirrorVertically_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Rotate Left-96.png" Label="Rotate Counterclockwise" Click="ButtonRotateCounterClockwise_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Rotate Right-96.png" Label="Rotate Clockwise" Click="ButtonRotateClockwise_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Rotate to Landscape-96.png" Label="Landscape" Click="ButtonLandscape_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Literature-96.png" Label="Two Sided Shuffle" Click="Button2Sided_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Delete File-96.png" Label="Remove Page" Click="ButtonDelete_Click"/>
-          <RibbonButton SmallImageSource="External\Icons8\Delete-96.png" Label="Remove All" Click="ButtonDeleteAll_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Flip Vertical-96.png" Label="Flip Horizontal" x:Name="ButtonMirrorHorizontally" Click="ButtonMirrorHorizontally_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Flip Horizontal-96.png" Label="Flip Vertical" x:Name="ButtonMirrorVertically" Click="ButtonMirrorVertically_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Rotate Left-96.png" Label="Rotate Counterclockwise" x:Name="ButtonRotateCounterClockwise" Click="ButtonRotateCounterClockwise_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Rotate Right-96.png" Label="Rotate Clockwise" x:Name="ButtonRotateClockwise" Click="ButtonRotateClockwise_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Rotate to Landscape-96.png" Label="Landscape" x:Name="ButtonLandscape" Click="ButtonLandscape_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Literature-96.png" Label="Two Sided Shuffle" x:Name="Button2Sided" Click="Button2Sided_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Delete File-96.png" Label="Remove Page" x:Name="ButtonDelete" Click="ButtonDelete_Click"/>
+          <RibbonButton SmallImageSource="External\Icons8\Delete-96.png" Label="Remove All" x:Name="ButtonDeleteAll" Click="ButtonDeleteAll_Click"/>
         </RibbonGroup>
       </RibbonTab>
       <!-- Ribbon Tab #2: -->

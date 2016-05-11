@@ -91,6 +91,7 @@ namespace PDFScanningApp
       lblCursorPosition.Text = "";
       lblDragDropInfo.Text = "";
       RefreshControls();
+      RefreshEditingControls(false, ListViewPages.Items.Count);
 
       fScanner.Open(fScanner_OpenCallback);
     }
@@ -168,8 +169,62 @@ namespace PDFScanningApp
       {
         ComboBoxScanners.IsEnabled = true;
       }
+
+      if(ListViewPages.Items.Count == 0)
+      {
+        // we have nothing to save or print
+        ButtonSavePdf.IsEnabled = false;
+        ButtonPrint.IsEnabled = false;
+      }
+      else
+      {
+        ButtonSavePdf.IsEnabled = true;
+        ButtonPrint.IsEnabled = true;
+      }
       
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
+    }
+
+
+    public void RefreshEditingControls(bool canEditPage, int pageCount)
+    {
+      if(canEditPage)
+      {
+        ButtonMirrorHorizontally.IsEnabled = true;
+        ButtonMirrorVertically.IsEnabled = true;
+        ButtonRotateCounterClockwise.IsEnabled = true;
+        ButtonRotateClockwise.IsEnabled = true;
+        ButtonLandscape.IsEnabled = true;
+      }
+      else
+      {
+        ButtonMirrorHorizontally.IsEnabled = false;
+        ButtonMirrorVertically.IsEnabled = false;
+        ButtonRotateCounterClockwise.IsEnabled = false;
+        ButtonRotateClockwise.IsEnabled = false;
+        ButtonLandscape.IsEnabled = false;
+      }
+
+      if(pageCount > 0)
+      {
+        if(pageCount > 2)
+        {
+          Button2Sided.IsEnabled = true;
+        }
+        else
+        {
+          Button2Sided.IsEnabled = false;
+        }
+
+        ButtonDelete.IsEnabled = true;
+        ButtonDeleteAll.IsEnabled = true;
+      }
+      else
+      {
+        Button2Sided.IsEnabled = false;
+        ButtonDelete.IsEnabled = false;
+        ButtonDeleteAll.IsEnabled = false;
+      }
     }
 
 
@@ -297,6 +352,7 @@ namespace PDFScanningApp
       {
         // No picture is selected
         PictureBoxPreview.Image = null;
+        RefreshEditingControls(false, ListViewPages.Items.Count);
       }
       else
       {
@@ -305,6 +361,9 @@ namespace PDFScanningApp
         PictureBoxPreview.ZoomToFit();
 
         lblDragDropInfo.Text = "" + item.PageNumber;
+
+        RefreshControls();
+        RefreshEditingControls(page.CanModify(), ListViewPages.Items.Count);
       }
     }
 

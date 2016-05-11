@@ -75,5 +75,12 @@ namespace Model
 
       return result;
     }
+
+
+    public override bool CanModify()
+    {
+      // can only modify if we are in image mode
+      return fSingleImageMode;
+    }
   }
 }
