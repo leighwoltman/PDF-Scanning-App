@@ -183,6 +183,8 @@ namespace PDFScanningApp
       }
       
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
+
+      ButtonPrint.Visibility = fAppSettings.ShowPrintButton ? Visibility.Visible : Visibility.Collapsed;
     }
 
 
@@ -568,6 +570,7 @@ namespace PDFScanningApp
       WindowSettings settingsDialog = new WindowSettings(fAppSettings);
       settingsDialog.Owner = this;
       settingsDialog.ShowDialog();
+      RefreshControls();
     }
 
 

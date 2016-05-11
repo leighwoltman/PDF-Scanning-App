@@ -2,7 +2,7 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
-        Title="Settings" Height="596.357" Width="506" ResizeMode="NoResize" Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" >
+        Title="Settings" Height="630.357" Width="506" ResizeMode="NoResize" Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" >
     <Grid Margin="0,0,0,7">
         <Grid HorizontalAlignment="Left" Width="500">
             <Grid.ColumnDefinitions>
@@ -13,8 +13,8 @@
             <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageWidth" HorizontalAlignment="Left" Margin="185,31,0,0" VerticalAlignment="Top" Width="79" DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False"/>
             <Label Content="Custom Page Size" HorizontalContentAlignment="Left" Margin="48,10,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
             <Label Content="Width:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,28,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Button x:Name="ButtonOK" Content="OK" HorizontalAlignment="Left" Margin="22,527,0,0" VerticalAlignment="Top" Width="75" Click="ButtonOK_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
-            <Button x:Name="ButtonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="31,527,0,0" VerticalAlignment="Top" Width="75" Grid.Column="2" Click="ButtonCancel_Click"/>
+            <Button x:Name="ButtonOK" Content="OK" HorizontalAlignment="Left" Margin="22,554,0,0" VerticalAlignment="Top" Width="75" Click="ButtonOK_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
+            <Button x:Name="ButtonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="31,554,0,0" VerticalAlignment="Top" Width="75" Grid.Column="2" Click="ButtonCancel_Click"/>
             <Label Content="Height:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="269,26,0,0" VerticalAlignment="Top" Width="53" Height="31" Grid.ColumnSpan="2"/>
             <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageHeight" HorizontalAlignment="Left" Margin="19,30,0,0" VerticalAlignment="Top" Width="79
                                " DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Grid.Column="1"/>
@@ -65,6 +65,8 @@
             <xctk:DoubleUpDown x:Name="UpDownDoubleScannerContrast" HorizontalAlignment="Left" Margin="227,242,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
             <xctk:IntegerUpDown x:Name="UpDownIntegerExportCompressionFactor" HorizontalAlignment="Left" Margin="227,409,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="100"/>
             <Label Content="Export Compression Factor:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="39,406,0,0" VerticalAlignment="Top" Width="188" Height="33"/>
+            <Label Content="Show Print Button:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="59,509,0,0" VerticalAlignment="Top" Width="168" Height="33"/>
+            <CheckBox x:Name="CheckBoxShowPrintButton" Content="" HorizontalAlignment="Left" Margin="229,515,0,0" VerticalAlignment="Top"/>
         </Grid>
 
     </Grid>

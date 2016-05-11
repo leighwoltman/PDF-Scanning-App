@@ -64,6 +64,7 @@ namespace PDFScanningApp
       ComboBoxPdfImportAction.SelectedIndex = (fAppSettings.AlwaysNativePdfImport) ? 0 : 1;
       CheckBoxPdfImageImport.IsChecked = fAppSettings.AttemptPdfSingleImageImport;
       CheckBoxRemovePagesPdfExport.IsChecked = fAppSettings.RemovePagesAfterPdfExport;
+      CheckBoxShowPrintButton.IsChecked = fAppSettings.ShowPrintButton;
     }
 
     private void ButtonOK_Click(object sender, RoutedEventArgs e)
@@ -102,6 +103,7 @@ namespace PDFScanningApp
       fAppSettings.AlwaysNativePdfImport = (ComboBoxPdfImportAction.SelectedIndex == 0);
       fAppSettings.AttemptPdfSingleImageImport = (bool)CheckBoxPdfImageImport.IsChecked;
       fAppSettings.RemovePagesAfterPdfExport = (bool)CheckBoxRemovePagesPdfExport.IsChecked;
+      fAppSettings.ShowPrintButton = (bool)CheckBoxShowPrintButton.IsChecked;
 
       this.DialogResult = true;
     }
