@@ -388,9 +388,13 @@ namespace PDFScanningApp
 
         fPdfExporter.SaveDocument(fDocument, fileName);
 
+        // TODO: this shouldn't exist
         Thread.Sleep(5000);
 
-//        fDocument.RemoveAll();
+        if (fAppSettings.RemovePagesAfterPdfExport)
+        {
+          fDocument.RemoveAll();
+        }
 
         fAppSettings.LastDirectory = System.IO.Path.GetDirectoryName(fileName);
       }
