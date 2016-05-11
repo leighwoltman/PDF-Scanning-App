@@ -433,7 +433,7 @@ namespace PDFScanningApp
         e.Graphics.DrawImage(layoutThumbnail, layoutBounds);
         e.Graphics.DrawRectangle(new Pen(Brushes.Black, 1), layoutBounds);
         e.Graphics.DrawString("Page " + (e.Item.Index + 1), ListViewPages.Font, Brushes.Black, rectLine1);
-        e.Graphics.DrawString("Details", ListViewPages.Font, Brushes.DarkGray, rectLine2);
+        e.Graphics.DrawString(page.Name, ListViewPages.Font, Brushes.DarkGray, rectLine2);
       }
     }
 
