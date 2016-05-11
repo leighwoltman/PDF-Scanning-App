@@ -16,6 +16,7 @@ namespace Model
     private bool fSingleImageMode;
     private string fFilename;
     private int fPageIndex;
+    private ResolutionDpi fViewingResolution;
 
 
     public string SourceFilename
@@ -36,10 +37,11 @@ namespace Model
     }
 
 
-    public PageFromPdf(string filename, int pageIndex, SizeInches size, Image image)
+    public PageFromPdf(string filename, int pageIndex, SizeInches size, Image image, ResolutionDpi viewingResolution)
     {
       fFilename = filename;
       fPageIndex = pageIndex;
+      fViewingResolution = viewingResolution;
 
       if(image == null)
       {
@@ -68,7 +70,7 @@ namespace Model
       else
       {
         // TODO: For thumbnail purpose rendering can be made to smaller size
-        result = PdfImporter.RenderPage(fFilename, fPageIndex, 300, 300);
+        result = PdfImporter.RenderPage(fFilename, fPageIndex, (float)fViewingResolution.Horizontal, (float)fViewingResolution.Vertical);
       }
 
       return result;

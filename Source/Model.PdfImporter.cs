@@ -19,16 +19,16 @@ namespace Model
 
     }
 
-    public void LoadPagesFromFiles(Document document, string[] filenames, bool attemptPdfSingleImageImport)
+    public void LoadPagesFromFiles(Document document, string[] filenames, bool attemptPdfSingleImageImport, ResolutionDpi viewingResolution)
     {
       foreach(string filename in filenames)
       {
-        LoadDocument(document, filename, attemptPdfSingleImageImport);
+        LoadDocument(document, filename, attemptPdfSingleImageImport, viewingResolution);
       }
     }
 
 
-    public void LoadDocument(Document document, string filename, bool attemptPdfSingleImageImport)
+    public void LoadDocument(Document document, string filename, bool attemptPdfSingleImageImport, ResolutionDpi viewingResolution)
     {
       try
       {
@@ -45,7 +45,7 @@ namespace Model
           {
             image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
           }
-          Page myPage = new PageFromPdf(filename, i, pageSize, image);
+          Page myPage = new PageFromPdf(filename, i, pageSize, image, viewingResolution);
           document.AddPage(myPage);
         }
       }

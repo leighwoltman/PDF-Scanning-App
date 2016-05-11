@@ -342,7 +342,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames);
+        fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames, fAppSettings.DefaultPageSize);
       }
 
       RefreshControls();
@@ -362,7 +362,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport);
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
       }
 
       RefreshControls();
@@ -632,7 +632,7 @@ namespace PDFScanningApp
 
           if(ext == ".PDF")
           {
-            fPdfImporter.LoadDocument(fDocument, filename, fAppSettings.AttemptPdfSingleImageImport);
+            fPdfImporter.LoadDocument(fDocument, filename, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
           }
           else if((ext == ".BMP") || (ext == ".JPG") || (ext == ".GIF") || (ext == ".PNG"))
           {
