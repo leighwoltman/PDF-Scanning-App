@@ -14,16 +14,21 @@ namespace Model
 {
   class PdfImporter
   {
-    public void LoadPagesFromFiles(Document document, string[] filenames)
+    public PdfImporter()
+    {
+
+    }
+
+    public void LoadPagesFromFiles(Document document, string[] filenames, bool attemptPdfSingleImageImport)
     {
       foreach(string filename in filenames)
       {
-        LoadDocument(document, filename);
+        LoadDocument(document, filename, attemptPdfSingleImageImport);
       }
     }
 
 
-    public void LoadDocument(Document document, string filename)
+    public void LoadDocument(Document document, string filename, bool attemptPdfSingleImageImport)
     {
       try
       {
@@ -35,7 +40,11 @@ namespace Model
           double height = pdfPage.Height / 72; // PointsToInches
           double width = pdfPage.Width / 72; // PointsToInches
           SizeInches pageSize = new SizeInches(width, height);
-          Image image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
+          Image image = null;
+          if (attemptPdfSingleImageImport)
+          {
+            image = PdfImporter.GetSingleImageFromPdfPage(pdfPage);
+          }
           Page myPage = new PageFromPdf(filename, i, pageSize, image);
           document.AddPage(myPage);
         }

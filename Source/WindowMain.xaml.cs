@@ -362,7 +362,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName);
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport);
       }
 
       RefreshControls();
@@ -632,7 +632,7 @@ namespace PDFScanningApp
 
           if(ext == ".PDF")
           {
-            fPdfImporter.LoadDocument(fDocument, filename);
+            fPdfImporter.LoadDocument(fDocument, filename, fAppSettings.AttemptPdfSingleImageImport);
           }
           else if((ext == ".BMP") || (ext == ".JPG") || (ext == ".GIF") || (ext == ".PNG"))
           {
