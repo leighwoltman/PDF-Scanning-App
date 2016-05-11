@@ -8,18 +8,18 @@ namespace Model
 {
   class ImageLoader
   {
-    public void LoadImagesFromFiles(Document document, string[] filenames)
+    public void LoadImagesFromFiles(Document document, string[] filenames, SizeInches size)
     {
       foreach(string filename in filenames)
       {
-        LoadFromFile(document, filename);
+        LoadFromFile(document, filename, size);
       }
     }
 
 
-    public void LoadFromFile(Document document, string filename)
+    public void LoadFromFile(Document document, string filename, SizeInches size)
     {
-      Page myPage = new PageFromFile(filename, SizeInches.Letter);
+      Page myPage = new PageFromFile(filename, size);
       document.AddPage(myPage);
     }
   }

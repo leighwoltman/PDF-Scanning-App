@@ -636,7 +636,7 @@ namespace PDFScanningApp
           }
           else if((ext == ".BMP") || (ext == ".JPG") || (ext == ".GIF") || (ext == ".PNG"))
           {
-            fImageLoader.LoadFromFile(fDocument, filename);
+            fImageLoader.LoadFromFile(fDocument, filename, fAppSettings.DefaultPageSize);
           }
           else
           {
