@@ -40,11 +40,21 @@
       <RibbonTab Header="Home" KeyTip="H" >
         <!-- Home  group-->
         <RibbonGroup x:Name="AcquireGroup" Header="Acquire">
-          <RibbonMenuButton x:Name="ButtonScan" LargeImageSource="External\Icons8\Scanner-96.png" Label="Scan" KeyTip="S">
+                    <RibbonSplitButton x:Name="ButtonScan" Label="Scan" LargeImageSource="External\Icons8\Scanner-96.png" SmallImageSource="External\Icons8\Scanner-96.png" Width="90" Click="ButtonScan_Click">
+                        <RibbonGallery SelectedValuePath="Content"
+                                        MaxColumnCount="1">
+                            <RibbonGalleryCategory>
+                                <RibbonGalleryItem Content="Scan Letter" KeyTip="L" Selected="ButtonScanLetter_Click"/>
+                                <RibbonGalleryItem Content="Scan Legal" KeyTip="B" Selected="ButtonScanLegal_Click"/>
+                                <RibbonGalleryItem Content="Scan Custom" KeyTip="C" Selected="ButtonScanCustomPage_Click"/>
+                        </RibbonGalleryCategory>
+                        </RibbonGallery>
+                    </RibbonSplitButton>
+          <!--<RibbonMenuButton x:Name="ButtonScan" LargeImageSource="External\Icons8\Scanner-96.png" Label="Scan" KeyTip="S">
             <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 11" KeyTip="L" Click="ButtonScanLetter_Click"/>
             <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan 8.5 x 14" KeyTip="B" Click="ButtonScanLegal_Click"/>
             <RibbonMenuItem ImageSource="External\Icons8\Scanner-96.png" Header="Scan Custom Page" KeyTip="C" Click="ButtonScanCustomPage_Click"/>
-          </RibbonMenuButton>
+          </RibbonMenuButton>-->
           <RibbonButton LargeImageSource="External\Icons8\Edit Image-96.png" Label="From Images" KeyTip="C" Click="ButtonLoadImages_Click" />
           <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="From PDF" KeyTip="FP" Click="ButtonLoadPdf_Click" />
         </RibbonGroup>

@@ -37,6 +37,7 @@ namespace PDFScanningApp
     private InsertionMark  fInsertionMark;
     private Point fDragStartPosition;
     private bool fClosing;
+    private PageTypeEnum fLastScanned = PageTypeEnum.Letter;
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -185,6 +186,8 @@ namespace PDFScanningApp
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
 
       ButtonPrint.Visibility = fAppSettings.ShowPrintButton ? Visibility.Visible : Visibility.Collapsed;
+
+      RefreshButtonScanLabel();
     }
 
 
@@ -370,20 +373,59 @@ namespace PDFScanningApp
     }
 
 
+    private void RefreshButtonScanLabel()
+    {
+      string text = "Scan ";
+
+      switch (fLastScanned)
+      {
+        case PageTypeEnum.Custom:
+          {
+            text += fAppSettings.CustomPageSize.Width + "x" + fAppSettings.CustomPageSize.Height;
+          }
+          break;
+        case PageTypeEnum.Letter:
+          {
+            text += "Letter";
+          }
+          break;
+        case PageTypeEnum.Legal:
+          {
+            text += "Legal";
+          }
+          break;
+      }
+
+      ButtonScan.Label = text;
+    }
+
+
+    private void ButtonScan_Click(object sender, RoutedEventArgs e)
+    {
+      Scan(fLastScanned);
+    }
+
+
     private void ButtonScanLetter_Click(object sender, RoutedEventArgs e)
     {
+      fLastScanned = PageTypeEnum.Letter;
+      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Letter);
     }
 
 
     private void ButtonScanLegal_Click(object sender, RoutedEventArgs e)
     {
+      fLastScanned = PageTypeEnum.Legal;
+      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Legal);
     }
 
 
     private void ButtonScanCustomPage_Click(object sender, RoutedEventArgs e)
     {
+      fLastScanned = PageTypeEnum.Custom;
+      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Custom);
     }
 
