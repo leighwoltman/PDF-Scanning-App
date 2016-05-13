@@ -245,7 +245,7 @@ namespace PDFScanningApp
     }
 
 
-    public void RefreshEditingControls(bool canEditPage, int pageCount)
+    public void RefreshEditingControls(bool canEditPage)
     {
       if(canEditPage)
       {
