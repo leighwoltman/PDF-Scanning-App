@@ -153,13 +153,20 @@ namespace PDFScanningApp
 
     void RefreshControls()
     {
-      if(String.IsNullOrEmpty((string)ComboBoxScannersGallery.SelectedItem))
+      if (String.IsNullOrEmpty((string)ComboBoxScannersGallery.SelectedItem))
       {
         ButtonScan.IsEnabled = false;
+        ButtonScanGallery.IsEnabled = false;
       }
       else
       {
         ButtonScan.IsEnabled = true;
+        ButtonScanGallery.IsEnabled = true;
+
+        // http://stackoverflow.com/questions/34306045/ribbongallery-disabled-in-net-4-6
+        // there's a bug in .NET where the gallery gets disabled unless this gets done
+        ButtonScanGallery.Command = ApplicationCommands.Print;
+        ButtonScanGallery.Command = null;
       }
 
       if(ComboBoxScannersCategory.Items.Count == 0)
