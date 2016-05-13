@@ -95,6 +95,7 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Utils.TempFolder.cs" />
     <Compile Include="Utils.WpfImageConverter.cs" />
     <Compile Include="Defines.cs" />
     <Compile Include="Model.Document.cs" />
