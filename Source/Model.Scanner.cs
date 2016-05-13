@@ -177,6 +177,7 @@ namespace Model
       if(fActiveDataSource != null)
       {
         fDocument = document;
+        OnScanningComplete = callback;
 
         if(fActiveDataSource.Acquire(settings) == false)
         {
