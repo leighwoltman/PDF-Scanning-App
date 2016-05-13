@@ -40,8 +40,7 @@ namespace Scanning
     public bool ShowTransferUI;
     public bool EnableFeeder;
     public ColorModeEnum ColorMode;
-    public PageTypeEnum PageType;
-    public BoundsInches CustomScanArea;
+    public BoundsInches ScanArea;
     public int Resolution;
     public int CompressionFactor;
     public double Threshold;   // 0 to 1
@@ -55,7 +54,7 @@ namespace Scanning
       ShowTransferUI = true;
       EnableFeeder = false;
       ColorMode = ColorModeEnum.BW;
-      PageType = PageTypeEnum.Letter;
+      ScanArea = new BoundsInches(0, 0, SizeInches.Letter);
       Resolution = 200;
       Threshold = 0.5;
       Brightness = 0.5;

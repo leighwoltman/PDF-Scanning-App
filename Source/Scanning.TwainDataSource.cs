@@ -176,6 +176,7 @@ namespace Scanning
 
           if(fSettings != null)
           {
+            // Setup Pixel Type
             TwCapPixelType pixelType;
 
             switch(fSettings.ColorMode)
@@ -188,40 +189,41 @@ namespace Scanning
 
             fCapabilityPixelType.CurrentValue = pixelType;
 
-            if(fSettings.PageType == PageTypeEnum.Custom)
+#if USE_PAGE_TYPE
+            // Page Type Setting is not used anymore; Image Layout is defined instead
+            TwCapPageType pageType;
+
+            switch(fSettings.PageType)
             {
-              TwImageLayout ilayout = new TwImageLayout();
-
-              if(fTwain.GetImageLayout(fIdent, ilayout))
-              {
-                BoundsInches scanArea = settings.CustomScanArea;
-
-                ilayout.Frame.Left = (float)scanArea.X;
-                ilayout.Frame.Top = (float)scanArea.Y;
-                ilayout.Frame.Right = (float)(scanArea.X + scanArea.Width);
-                ilayout.Frame.Bottom = (float)(scanArea.Y + scanArea.Height);
-                fTwain.SetImageLayout(fIdent, ilayout);
-              }
-            }
-            else
-            {
-              TwCapPageType pageType;
-
-              switch(fSettings.PageType)
-              {
-                case PageTypeEnum.Letter: pageType = TwCapPageType.UsLetter; break;
-                case PageTypeEnum.Legal: pageType = TwCapPageType.UsLegal; break;
-                default: pageType = TwCapPageType.UsLetter; break;
-              }
-
-              fCapabilityPageSize.CurrentValue = pageType;
+              case PageTypeEnum.Letter: pageType = TwCapPageType.UsLetter; break;
+              case PageTypeEnum.Legal: pageType = TwCapPageType.UsLegal; break;
+              default: pageType = TwCapPageType.UsLetter; break;
             }
 
+            fCapabilityPageSize.CurrentValue = pageType;
+#else
+            // Setup Scan Area
+            TwImageLayout ilayout = new TwImageLayout();
+
+            if(fTwain.GetImageLayout(fIdent, ilayout))
+            {
+              BoundsInches scanArea = settings.ScanArea;
+
+              ilayout.Frame.Left = (float)scanArea.X;
+              ilayout.Frame.Top = (float)scanArea.Y;
+              ilayout.Frame.Right = (float)(scanArea.X + scanArea.Width);
+              ilayout.Frame.Bottom = (float)(scanArea.Y + scanArea.Height);
+              fTwain.SetImageLayout(fIdent, ilayout);
+            }
+#endif
+
+            // Setup Resolution
             float resolution = (float)fSettings.Resolution;
 
             fCapabilityResolutionX.CurrentValue = resolution;
             fCapabilityResolutionY.CurrentValue = resolution;
 
+            // Enable/Disable Document Feeder
             if(fSettings.EnableFeeder)
             {
               fCapabilityFeederEnabled.CurrentValue = fCapabilityFeederLoaded.CurrentValue;
@@ -231,6 +233,7 @@ namespace Scanning
               fCapabilityFeederEnabled.CurrentValue = false;
             }
 
+            // Analog adjustments
             fCapabilityThreshold.ScaledValue = settings.Threshold;
             fCapabilityBrightness.ScaledValue = settings.Brightness;
             fCapabilityContrast.ScaledValue = settings.Contrast;

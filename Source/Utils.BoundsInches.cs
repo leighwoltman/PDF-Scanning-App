@@ -44,5 +44,10 @@ namespace Utils
       fWidth = width;
       fHeight = height;
     }
+
+
+    public BoundsInches(double x, double y, SizeInches size)
+      : this(x, y, size.Width, size.Height)
+    { }
   }
 }

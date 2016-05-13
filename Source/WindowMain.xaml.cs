@@ -28,6 +28,7 @@ namespace PDFScanningApp
   public partial class WindowMain : Window
   {
     private AppSettings fAppSettings;
+    private PageTypeEnum fLastScanned;
     private Scanner fScanner;
     private Printer fPrinter;
     private PdfExporter fPdfExporter;
@@ -37,7 +38,6 @@ namespace PDFScanningApp
     private InsertionMark  fInsertionMark;
     private Point fDragStartPosition;
     private bool fClosing;
-    private PageTypeEnum fLastScanned = PageTypeEnum.Letter;
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -47,6 +47,7 @@ namespace PDFScanningApp
       InitializeComponent();
 
       fAppSettings = new AppSettings();
+      fLastScanned = PageTypeEnum.Letter;
 
       fScanner = new Scanner();
       fPrinter = new Printer();
@@ -198,6 +199,34 @@ namespace PDFScanningApp
     }
 
 
+    private void RefreshButtonScanLabel()
+    {
+      string text = "Scan ";
+
+      switch(fLastScanned)
+      {
+        case PageTypeEnum.Letter:
+          {
+            text += "Letter";
+          }
+          break;
+        case PageTypeEnum.Legal:
+          {
+            text += "Legal Legal";
+          }
+          break;
+        default:
+        case PageTypeEnum.Custom:
+          {
+            text += fAppSettings.CustomPageSize.Width + "x" + fAppSettings.CustomPageSize.Height;
+          }
+          break;
+      }
+
+      ButtonScan.Label = text;
+    }
+
+
     public void RefreshEditingControls(bool canEditPage, int pageCount)
     {
       if(canEditPage)
@@ -244,10 +273,31 @@ namespace PDFScanningApp
     {
       ScanSettings settings = new ScanSettings();
 
+      SizeInches size;
+
+      switch(pageType)
+      {
+        case PageTypeEnum.Letter:
+          {
+            size = SizeInches.Letter;
+          }
+          break;
+        case PageTypeEnum.Legal:
+          {
+            size = SizeInches.Legal;
+          }
+          break;
+        default:
+        case PageTypeEnum.Custom:
+          {
+            size = new SizeInches(fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
+          }
+          break;
+      }
+
+      settings.ScanArea = new BoundsInches(0, 0, size);
       settings.EnableFeeder = fAppSettings.EnableFeeder;
       settings.ColorMode = fAppSettings.ColorMode;
-      settings.PageType = pageType;
-      settings.CustomScanArea = new BoundsInches(0, 0, fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
       settings.Resolution = fAppSettings.Resolution;
       settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
       settings.Threshold = fAppSettings.Threshold;
@@ -257,6 +307,12 @@ namespace PDFScanningApp
       settings.ShowTransferUI = true;
 
       fScanner.Acquire(fDocument, settings, fScanner_AcquireCallback);
+
+      if(fLastScanned != pageType)
+      {
+        fLastScanned = pageType;
+        RefreshButtonScanLabel();
+      }
     }
 
 
@@ -380,33 +436,6 @@ namespace PDFScanningApp
     }
 
 
-    private void RefreshButtonScanLabel()
-    {
-      string text = "Scan ";
-
-      switch (fLastScanned)
-      {
-        case PageTypeEnum.Custom:
-          {
-            text += fAppSettings.CustomPageSize.Width + "x" + fAppSettings.CustomPageSize.Height;
-          }
-          break;
-        case PageTypeEnum.Letter:
-          {
-            text += "Letter";
-          }
-          break;
-        case PageTypeEnum.Legal:
-          {
-            text += "Legal";
-          }
-          break;
-      }
-
-      ButtonScan.Label = text;
-    }
-
-
     private void ButtonScan_Click(object sender, RoutedEventArgs e)
     {
       Scan(fLastScanned);
@@ -415,24 +444,18 @@ namespace PDFScanningApp
 
     private void ButtonScanLetter_Click(object sender, RoutedEventArgs e)
     {
-      fLastScanned = PageTypeEnum.Letter;
-      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Letter);
     }
 
 
     private void ButtonScanLegal_Click(object sender, RoutedEventArgs e)
     {
-      fLastScanned = PageTypeEnum.Legal;
-      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Legal);
     }
 
 
     private void ButtonScanCustomPage_Click(object sender, RoutedEventArgs e)
     {
-      fLastScanned = PageTypeEnum.Custom;
-      RefreshButtonScanLabel();
       Scan(PageTypeEnum.Custom);
     }
 
