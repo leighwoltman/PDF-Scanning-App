@@ -201,10 +201,31 @@ namespace PDFScanningApp
     {
       ScanSettings settings = new ScanSettings();
 
+      SizeInches size;
+
+      switch(pageType)
+      {
+        case PageTypeEnum.Letter:
+          {
+            size = SizeInches.Letter;
+          }
+          break;
+        case PageTypeEnum.Legal:
+          {
+            size = SizeInches.Legal;
+          }
+          break;
+        default:
+        case PageTypeEnum.Custom:
+          {
+            size = new SizeInches(fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
+          }
+          break;
+      }
+
+      settings.ScanArea = new BoundsInches(0, 0, size);
       settings.EnableFeeder = fAppSettings.EnableFeeder;
       settings.ColorMode = fAppSettings.ColorMode;
-      settings.PageType = pageType;
-      settings.CustomScanArea = new BoundsInches(0, 0, fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
       settings.Resolution = fAppSettings.Resolution;
       settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
       settings.Threshold = fAppSettings.Threshold;
@@ -467,7 +488,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames);
+        fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames, fAppSettings.DefaultPageSize);
       }
 
       RefreshControls();
@@ -487,7 +508,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName);
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
       }
 
       RefreshControls();
@@ -513,11 +534,15 @@ namespace PDFScanningApp
 
         fPdfExporter.SaveDocument(fDocument, fileName);
 
+        // TODO: this shouldn't exist
         Thread.Sleep(5000);
 
-        // fDocument.RemoveAll();
+        if(fAppSettings.RemovePagesAfterPdfExport)
+        {
+          fDocument.RemoveAll();
+        }
 
-        fAppSettings.LastDirectory = Path.GetDirectoryName(fileName);
+        fAppSettings.LastDirectory = System.IO.Path.GetDirectoryName(fileName);
       }
     }
 

@@ -71,7 +71,6 @@
     <Compile Include="Model.ImageLoader.cs" />
     <Compile Include="Model.Page.cs" />
     <Compile Include="Model.PageFromFile.cs" />
-    <Compile Include="Model.PageFromImage.cs" />
     <Compile Include="Model.PageFromPdf.cs" />
     <Compile Include="Model.PageFromScanner.cs" />
     <Compile Include="Model.PdfExporter.cs" />
