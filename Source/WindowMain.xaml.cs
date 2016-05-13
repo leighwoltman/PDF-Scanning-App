@@ -92,7 +92,7 @@ namespace PDFScanningApp
       lblCursorPosition.Text = "";
       lblDragDropInfo.Text = "";
       RefreshControls();
-      RefreshEditingControls(false, ListViewPages.Items.Count);
+      RefreshEditingControls(false);
 
       fScanner.Open(fScanner_OpenCallback);
     }
@@ -178,16 +178,34 @@ namespace PDFScanningApp
         ComboBoxScanners.IsEnabled = true;
       }
 
-      if(ListViewPages.Items.Count == 0)
+      int pageCount = ListViewPages.Items.Count;
+
+      if (pageCount == 0)
       {
         // we have nothing to save or print
         ButtonSavePdf.IsEnabled = false;
         ButtonPrint.IsEnabled = false;
+
+        Button2Sided.IsEnabled = false;
+        ButtonDelete.IsEnabled = false;
+        ButtonDeleteAll.IsEnabled = false;
       }
       else
       {
         ButtonSavePdf.IsEnabled = true;
         ButtonPrint.IsEnabled = true;
+
+        if (pageCount > 2)
+        {
+          Button2Sided.IsEnabled = true;
+        }
+        else
+        {
+          Button2Sided.IsEnabled = false;
+        }
+
+        ButtonDelete.IsEnabled = true;
+        ButtonDeleteAll.IsEnabled = true;
       }
       
       lblCursorPosition.Text = ListViewPages.Items.Count + " items";
@@ -198,7 +216,7 @@ namespace PDFScanningApp
     }
 
 
-    public void RefreshEditingControls(bool canEditPage, int pageCount)
+    public void RefreshEditingControls(bool canEditPage)
     {
       if(canEditPage)
       {
@@ -215,27 +233,6 @@ namespace PDFScanningApp
         ButtonRotateCounterClockwise.IsEnabled = false;
         ButtonRotateClockwise.IsEnabled = false;
         ButtonLandscape.IsEnabled = false;
-      }
-
-      if(pageCount > 0)
-      {
-        if(pageCount > 2)
-        {
-          Button2Sided.IsEnabled = true;
-        }
-        else
-        {
-          Button2Sided.IsEnabled = false;
-        }
-
-        ButtonDelete.IsEnabled = true;
-        ButtonDeleteAll.IsEnabled = true;
-      }
-      else
-      {
-        Button2Sided.IsEnabled = false;
-        ButtonDelete.IsEnabled = false;
-        ButtonDeleteAll.IsEnabled = false;
       }
     }
 
@@ -364,7 +361,7 @@ namespace PDFScanningApp
       {
         // No picture is selected
         PictureBoxPreview.Image = null;
-        RefreshEditingControls(false, ListViewPages.Items.Count);
+        RefreshEditingControls(false);
       }
       else
       {
@@ -375,7 +372,7 @@ namespace PDFScanningApp
         lblDragDropInfo.Text = "" + item.PageNumber;
 
         RefreshControls();
-        RefreshEditingControls(page.CanModify(), ListViewPages.Items.Count);
+        RefreshEditingControls(page.CanModify());
       }
     }
 
