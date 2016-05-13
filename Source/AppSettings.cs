@@ -172,6 +172,7 @@ namespace PDFScanningApp
       set { fTable.SetInteger("ExportCompressionFactor", value); }
     }
 
+
     public bool ShowPrintButton
     {
       get { return fTable.GetBool("ShowPrintButton", false); }
