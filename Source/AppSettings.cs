@@ -26,66 +26,52 @@ namespace PDFScanningApp
     }
 
 
-    public bool UseScannerNativeUI
+    public bool ScannerUseNativeUI
     {
       get { return fTable.GetBool("UseScannerNativeUI", false); }
       set { fTable.SetBool("UseScannerNativeUI", value); }
     }
 
 
-    public string LastDirectory
+    public bool ScannerEnableFeeder
     {
-      get { return fTable.Get("LastDirectory", ""); }
-      set { fTable.Set("LastDirectory", value); }
+      get { return fTable.GetBool("ScannerEnableFeeder", true); }
+      set { fTable.SetBool("ScannerEnableFeeder", value); }
     }
 
 
-    public bool EnableFeeder
+    public ColorModeEnum ScannerColorMode
     {
-      get { return fTable.GetBool("EnableFeeder", true); }
-      set { fTable.SetBool("EnableFeeder", value); }
+      get { return (ColorModeEnum)fTable.GetInteger("ScannerColorMode", (int)ColorModeEnum.RGB); }
+      set { fTable.SetInteger("ScannerColorMode", (int)value); }
     }
 
 
-    public ColorModeEnum ColorMode
+    public int ScannerResolution
     {
-      get { return (ColorModeEnum)fTable.GetInteger("ColorMode", (int)ColorModeEnum.RGB); }
-      set { fTable.SetInteger("ColorMode", (int)value); }
+      get { return fTable.GetInteger("ScannerResolution", 200); }
+      set { fTable.SetInteger("ScannerResolution", value); }
     }
 
 
-    public PageTypeEnum PageType
+    public double ScannerThreshold
     {
-      get { return (PageTypeEnum)fTable.GetInteger("PageType", (int)PageTypeEnum.Letter); }
-      set { fTable.SetInteger("PageType", (int)value); }
+      get { return fTable.GetDouble("ScannerThreshold", 0.5); }
+      set { fTable.SetDouble("ScannerThreshold", value); }
     }
 
 
-    public int Resolution
+    public double ScannerBrightness
     {
-      get { return fTable.GetInteger("Resolution", 200); }
-      set { fTable.SetInteger("Resolution", value); }
+      get { return fTable.GetDouble("ScannerBrightness", 0.5); }
+      set { fTable.SetDouble("ScannerBrightness", value); }
     }
 
 
-    public double Threshold
+    public double ScannerContrast
     {
-      get { return fTable.GetDouble("Threshold", 0.5); }
-      set { fTable.SetDouble("Threshold", value); }
-    }
-
-
-    public double Brightness
-    {
-      get { return fTable.GetDouble("Brightness", 0.5); }
-      set { fTable.SetDouble("Brightness", value); }
-    }
-
-
-    public double Contrast
-    {
-      get { return fTable.GetDouble("Contrast", 0.5); }
-      set { fTable.SetDouble("Contrast", value); }
+      get { return fTable.GetDouble("ScannerContrast", 0.5); }
+      set { fTable.SetDouble("ScannerContrast", value); }
     }
     
 
@@ -94,7 +80,21 @@ namespace PDFScanningApp
       get { return fTable.GetInteger("ScannerCompressionFactor", 80); }
       set { fTable.SetInteger("ScannerCompressionFactor", value); }
     }
-    
+
+
+    public SizeInches ScannerCustomPageSize
+    {
+      get
+      {
+        return new SizeInches(fTable.GetDouble("ScannerCustomPageSizeWidth", 7), fTable.GetDouble("ScannerCustomPageSizeHeight", 10));
+      }
+      set
+      {
+        fTable.SetDouble("ScannerCustomPageSizeWidth", value.Width);
+        fTable.SetDouble("ScannerCustomPageSizeHeight", value.Height);
+      }
+    }
+
 
     public SizeInches DefaultPageSize
     {
@@ -106,20 +106,6 @@ namespace PDFScanningApp
       {
         fTable.SetDouble("DefaultPageSizeWidth", value.Width);
         fTable.SetDouble("DefaultPageSizeHeight", value.Height);
-      }
-    }
-    
-
-    public SizeInches CustomPageSize
-    {
-      get
-      {
-        return new SizeInches(fTable.GetDouble("CustomPageSizeWidth", 7), fTable.GetDouble("CustomPageSizeHeight", 10));
-      }
-      set
-      {
-        fTable.SetDouble("CustomPageSizeWidth", value.Width);
-        fTable.SetDouble("CustomPageSizeHeight", value.Height);
       }
     }
     
@@ -170,6 +156,13 @@ namespace PDFScanningApp
     {
       get { return fTable.GetInteger("ExportCompressionFactor", 80); }
       set { fTable.SetInteger("ExportCompressionFactor", value); }
+    }
+
+
+    public string LastDirectory
+    {
+      get { return fTable.Get("LastDirectory", ""); }
+      set { fTable.Set("LastDirectory", value); }
     }
 
 

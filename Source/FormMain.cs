@@ -167,27 +167,25 @@ namespace PDFScanningApp
         F.SetAvailableValuesForPageType(Cap.PageTypes);
         F.SetAvailableValuesForResolution(Cap.Resolutions);
 
-        F.UseNativeUI = fAppSettings.UseScannerNativeUI;
-        F.EnableFeeder = fAppSettings.EnableFeeder;
-        F.ColorMode = fAppSettings.ColorMode;
-        F.PageType = fAppSettings.PageType;
-        F.Resolution = fAppSettings.Resolution;
-        F.Threshold = fAppSettings.Threshold;
-        F.Brightness = fAppSettings.Brightness;
-        F.Contrast = fAppSettings.Contrast;
+        F.UseNativeUI = fAppSettings.ScannerUseNativeUI;
+        F.EnableFeeder = fAppSettings.ScannerEnableFeeder;
+        F.ColorMode = fAppSettings.ScannerColorMode;
+        F.Resolution = fAppSettings.ScannerResolution;
+        F.Threshold = fAppSettings.ScannerThreshold;
+        F.Brightness = fAppSettings.ScannerBrightness;
+        F.Contrast = fAppSettings.ScannerContrast;
 
         DialogResult dr = F.ShowDialog();
 
         if(dr == DialogResult.OK)
         {
-          fAppSettings.UseScannerNativeUI = F.UseNativeUI;
-          fAppSettings.EnableFeeder = F.EnableFeeder;
-          fAppSettings.ColorMode = F.ColorMode;
-          fAppSettings.PageType = F.PageType;
-          fAppSettings.Resolution = F.Resolution;
-          fAppSettings.Threshold = F.Threshold;
-          fAppSettings.Brightness = F.Brightness;
-          fAppSettings.Contrast = F.Contrast;
+          fAppSettings.ScannerUseNativeUI = F.UseNativeUI;
+          fAppSettings.ScannerEnableFeeder = F.EnableFeeder;
+          fAppSettings.ScannerColorMode = F.ColorMode;
+          fAppSettings.ScannerResolution = F.Resolution;
+          fAppSettings.ScannerThreshold = F.Threshold;
+          fAppSettings.ScannerBrightness = F.Brightness;
+          fAppSettings.ScannerContrast = F.Contrast;
 
           result = true;
         }
@@ -218,20 +216,20 @@ namespace PDFScanningApp
         default:
         case PageTypeEnum.Custom:
           {
-            size = new SizeInches(fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
+            size = new SizeInches(fAppSettings.ScannerCustomPageSize.Width, fAppSettings.ScannerCustomPageSize.Height);
           }
           break;
       }
 
       settings.ScanArea = new BoundsInches(0, 0, size);
-      settings.EnableFeeder = fAppSettings.EnableFeeder;
-      settings.ColorMode = fAppSettings.ColorMode;
-      settings.Resolution = fAppSettings.Resolution;
+      settings.EnableFeeder = fAppSettings.ScannerEnableFeeder;
+      settings.ColorMode = fAppSettings.ScannerColorMode;
+      settings.Resolution = fAppSettings.ScannerResolution;
       settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
-      settings.Threshold = fAppSettings.Threshold;
-      settings.Brightness = fAppSettings.Brightness;
-      settings.Contrast = fAppSettings.Contrast;
-      settings.ShowSettingsUI = fAppSettings.UseScannerNativeUI;
+      settings.Threshold = fAppSettings.ScannerThreshold;
+      settings.Brightness = fAppSettings.ScannerBrightness;
+      settings.Contrast = fAppSettings.ScannerContrast;
+      settings.ShowSettingsUI = fAppSettings.ScannerUseNativeUI;
       settings.ShowTransferUI = true;
 
       fScanner.Acquire(fDocument, settings, fScanner_AcquireCallback);

@@ -28,7 +28,7 @@ namespace PDFScanningApp
 
       fAppSettings = appSettings;
 
-      SizeInches customPageSize = fAppSettings.CustomPageSize;
+      SizeInches customPageSize = fAppSettings.ScannerCustomPageSize;
       UpDownDoubleCustomPageWidth.Value = customPageSize.Width;
       UpDownDoubleCustomPageHeight.Value = customPageSize.Height;
 
@@ -36,7 +36,7 @@ namespace PDFScanningApp
       UpDownDoubleDefaultPageWidth.Value = defaultPageSize.Width;
       UpDownDoubleDefaultPageHeight.Value = defaultPageSize.Height;
 
-      switch(fAppSettings.ColorMode)
+      switch(fAppSettings.ScannerColorMode)
       {
         default:
         case Defines.ColorModeEnum.BW: ComboBoxScannerColorMode.SelectedIndex = 0; break;
@@ -44,10 +44,10 @@ namespace PDFScanningApp
         case Defines.ColorModeEnum.RGB: ComboBoxScannerColorMode.SelectedIndex = 2; break;
       }
 
-      UpDownIntegerScannerResolution.Value = fAppSettings.Resolution;
-      UpDownDoubleScannerThreshold.Value = fAppSettings.Threshold;
-      UpDownDoubleScannerBrightness.Value = fAppSettings.Brightness;
-      UpDownDoubleScannerContrast.Value = fAppSettings.Contrast;
+      UpDownIntegerScannerResolution.Value = fAppSettings.ScannerResolution;
+      UpDownDoubleScannerThreshold.Value = fAppSettings.ScannerThreshold;
+      UpDownDoubleScannerBrightness.Value = fAppSettings.ScannerBrightness;
+      UpDownDoubleScannerContrast.Value = fAppSettings.ScannerContrast;
       UpDownIntegerScannerCompressionFactor.Value = fAppSettings.ScannerCompressionFactor;
 
       switch (fAppSettings.PageScaling)
@@ -70,7 +70,7 @@ namespace PDFScanningApp
     private void ButtonOK_Click(object sender, RoutedEventArgs e)
     {
       SizeInches customPageSize = new SizeInches((double)UpDownDoubleCustomPageWidth.Value, (double)UpDownDoubleCustomPageHeight.Value);
-      fAppSettings.CustomPageSize = customPageSize;
+      fAppSettings.ScannerCustomPageSize = customPageSize;
 
       SizeInches defaultPageSize = new SizeInches((double)UpDownDoubleDefaultPageWidth.Value, (double)UpDownDoubleDefaultPageHeight.Value);
       fAppSettings.DefaultPageSize = defaultPageSize;
@@ -78,15 +78,15 @@ namespace PDFScanningApp
       switch (ComboBoxScannerColorMode.SelectedIndex)
       {
         default:
-        case 0: fAppSettings.ColorMode = Defines.ColorModeEnum.BW; break;
-        case 1: fAppSettings.ColorMode = Defines.ColorModeEnum.Gray; break;
-        case 2: fAppSettings.ColorMode = Defines.ColorModeEnum.RGB; break;
+        case 0: fAppSettings.ScannerColorMode = Defines.ColorModeEnum.BW; break;
+        case 1: fAppSettings.ScannerColorMode = Defines.ColorModeEnum.Gray; break;
+        case 2: fAppSettings.ScannerColorMode = Defines.ColorModeEnum.RGB; break;
       }
 
-      fAppSettings.Resolution = (int)UpDownIntegerScannerResolution.Value;
-      fAppSettings.Threshold = (double)UpDownDoubleScannerThreshold.Value;
-      fAppSettings.Brightness = (double)UpDownDoubleScannerBrightness.Value;
-      fAppSettings.Contrast = (double)UpDownDoubleScannerContrast.Value;
+      fAppSettings.ScannerResolution = (int)UpDownIntegerScannerResolution.Value;
+      fAppSettings.ScannerThreshold = (double)UpDownDoubleScannerThreshold.Value;
+      fAppSettings.ScannerBrightness = (double)UpDownDoubleScannerBrightness.Value;
+      fAppSettings.ScannerContrast = (double)UpDownDoubleScannerContrast.Value;
       fAppSettings.ScannerCompressionFactor = (int)UpDownIntegerScannerCompressionFactor.Value;
 
       switch (ComboBoxPageScaling.SelectedIndex)

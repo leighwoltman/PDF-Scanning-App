@@ -236,7 +236,7 @@ namespace PDFScanningApp
         default:
         case PageTypeEnum.Custom:
           {
-            text += fAppSettings.CustomPageSize.Width + "x" + fAppSettings.CustomPageSize.Height;
+            text += fAppSettings.ScannerCustomPageSize.Width + "x" + fAppSettings.ScannerCustomPageSize.Height;
           }
           break;
       }
@@ -287,20 +287,20 @@ namespace PDFScanningApp
         default:
         case PageTypeEnum.Custom:
           {
-            size = new SizeInches(fAppSettings.CustomPageSize.Width, fAppSettings.CustomPageSize.Height);
+            size = new SizeInches(fAppSettings.ScannerCustomPageSize.Width, fAppSettings.ScannerCustomPageSize.Height);
           }
           break;
       }
 
       settings.ScanArea = new BoundsInches(0, 0, size);
-      settings.EnableFeeder = fAppSettings.EnableFeeder;
-      settings.ColorMode = fAppSettings.ColorMode;
-      settings.Resolution = fAppSettings.Resolution;
+      settings.EnableFeeder = fAppSettings.ScannerEnableFeeder;
+      settings.ColorMode = fAppSettings.ScannerColorMode;
+      settings.Resolution = fAppSettings.ScannerResolution;
       settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
-      settings.Threshold = fAppSettings.Threshold;
-      settings.Brightness = fAppSettings.Brightness;
-      settings.Contrast = fAppSettings.Contrast;
-      settings.ShowSettingsUI = fAppSettings.UseScannerNativeUI;
+      settings.Threshold = fAppSettings.ScannerThreshold;
+      settings.Brightness = fAppSettings.ScannerBrightness;
+      settings.Contrast = fAppSettings.ScannerContrast;
+      settings.ShowSettingsUI = fAppSettings.ScannerUseNativeUI;
       settings.ShowTransferUI = true;
 
       fScanner.Acquire(fDocument, settings, fScanner_AcquireCallback);
