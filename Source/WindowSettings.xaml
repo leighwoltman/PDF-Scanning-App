@@ -3,71 +3,71 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         Title="Settings" Height="630.357" Width="506" ResizeMode="NoResize" Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" >
-    <Grid Margin="0,0,0,7">
-        <Grid HorizontalAlignment="Left" Width="500">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="303*"/>
-                <ColumnDefinition Width="71*"/>
-                <ColumnDefinition Width="126*"/>
-            </Grid.ColumnDefinitions>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageWidth" HorizontalAlignment="Left" Margin="185,31,0,0" VerticalAlignment="Top" Width="79" DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False"/>
-            <Label Content="Custom Page Size" HorizontalContentAlignment="Left" Margin="48,10,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
-            <Label Content="Width:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,28,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Button x:Name="ButtonOK" Content="OK" HorizontalAlignment="Left" Margin="22,554,0,0" VerticalAlignment="Top" Width="75" Click="ButtonOK_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
-            <Button x:Name="ButtonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="31,554,0,0" VerticalAlignment="Top" Width="75" Grid.Column="2" Click="ButtonCancel_Click"/>
-            <Label Content="Height:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="269,26,0,0" VerticalAlignment="Top" Width="53" Height="31" Grid.ColumnSpan="2"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageHeight" HorizontalAlignment="Left" Margin="19,30,0,0" VerticalAlignment="Top" Width="79
+  <Grid Margin="0,0,0,7">
+    <Grid HorizontalAlignment="Left" Width="500">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="303*"/>
+        <ColumnDefinition Width="71*"/>
+        <ColumnDefinition Width="126*"/>
+      </Grid.ColumnDefinitions>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageWidth" HorizontalAlignment="Left" Margin="185,31,0,0" VerticalAlignment="Top" Width="79" DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False"/>
+      <Label Content="Custom Page Size" HorizontalContentAlignment="Left" Margin="48,10,123,0" VerticalAlignment="Top" Height="24" FontWeight="Bold"/>
+      <Label Content="Width:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,28,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Button x:Name="ButtonOK" Content="OK" HorizontalAlignment="Left" Margin="22,554,0,0" VerticalAlignment="Top" Width="75" Click="ButtonOK_Click" Grid.ColumnSpan="2" Grid.Column="1"/>
+      <Button x:Name="ButtonCancel" Content="Cancel" HorizontalAlignment="Left" Margin="31,554,0,0" VerticalAlignment="Top" Width="75" Grid.Column="2" Click="ButtonCancel_Click"/>
+      <Label Content="Height:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="269,26,0,0" VerticalAlignment="Top" Width="53" Height="31" Grid.ColumnSpan="2"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleCustomPageHeight" HorizontalAlignment="Left" Margin="19,30,0,0" VerticalAlignment="Top" Width="79
                                " DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Grid.Column="1"/>
-            <Label Content="Scanner Settings" HorizontalContentAlignment="Left" Margin="48,116,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
-            <Label Content="Default Page Size" HorizontalContentAlignment="Left" Margin="48,60,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleDefaultPageWidth" HorizontalAlignment="Left" Margin="185,81,0,0" VerticalAlignment="Top" Width="79" DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False"/>
-            <Label Content="Width:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,78,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Height:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="269,76,0,0" VerticalAlignment="Top" Width="53" Height="31" Grid.ColumnSpan="2"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleDefaultPageHeight" HorizontalAlignment="Left" Margin="19,80,0,0" VerticalAlignment="Top" Width="79                                " DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Grid.Column="1"/>
-            <ComboBox x:Name="ComboBoxPageScaling" HorizontalAlignment="Left" Margin="227,324,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
-                <ComboBoxItem Content="Use DPI"/>
-                <ComboBoxItem Content="Fit (Only Shrink)"/>
-                <ComboBoxItem Content="Fit (Stretch/Shrink)"/>
-            </ComboBox>
-            <Label Content="Page Scaling:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,322,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <ComboBox x:Name="ComboBoxScannerColorMode" HorizontalAlignment="Left" Margin="227,136,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
-                <ComboBoxItem Content="Black/White"/>
-                <ComboBoxItem Content="Grayscale"/>
-                <ComboBoxItem Content="Color"/>
-            </ComboBox>
-            <Label Content="Color Mode:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,134,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,161,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Threshold:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,186,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Brightness:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,214,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Contrast:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,238,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
-            <Label Content="Compression Factor:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,267,0,0" VerticalAlignment="Top" Width="147" Height="33"/>
-            <xctk:IntegerUpDown x:Name="UpDownIntegerScannerResolution" HorizontalAlignment="Left" Margin="227,165,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
-            <xctk:IntegerUpDown x:Name="UpDownIntegerScannerCompressionFactor" HorizontalAlignment="Left" Margin="227,271,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="100"/>
-            <Label Content="Program Settings" HorizontalContentAlignment="Left" Margin="48,304,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
-            <xctk:IntegerUpDown x:Name="UpDownIntegerDpiPdfRendering" HorizontalAlignment="Left" Margin="227,355,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
-            <Label Content="PDF Viewing Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,351,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
-            <ComboBox x:Name="ComboBoxPdfImportAction" HorizontalAlignment="Left" Margin="227,434,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
-                <ComboBoxItem Content="Always Native"/>
-                <ComboBoxItem Content="Always Render"/>
-            </ComboBox>
-            <Label Content="PDF Import Action:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,432,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
-            <Label Content="Attempt PDF Image Import:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,461,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
-            <CheckBox x:Name="CheckBoxPdfImageImport" Content="" HorizontalAlignment="Left" Margin="229,467,0,0" VerticalAlignment="Top"/>
-            <Label Content="Remove Pages on PDF Save:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="59,486,0,0" VerticalAlignment="Top" Width="168" Height="33"/>
-            <CheckBox x:Name="CheckBoxRemovePagesPdfExport" Content="" HorizontalAlignment="Left" Margin="229,492,0,0" VerticalAlignment="Top"/>
-            <xctk:IntegerUpDown x:Name="UpDownIntegerDpiPdfExport" HorizontalAlignment="Left" Margin="227,384,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
-            <Label Content="PDF Export Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,380,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
-            <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,380,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
-            <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,354,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
-            <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,162,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleScannerThreshold" HorizontalAlignment="Left" Margin="227,190,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleScannerBrightness" HorizontalAlignment="Left" Margin="227,218,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
-            <xctk:DoubleUpDown x:Name="UpDownDoubleScannerContrast" HorizontalAlignment="Left" Margin="227,242,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
-            <xctk:IntegerUpDown x:Name="UpDownIntegerExportCompressionFactor" HorizontalAlignment="Left" Margin="227,409,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="100"/>
-            <Label Content="Export Compression Factor:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="39,406,0,0" VerticalAlignment="Top" Width="188" Height="33"/>
-            <Label Content="Show Print Button:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="59,509,0,0" VerticalAlignment="Top" Width="168" Height="33"/>
-            <CheckBox x:Name="CheckBoxShowPrintButton" Content="" HorizontalAlignment="Left" Margin="229,515,0,0" VerticalAlignment="Top"/>
-        </Grid>
-
+      <Label Content="Scanner Settings" HorizontalContentAlignment="Left" Margin="48,116,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
+      <Label Content="Default Page Size" HorizontalContentAlignment="Left" Margin="48,60,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleDefaultPageWidth" HorizontalAlignment="Left" Margin="185,81,0,0" VerticalAlignment="Top" Width="79" DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False"/>
+      <Label Content="Width:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,78,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Height:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="269,76,0,0" VerticalAlignment="Top" Width="53" Height="31" Grid.ColumnSpan="2"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleDefaultPageHeight" HorizontalAlignment="Left" Margin="19,80,0,0" VerticalAlignment="Top" Width="79                                " DefaultValue="0" Increment="0.1" FormatString="##.##" Minimum="0.1" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Grid.Column="1"/>
+      <ComboBox x:Name="ComboBoxPageScaling" HorizontalAlignment="Left" Margin="227,324,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
+        <ComboBoxItem Content="Use DPI"/>
+        <ComboBoxItem Content="Fit (Only Shrink)"/>
+        <ComboBoxItem Content="Fit (Stretch/Shrink)"/>
+      </ComboBox>
+      <Label Content="Page Scaling:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,322,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <ComboBox x:Name="ComboBoxScannerColorMode" HorizontalAlignment="Left" Margin="227,136,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
+        <ComboBoxItem Content="Black/White"/>
+        <ComboBoxItem Content="Grayscale"/>
+        <ComboBoxItem Content="Color"/>
+      </ComboBox>
+      <Label Content="Color Mode:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,134,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,161,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Threshold:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,186,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Brightness:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,214,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Contrast:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="123,238,0,0" VerticalAlignment="Top" Width="104" Height="33"/>
+      <Label Content="Compression Factor:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="80,267,0,0" VerticalAlignment="Top" Width="147" Height="33"/>
+      <xctk:IntegerUpDown x:Name="UpDownIntegerScannerResolution" HorizontalAlignment="Left" Margin="227,165,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
+      <xctk:IntegerUpDown x:Name="UpDownIntegerScannerCompressionFactor" HorizontalAlignment="Left" Margin="227,271,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="100"/>
+      <Label Content="Program Settings" HorizontalContentAlignment="Left" Margin="48,304,48,0" VerticalAlignment="Top" Width="278" Height="29" FontWeight="Bold" Grid.ColumnSpan="2"/>
+      <xctk:IntegerUpDown x:Name="UpDownIntegerDpiPdfRendering" HorizontalAlignment="Left" Margin="227,355,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
+      <Label Content="PDF Viewing Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,351,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
+      <ComboBox x:Name="ComboBoxPdfImportAction" HorizontalAlignment="Left" Margin="227,434,0,0" VerticalAlignment="Top" Width="148" SelectedIndex="0" Grid.ColumnSpan="3">
+        <ComboBoxItem Content="Always Native"/>
+        <ComboBoxItem Content="Always Render"/>
+      </ComboBox>
+      <Label Content="PDF Import Action:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,432,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
+      <Label Content="Attempt PDF Image Import:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,461,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
+      <CheckBox x:Name="CheckBoxPdfImageImport" Content="" HorizontalAlignment="Left" Margin="229,467,0,0" VerticalAlignment="Top"/>
+      <Label Content="Remove Pages on PDF Save:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="59,486,0,0" VerticalAlignment="Top" Width="168" Height="33"/>
+      <CheckBox x:Name="CheckBoxRemovePagesPdfExport" Content="" HorizontalAlignment="Left" Margin="229,492,0,0" VerticalAlignment="Top"/>
+      <xctk:IntegerUpDown x:Name="UpDownIntegerDpiPdfExport" HorizontalAlignment="Left" Margin="227,384,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="2400"/>
+      <Label Content="PDF Export Resolution:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="70,380,0,0" VerticalAlignment="Top" Width="157" Height="33"/>
+      <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,380,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
+      <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,354,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
+      <Label Content="DPI" HorizontalContentAlignment="Left"  HorizontalAlignment="Left" Margin="70,162,0,0" VerticalAlignment="Top" Width="36" Height="33" Grid.Column="1" Grid.ColumnSpan="2" Foreground="Gray"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleScannerThreshold" HorizontalAlignment="Left" Margin="227,190,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleScannerBrightness" HorizontalAlignment="Left" Margin="227,218,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
+      <xctk:DoubleUpDown x:Name="UpDownDoubleScannerContrast" HorizontalAlignment="Left" Margin="227,242,0,0" VerticalAlignment="Top" Width="147" DefaultValue="0" Increment="0.01" FormatString="0.##" Minimum="0" MouseWheelActiveOnFocus="False" Grid.ColumnSpan="2" Maximum="1"/>
+      <xctk:IntegerUpDown x:Name="UpDownIntegerExportCompressionFactor" HorizontalAlignment="Left" Margin="227,409,0,0" VerticalAlignment="Top" Grid.ColumnSpan="3" Width="148" Minimum="1" Maximum="100"/>
+      <Label Content="Export Compression Factor:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="39,406,0,0" VerticalAlignment="Top" Width="188" Height="33"/>
+      <Label Content="Show Print Button:" HorizontalContentAlignment="Right"  HorizontalAlignment="Left" Margin="59,509,0,0" VerticalAlignment="Top" Width="168" Height="33"/>
+      <CheckBox x:Name="CheckBoxShowPrintButton" Content="" HorizontalAlignment="Left" Margin="229,515,0,0" VerticalAlignment="Top"/>
     </Grid>
+
+  </Grid>
 </Window>
