@@ -101,6 +101,7 @@
     <Compile Include="Utils.SettingsTable.cs" />
     <Compile Include="Utils.SizeInches.cs" />
     <Compile Include="Utils.SizePixels.cs" />
+    <Compile Include="Utils.TempFolder.cs" />
     <EmbeddedResource Include="FormDataSourceSelectionDialog.resx">
       <DependentUpon>FormDataSourceSelectionDialog.cs</DependentUpon>
     </EmbeddedResource>

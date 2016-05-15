@@ -19,6 +19,7 @@ namespace Model
     private ResolutionDpi fResolutionDpi;
     private int fOrientation;
     private bool fIsMirrored;
+    private string fTransformedImagePath;
 
 
     public Page()
@@ -33,6 +34,7 @@ namespace Model
       fResolutionDpi = null;
       fOrientation = 0;
       fIsMirrored = false;
+      fTransformedImagePath = null;
     }
 
 
@@ -60,8 +62,17 @@ namespace Model
 
     public Image GetImage()
     {
-      Image result = CreateImage();
-      TransformImage(result);
+      Image result;
+
+      if(SameAsSourceImage())
+      {
+        result = CreateImage();
+      }
+      else
+      {
+        result = Imaging.ImageFromFile(fTransformedImagePath);
+      }
+
       return result;
     }
 
@@ -86,10 +97,29 @@ namespace Model
 
     private void RefreshImage()
     {
+      if(SameAsSourceImage() == false)
+      {
+        Image image = CreateImage();
+        TransformImage(image);
+
+        if(String.IsNullOrEmpty(fTransformedImagePath))
+        {
+          fTransformedImagePath = TempFolder.GetFileName();
+        }
+
+        Utils.Imaging.SaveImageAsJpeg(image, fTransformedImagePath, 90);
+      }
+
       fThumbnail = (Image)fSourceThumbnail.Clone();
       TransformImage(fThumbnail);
       CalculateBounds();
       fLayoutThumbnail = MakeLayoutImage(fThumbnail);
+    }
+
+
+    private bool SameAsSourceImage()
+    {
+      return ((fIsMirrored == false) && (fOrientation == 0));
     }
 
 

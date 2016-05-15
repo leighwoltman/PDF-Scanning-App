@@ -10,6 +10,22 @@ namespace Utils
 {
   class Imaging
   {
+    public static Image ImageFromFile(string fileName)
+    {
+      Image result;
+
+      // This is a recommended way of loading the file to make sure the file is released afterwords
+      // http://stackoverflow.com/questions/4803935/free-file-locked-by-new-bitmapfilepath/8701748#8701748
+
+      using(var bmpTemp = new Bitmap(fileName))
+      {
+        result = new Bitmap(bmpTemp);
+      }
+
+      return result;
+    }
+
+
     public static void SaveImageAsJpeg(Image image, string fileName, int quality)
     {
       EncoderParameters encoderParams = new EncoderParameters(1);
