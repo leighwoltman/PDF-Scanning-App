@@ -543,9 +543,6 @@ namespace PDFScanningApp
 
         fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers);
 
-        // TODO: this shouldn't exist
-        Thread.Sleep(5000);
-
         if (fAppSettings.RemovePagesAfterPdfExport)
         {
           fDocument.RemoveAll();
