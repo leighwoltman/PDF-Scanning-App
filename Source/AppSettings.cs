@@ -159,10 +159,17 @@ namespace PDFScanningApp
     }
 
 
-    public string LastDirectory
+    public string LastDirectoryForSaving
     {
-      get { return fTable.Get("LastDirectory", ""); }
-      set { fTable.Set("LastDirectory", value); }
+      get { return fTable.Get("LastDirectoryForSaving", ""); }
+      set { fTable.Set("LastDirectoryForSaving", value); }
+    }
+
+
+    public string LastDirectoryForLoading
+    {
+      get { return fTable.Get("LastDirectoryForLoading", ""); }
+      set { fTable.Set("LastDirectoryForLoading", value); }
     }
 
 

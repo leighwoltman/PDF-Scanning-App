@@ -469,10 +469,12 @@ namespace PDFScanningApp
       // Allow the user to select multiple images. 
       openFileDialog1.Multiselect = true;
       openFileDialog1.Title = "My Image Browser";
+      openFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForLoading;
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         fImageLoader.LoadImagesFromFiles(fDocument, openFileDialog1.FileNames, fAppSettings.DefaultPageSize);
+        fAppSettings.LastDirectoryForLoading = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
       }
 
       RefreshControls();
@@ -489,10 +491,12 @@ namespace PDFScanningApp
 
       openFileDialog1.Multiselect = false;
       openFileDialog1.Title = "Select a PDF File";
+      openFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForLoading;
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
+        fAppSettings.LastDirectoryForLoading = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
       }
 
       RefreshControls();
@@ -524,14 +528,14 @@ namespace PDFScanningApp
 
       System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 
-      if(!System.IO.Directory.Exists(fAppSettings.LastDirectory))
+      if(!System.IO.Directory.Exists(fAppSettings.LastDirectoryForSaving))
       {
-        fAppSettings.LastDirectory = "M:\\";
+        fAppSettings.LastDirectoryForSaving = "M:\\";
       }
 
-      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectory;
       saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
       saveFileDialog1.FilterIndex = 1;
+      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
 
       if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
@@ -547,7 +551,7 @@ namespace PDFScanningApp
           fDocument.RemoveAll();
         }
 
-        fAppSettings.LastDirectory = System.IO.Path.GetDirectoryName(fileName);
+        fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
       }
     }
 
