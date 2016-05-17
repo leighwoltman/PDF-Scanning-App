@@ -575,45 +575,45 @@ namespace PDFScanningApp
 
     private void ButtonRotateClockwise_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      foreach(ListViewItem item in ListViewPages.SelectedItems)
       {
-        fDocument.RotatePageClockwise(ListViewSelectedItem.Index);
+        fDocument.RotatePageClockwise(item.Index);
       }
     }
 
 
     private void ButtonRotateCounterClockwise_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      foreach(ListViewItem item in ListViewPages.SelectedItems)
       {
-        fDocument.RotatePageCounterClockwise(ListViewSelectedItem.Index);
+        fDocument.RotatePageCounterClockwise(item.Index);
       }
     }
 
 
     private void ButtonMirrorHorizontally_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      foreach(ListViewItem item in ListViewPages.SelectedItems)
       {
-        fDocument.MirrorPageHorizontally(ListViewSelectedItem.Index);
+        fDocument.MirrorPageHorizontally(item.Index);
       }
     }
 
 
     private void ButtonMirrorVertically_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      foreach(ListViewItem item in ListViewPages.SelectedItems)
       {
-        fDocument.MirrorPageVertically(ListViewSelectedItem.Index);
+        fDocument.MirrorPageVertically(item.Index);
       }
     }
 
     
     private void ButtonLandscape_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      foreach(ListViewItem item in ListViewPages.SelectedItems)
       {
-        fDocument.LandscapePage(ListViewSelectedItem.Index);
+        fDocument.LandscapePage(item.Index);
       }
     }
 
@@ -629,11 +629,25 @@ namespace PDFScanningApp
 
     private void ButtonDelete_Click(object sender, EventArgs e)
     {
-      if(ListViewSelectedItem != null)
+      if(ListViewPages.SelectedItems.Count > 0)
       {
-        if(DialogResult.OK == MessageBox.Show("Delete selected image?", "Delete?", MessageBoxButtons.OKCancel))
+        string question;
+
+        if(ListViewPages.SelectedItems.Count == 1)
         {
-          fDocument.DeletePage(ListViewSelectedItem.Index);
+          question = "Delete selected image?";
+        }
+        else
+        {
+          question = "Delete selected " + ListViewPages.SelectedItems.Count + " images?";
+        }
+
+        if(DialogResult.OK == MessageBox.Show(question, "Delete?", MessageBoxButtons.OKCancel))
+        {
+          foreach(ListViewItem item in ListViewPages.SelectedItems)
+          {
+            fDocument.DeletePage(item.Index);
+          }
         }
       }
     }
