@@ -13,15 +13,15 @@ namespace Model
 {
   class PdfExporter
   {
-    public void SaveDocument(Document document, string filename)
+    public void SaveDocument(Document document, string filename, List<int> pageNumbers)
     {
       PdfDocument pdfDocument = new PdfDocument();
       pdfDocument.Info.Title = "Created with PDFsharp";
 
-      for(int i = 0; i < document.NumPages; i++)
+      foreach(int num in pageNumbers)
       {
         // Get the current page from document
-        Page page = document.GetPage(i);
+        Page page = document.GetPage(num);
 
         if(page is PageFromPdf)
         {

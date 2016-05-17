@@ -515,6 +515,27 @@ namespace PDFScanningApp
 
     private void ButtonSavePdf_Click(object sender, EventArgs e)
     {
+      List<int> pageNumbers = new List<int>();
+
+      if(ListViewPages.SelectedItems.Count > 0)
+      {
+        if(DialogResult.Yes == MessageBox.Show("Only use selected pages?", "Confirm", MessageBoxButtons.YesNo))
+        {
+          foreach(ListViewItem item in ListViewPages.SelectedItems)
+          {
+            pageNumbers.Add(item.Index);
+          }
+        }
+      }
+
+      if(pageNumbers.Count == 0)
+      {
+        for(int i = 0; i < fDocument.NumPages; i++)
+        {
+          pageNumbers.Add(i);
+        }
+      }
+
       SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
       if(!Directory.Exists(fAppSettings.LastDirectory))
@@ -530,7 +551,7 @@ namespace PDFScanningApp
       {
         string fileName = saveFileDialog1.FileName;
 
-        fPdfExporter.SaveDocument(fDocument, fileName);
+        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers);
 
         // TODO: this shouldn't exist
         Thread.Sleep(5000);
