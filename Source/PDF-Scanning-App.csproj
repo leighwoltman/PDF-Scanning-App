@@ -94,6 +94,7 @@
     <Compile Include="Scanning.WiaDefines.cs" />
     <Compile Include="Scanning.WiaUtils.cs" />
     <Compile Include="Utils.AppInfo.cs" />
+    <Compile Include="Utils.Arrays.cs" />
     <Compile Include="Utils.BoundsInches.cs" />
     <Compile Include="Utils.Dialogs.cs" />
     <Compile Include="Utils.Imaging.cs" />

@@ -30,7 +30,7 @@ namespace Model
 
     protected override Image CreateImage()
     {
-      return Image.FromFile(fFileName);
+      return Imaging.LoadImageFromFile(fFileName);
     }
   }
 }
