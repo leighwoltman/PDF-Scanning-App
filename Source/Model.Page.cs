@@ -70,7 +70,7 @@ namespace Model
       }
       else
       {
-        result = Imaging.ImageFromFile(fTransformedImagePath);
+        result = Imaging.LoadImageFromFile(fTransformedImagePath);
       }
 
       return result;

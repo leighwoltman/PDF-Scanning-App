@@ -495,6 +495,57 @@ namespace PDFScanningApp
     }
 
 
+    private void ButtonSaveImages_Click(object sender, EventArgs e)
+    {
+      List<int> pageNumbers = new List<int>();
+
+      if(ListViewPages.SelectedItems.Count > 0)
+      {
+        if(DialogResult.Yes == MessageBox.Show("Only use selected pages?", "Confirm", MessageBoxButtons.YesNo))
+        {
+          foreach(ListViewItem item in ListViewPages.SelectedItems)
+          {
+            pageNumbers.Add(item.Index);
+          }
+        }
+      }
+
+      if(pageNumbers.Count == 0)
+      {
+        for(int i = 0; i < fDocument.NumPages; i++)
+        {
+          pageNumbers.Add(i);
+        }
+      }
+
+      SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+      if(!Directory.Exists(fAppSettings.LastDirectoryForSaving))
+      {
+        fAppSettings.LastDirectoryForSaving = "M:\\";
+      }
+
+      saveFileDialog1.FileName = "Save Here"; 
+      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+
+      if(saveFileDialog1.ShowDialog() == DialogResult.OK)
+      {
+        string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
+
+        foreach(int num in pageNumbers)
+        {
+          // Get the current page from document
+          Page page = fDocument.GetPage(num);
+          Imaging.SaveImageToFile(page.GetImage(), Path.Combine(savePath, page.Name));
+        }
+
+        
+
+        fAppSettings.LastDirectoryForSaving = savePath;
+      }
+    }
+
+
     private void ButtonLoadPdf_Click(object sender, EventArgs e)
     {
       OpenFileDialog openFileDialog1 = new OpenFileDialog();

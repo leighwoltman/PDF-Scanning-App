@@ -61,6 +61,7 @@
       this.ButtonLoadPdf = new System.Windows.Forms.Button();
       this.ButtonSavePdf = new System.Windows.Forms.Button();
       this.ButtonPrint = new System.Windows.Forms.Button();
+      this.ButtonSaveImages = new System.Windows.Forms.Button();
       this.toolStrip1.SuspendLayout();
       this.statusStrip1.SuspendLayout();
       ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -81,14 +82,14 @@
       this.toolStrip1.Location = new System.Drawing.Point(0, 0);
       this.toolStrip1.Name = "toolStrip1";
       this.toolStrip1.RenderMode = System.Windows.Forms.ToolStripRenderMode.System;
-      this.toolStrip1.Size = new System.Drawing.Size(938, 25);
+      this.toolStrip1.Size = new System.Drawing.Size(976, 25);
       this.toolStrip1.TabIndex = 0;
       this.toolStrip1.Text = "toolStrip1";
       // 
       // toolStripLabel1
       // 
       this.toolStripLabel1.Name = "toolStripLabel1";
-      this.toolStripLabel1.Size = new System.Drawing.Size(46, 22);
+      this.toolStripLabel1.Size = new System.Drawing.Size(49, 22);
       this.toolStripLabel1.Text = "Scanner";
       // 
       // ComboBoxScanners
@@ -108,7 +109,7 @@
       this.MenuSettings.Image = ((System.Drawing.Image)(resources.GetObject("MenuSettings.Image")));
       this.MenuSettings.ImageTransparentColor = System.Drawing.Color.Magenta;
       this.MenuSettings.Name = "MenuSettings";
-      this.MenuSettings.Size = new System.Drawing.Size(59, 22);
+      this.MenuSettings.Size = new System.Drawing.Size(62, 22);
       this.MenuSettings.Text = "Settings";
       // 
       // MenuSettingsScanner
@@ -131,7 +132,7 @@
       // 
       this.MenuSettingsPrinterUsePreview.CheckOnClick = true;
       this.MenuSettingsPrinterUsePreview.Name = "MenuSettingsPrinterUsePreview";
-      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(133, 22);
+      this.MenuSettingsPrinterUsePreview.Size = new System.Drawing.Size(137, 22);
       this.MenuSettingsPrinterUsePreview.Text = "Use Preview";
       // 
       // ImageListPages
@@ -148,7 +149,7 @@
             this.StatusLabel2});
       this.statusStrip1.Location = new System.Drawing.Point(0, 509);
       this.statusStrip1.Name = "statusStrip1";
-      this.statusStrip1.Size = new System.Drawing.Size(938, 22);
+      this.statusStrip1.Size = new System.Drawing.Size(976, 22);
       this.statusStrip1.SizingGrip = false;
       this.statusStrip1.TabIndex = 2;
       this.statusStrip1.Text = "statusStrip1";
@@ -156,13 +157,13 @@
       // StatusLabel1
       // 
       this.StatusLabel1.Name = "StatusLabel1";
-      this.StatusLabel1.Size = new System.Drawing.Size(69, 17);
+      this.StatusLabel1.Size = new System.Drawing.Size(73, 17);
       this.StatusLabel1.Text = "StatusLabel1";
       // 
       // StatusLabel2
       // 
       this.StatusLabel2.Name = "StatusLabel2";
-      this.StatusLabel2.Size = new System.Drawing.Size(69, 17);
+      this.StatusLabel2.Size = new System.Drawing.Size(73, 17);
       this.StatusLabel2.Text = "StatusLabel2";
       // 
       // splitContainer1
@@ -180,8 +181,8 @@
       this.splitContainer1.Panel2.Controls.Add(this.PanelPreview);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel2);
       this.splitContainer1.Panel2.Controls.Add(this.flowLayoutPanel1);
-      this.splitContainer1.Size = new System.Drawing.Size(938, 484);
-      this.splitContainer1.SplitterDistance = 396;
+      this.splitContainer1.Size = new System.Drawing.Size(976, 484);
+      this.splitContainer1.SplitterDistance = 412;
       this.splitContainer1.TabIndex = 3;
       // 
       // ListViewPages
@@ -196,7 +197,7 @@
       this.ListViewPages.Location = new System.Drawing.Point(0, 0);
       this.ListViewPages.Name = "ListViewPages";
       this.ListViewPages.OwnerDraw = true;
-      this.ListViewPages.Size = new System.Drawing.Size(396, 484);
+      this.ListViewPages.Size = new System.Drawing.Size(412, 484);
       this.ListViewPages.SmallImageList = this.ImageListPages;
       this.ListViewPages.TabIndex = 0;
       this.ListViewPages.TileSize = new System.Drawing.Size(10, 10);
@@ -220,7 +221,7 @@
       this.PanelPreview.Dock = System.Windows.Forms.DockStyle.Fill;
       this.PanelPreview.Location = new System.Drawing.Point(0, 39);
       this.PanelPreview.Name = "PanelPreview";
-      this.PanelPreview.Size = new System.Drawing.Size(538, 319);
+      this.PanelPreview.Size = new System.Drawing.Size(560, 319);
       this.PanelPreview.TabIndex = 4;
       // 
       // flowLayoutPanel2
@@ -239,7 +240,7 @@
       this.flowLayoutPanel2.Location = new System.Drawing.Point(0, 0);
       this.flowLayoutPanel2.Name = "flowLayoutPanel2";
       this.flowLayoutPanel2.Padding = new System.Windows.Forms.Padding(5);
-      this.flowLayoutPanel2.Size = new System.Drawing.Size(538, 39);
+      this.flowLayoutPanel2.Size = new System.Drawing.Size(560, 39);
       this.flowLayoutPanel2.TabIndex = 3;
       // 
       // ButtonRotateClockwise
@@ -345,6 +346,7 @@
       this.flowLayoutPanel1.Controls.Add(this.ButtonScanLetter);
       this.flowLayoutPanel1.Controls.Add(this.ButtonScanLegal);
       this.flowLayoutPanel1.Controls.Add(this.ButtonLoadImages);
+      this.flowLayoutPanel1.Controls.Add(this.ButtonSaveImages);
       this.flowLayoutPanel1.Controls.Add(this.ButtonLoadPdf);
       this.flowLayoutPanel1.Controls.Add(this.ButtonSavePdf);
       this.flowLayoutPanel1.Controls.Add(this.ButtonPrint);
@@ -352,7 +354,7 @@
       this.flowLayoutPanel1.Location = new System.Drawing.Point(0, 358);
       this.flowLayoutPanel1.Name = "flowLayoutPanel1";
       this.flowLayoutPanel1.Padding = new System.Windows.Forms.Padding(5);
-      this.flowLayoutPanel1.Size = new System.Drawing.Size(538, 126);
+      this.flowLayoutPanel1.Size = new System.Drawing.Size(560, 126);
       this.flowLayoutPanel1.TabIndex = 1;
       // 
       // ButtonScanLetter
@@ -379,7 +381,6 @@
       // 
       this.ButtonLoadImages.Location = new System.Drawing.Point(282, 8);
       this.ButtonLoadImages.Name = "ButtonLoadImages";
-      this.ButtonLoadImages.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
       this.ButtonLoadImages.Size = new System.Drawing.Size(131, 52);
       this.ButtonLoadImages.TabIndex = 30;
       this.ButtonLoadImages.Text = "Load Images";
@@ -390,7 +391,6 @@
       // 
       this.ButtonLoadPdf.Location = new System.Drawing.Point(8, 66);
       this.ButtonLoadPdf.Name = "ButtonLoadPdf";
-      this.ButtonLoadPdf.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
       this.ButtonLoadPdf.Size = new System.Drawing.Size(131, 52);
       this.ButtonLoadPdf.TabIndex = 32;
       this.ButtonLoadPdf.Text = "Load From PDF";
@@ -417,11 +417,21 @@
       this.ButtonPrint.UseVisualStyleBackColor = true;
       this.ButtonPrint.Click += new System.EventHandler(this.ButtonPrint_Click);
       // 
+      // ButtonSaveImages
+      // 
+      this.ButtonSaveImages.Location = new System.Drawing.Point(419, 8);
+      this.ButtonSaveImages.Name = "ButtonSaveImages";
+      this.ButtonSaveImages.Size = new System.Drawing.Size(131, 52);
+      this.ButtonSaveImages.TabIndex = 34;
+      this.ButtonSaveImages.Text = "Save Images";
+      this.ButtonSaveImages.UseVisualStyleBackColor = true;
+      this.ButtonSaveImages.Click += new System.EventHandler(this.ButtonSaveImages_Click);
+      // 
       // FormMain
       // 
       this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
       this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-      this.ClientSize = new System.Drawing.Size(938, 531);
+      this.ClientSize = new System.Drawing.Size(976, 531);
       this.Controls.Add(this.splitContainer1);
       this.Controls.Add(this.statusStrip1);
       this.Controls.Add(this.toolStrip1);
@@ -480,6 +490,7 @@
     private System.Windows.Forms.Button ButtonMirrorVertically;
     private System.Windows.Forms.Button ButtonRotateCounterClockwise;
     private System.Windows.Forms.Panel PanelPreview;
+    private System.Windows.Forms.Button ButtonSaveImages;
   }
 }
 

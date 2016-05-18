@@ -10,7 +10,38 @@ namespace Utils
 {
   class Imaging
   {
-    public static Image ImageFromFile(string fileName)
+    private static readonly ImageConverter fImageConverter = new ImageConverter();
+
+
+    public static byte[] ImageToByteArray(Image image)
+    {
+      byte[] result = (byte[])fImageConverter.ConvertTo(image, typeof(byte[]));
+      return result;
+    }
+
+
+    public static Image ByteArrayToImage(byte[] byteArray)
+    {
+      Image result = (Image)fImageConverter.ConvertFrom(byteArray);
+      return result;
+    }
+
+
+    public static Image LoadImageFromFile(string fileName)
+    {
+      byte[] byteArray = File.ReadAllBytes(fileName);
+      return ByteArrayToImage(byteArray);
+    }
+
+
+    public static void SaveImageToFile(Image image, string fileName)
+    {
+      byte[] byteArray = ImageToByteArray(image);
+      File.WriteAllBytes(fileName, byteArray);
+    }
+
+
+    public static Image ImageFromFile2(string fileName)
     {
       Image result;
 
@@ -23,6 +54,18 @@ namespace Utils
       }
 
       return result;
+    }
+
+
+    public static Image ImageFromFile3(string fileName)
+    {
+      // This approach also seems to work. From
+      // http://stackoverflow.com/questions/4803935/free-file-locked-by-new-bitmapfilepath
+      
+      var bytes = File.ReadAllBytes(fileName);
+      var ms = new MemoryStream(bytes);
+      var img = Image.FromStream(ms);
+      return img;
     }
 
 
