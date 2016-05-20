@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using Utils;
 
@@ -203,6 +204,11 @@ namespace Model
 
     virtual public void CleanUp()
     {
+      if(String.IsNullOrEmpty(fTransformedImagePath) == false)
+      {
+        File.Delete(fTransformedImagePath);
+      }
+
       if(fSourceThumbnail != null)
       {
         fSourceThumbnail.Dispose();
