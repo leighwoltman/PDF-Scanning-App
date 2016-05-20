@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using Utils;
 
 
 namespace Scanning
@@ -44,10 +45,9 @@ namespace Scanning
 
       public static Image WiaImageFileToImage(WIA.ImageFile imageFile)
       {
-        // Converts the ImageFile to a byte array, then a memory stream, and then an Image
+        // Converts the ImageFile to a byte array, then to an Image
         Byte[] imageBytes = (byte[])imageFile.FileData.get_BinaryData();
-        MemoryStream ms = new MemoryStream(imageBytes);
-        return Image.FromStream(ms);
+        return Imaging.ByteArrayToImage(imageBytes);
       }
     }
   }

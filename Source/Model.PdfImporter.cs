@@ -134,7 +134,7 @@ namespace Model
                     FlateDecode fd = new FlateDecode();
                     byte[] byteArrayDecompressed = fd.Decode(byteArray);
 
-                    Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
+                    Image image = Imaging.ByteArrayToImage(byteArrayDecompressed);
 
                     imagesFound++;
                     imageLargest = image;
@@ -151,7 +151,7 @@ namespace Model
                         // this is a directly encoded JPEG image
                         byte[] byteArray = xObject.Stream.Value;
 
-                        Image image = Image.FromStream(new MemoryStream(byteArray));
+                        Image image = Imaging.ByteArrayToImage(byteArray);
 
                         imagesFound++;
                         imageLargest = image;
@@ -167,7 +167,7 @@ namespace Model
 
                         try
                         {
-                          Image image = Image.FromStream(new MemoryStream(byteArrayDecompressed));
+                          Image image = Imaging.ByteArrayToImage(byteArrayDecompressed);
 
                           imagesFound++;
                           imageLargest = image;

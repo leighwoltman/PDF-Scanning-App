@@ -100,6 +100,7 @@ namespace Model
       if(SameAsSourceImage() == false)
       {
         Image image = CreateImage();
+
         TransformImage(image);
 
         if(String.IsNullOrEmpty(fTransformedImagePath))

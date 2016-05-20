@@ -4,6 +4,7 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
 using System.Text;
+using Defines;
 
 
 namespace Utils
@@ -41,60 +42,81 @@ namespace Utils
     }
 
 
-    public static Image ImageFromFile2(string fileName)
+    public static ImageFormatEnum GetImageFormat(Image image)
     {
-      Image result;
+      ImageFormatEnum result;
 
-      // This is a recommended way of loading the file to make sure the file is released afterwords
-      // http://stackoverflow.com/questions/4803935/free-file-locked-by-new-bitmapfilepath/8701748#8701748
-
-      using(var bmpTemp = new Bitmap(fileName))
+      if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
       {
-        result = new Bitmap(bmpTemp);
+        result = ImageFormatEnum.Jpeg;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
+      {
+        result = ImageFormatEnum.Bmp;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Png))
+      {
+        result = ImageFormatEnum.Png;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Emf))
+      {
+        result = ImageFormatEnum.Emf;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Exif))
+      {
+        result = ImageFormatEnum.Exif;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Gif))
+      {
+        result = ImageFormatEnum.Gif;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Icon))
+      {
+        result = ImageFormatEnum.Icon;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.MemoryBmp))
+      {
+        result = ImageFormatEnum.Bmp;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Tiff))
+      {
+        result = ImageFormatEnum.Tiff;
+      }
+      else
+      {
+        result = ImageFormatEnum.Unknown;
       }
 
       return result;
     }
 
 
-    public static Image ImageFromFile3(string fileName)
+    public static void EncodeSaveImageToFile(Image image, string fileName, ImageFormat format, EncoderParameters encoderParams)
     {
-      // This approach also seems to work. From
-      // http://stackoverflow.com/questions/4803935/free-file-locked-by-new-bitmapfilepath
-      
-      var bytes = File.ReadAllBytes(fileName);
-      var ms = new MemoryStream(bytes);
-      var img = Image.FromStream(ms);
-      return img;
+      byte[] byteArray = EncodeImage(image, format, encoderParams);
+      File.WriteAllBytes(fileName, byteArray);
     }
 
 
-    public static void SaveImageAsJpeg(Image image, string fileName, int quality)
+    public static byte[] EncodeImage(Image image, ImageFormat format, EncoderParameters encoderParams)
     {
-      EncoderParameters encoderParams = new EncoderParameters(1);
-      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
-      ImageCodecInfo codecInfo = GetEncoderInfo(ImageFormat.Jpeg);
-      image.Save(fileName, codecInfo, encoderParams);
+      byte[] result = null;
+
+      ImageCodecInfo codecInfo = GetEncoderInfo(format);
+
+      if(codecInfo != null)
+      {
+        using(MemoryStream stream = new MemoryStream())
+        {
+          image.Save(stream, codecInfo, encoderParams);
+          result = stream.ToArray();
+        }
+      }
+
+      return result;
     }
 
 
-    public static void SaveImageAsJpeg(Image image, Stream stream, int quality)
-    {
-      EncoderParameters encoderParams = new EncoderParameters(1);
-      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
-      ImageCodecInfo codecInfo = GetEncoderInfo(ImageFormat.Jpeg);
-      image.Save(stream, codecInfo, encoderParams);
-    }
-
-
-    public static Image EncodeImageAsJpeg(Image image, int quality)
-    {
-      MemoryStream stream = new MemoryStream();
-      SaveImageAsJpeg(image, stream, quality);
-      return Image.FromStream(stream);
-    }
-
-    
     private static ImageCodecInfo GetEncoderInfo(ImageFormat format)
     {
       ImageCodecInfo result = null;
@@ -108,6 +130,21 @@ namespace Utils
         }
       }
       return result;
+    }
+
+
+    public static void SaveImageAsJpeg(Image image, string fileName, int quality)
+    {
+      byte[] byteArray = EncodeImageAsJpeg(image, quality);
+      File.WriteAllBytes(fileName, byteArray);
+    }
+
+
+    public static byte[] EncodeImageAsJpeg(Image image, int quality)
+    {
+      EncoderParameters encoderParams = new EncoderParameters(1);
+      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+      return EncodeImage(image, ImageFormat.Jpeg, encoderParams);
     }
 
 
@@ -164,6 +201,31 @@ namespace Utils
       result.Height = fittedHeight;
       result.X = area.X + ((area.Width - fittedWidth) / 2);
       result.Y = area.Y + ((area.Height - fittedHeight) / 2);
+
+      return result;
+    }
+
+
+    public static bool ImageEquals(Image img1, Image img2)
+    {
+      bool result = img1.Size.Equals(img2.Size);
+
+      if(result)
+      {
+        Bitmap bmp1 = new Bitmap(img1);
+        Bitmap bmp2 = new Bitmap(img2);
+
+        for(int x = 0; result && (x < bmp1.Width); x++)
+        {
+          for(int y = 0; result && (y < bmp1.Height); y++)
+          {
+            if(bmp1.GetPixel(x, y) != bmp2.GetPixel(x, y))
+            {
+              result = false;
+            }
+          }
+        }
+      }
 
       return result;
     }
