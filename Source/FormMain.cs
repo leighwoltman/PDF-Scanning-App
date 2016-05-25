@@ -24,6 +24,7 @@ namespace PDFScanningApp
     private ImageLoader fImageLoader;
     private Document fDocument;
     private bool fClosing;
+    private bool fDeleting;
 
     // Special UI
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
@@ -57,6 +58,7 @@ namespace PDFScanningApp
       fDocument.OnPageMoved += fDocument_OnPageMoved;
 
       fClosing = false;
+      fDeleting = false;
 
       MenuSettingsPrinterUsePreview.Checked = true;
     }
@@ -300,6 +302,7 @@ namespace PDFScanningApp
         ListViewPages.RedrawItems(args.TargetIndex, args.SourceIndex, true);
       }
 
+      ListViewPages.Items[args.SourceIndex].Selected = false;
       ListViewPages.Items[args.TargetIndex].Selected = true;
       RefreshControls();
     }
@@ -323,7 +326,7 @@ namespace PDFScanningApp
 
     private void ListViewPages_SelectedIndexChanged(object sender, EventArgs e)
     {
-      ListViewItem item = ListViewSelectedItem;
+      ListViewItem item = fDeleting ? null : ListViewSelectedItem;
 
       if(item == null)
       {
@@ -537,9 +540,7 @@ namespace PDFScanningApp
           // Get the current page from document
           Page page = fDocument.GetPage(num);
           Imaging.SaveImageToFile(page.GetImage(), Path.Combine(savePath, page.Name));
-        }
-
-        
+        }        
 
         fAppSettings.LastDirectoryForSaving = savePath;
       }
@@ -717,10 +718,15 @@ namespace PDFScanningApp
 
         if(DialogResult.OK == MessageBox.Show(question, "Delete?", MessageBoxButtons.OKCancel))
         {
-          foreach(ListViewItem item in ListViewPages.SelectedItems)
+          fDeleting = true;
+
+          while(ListViewPages.SelectedItems.Count > 0)
           {
+            ListViewItem item = ListViewPages.SelectedItems[0];
             fDocument.DeletePage(item.Index);
           }
+
+          fDeleting = false;
         }
       }
     }

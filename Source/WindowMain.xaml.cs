@@ -38,6 +38,7 @@ namespace PDFScanningApp
     private InsertionMark  fInsertionMark;
     private Point fDragStartPosition;
     private bool fClosing;
+    private bool fDeleting;
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -65,6 +66,7 @@ namespace PDFScanningApp
       fDragStartPosition = new Point(0, 0);
 
       fClosing = false;
+      fDeleting = false;
     }
 
 
@@ -199,7 +201,7 @@ namespace PDFScanningApp
         if (pageCount > 2)
         {
           Button2Sided.IsEnabled = true;
-      }
+        }
         else
         {
           Button2Sided.IsEnabled = false;
@@ -263,7 +265,7 @@ namespace PDFScanningApp
         ButtonRotateClockwise.IsEnabled = false;
         ButtonLandscape.IsEnabled = false;
       }
-        }
+    }
 
 
     private void Scan(PageTypeEnum pageType)
@@ -411,7 +413,7 @@ namespace PDFScanningApp
 
     private void ListViewPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-      ListViewPage item = ListViewSelectedItem;
+      ListViewPage item = fDeleting ? null : ListViewSelectedItem;
 
       if(item == null)
       {
@@ -652,10 +654,15 @@ namespace PDFScanningApp
 
         if(MessageBoxResult.OK == MessageBox.Show(question, "Delete?", MessageBoxButton.OKCancel))
         {
-          foreach(ListViewPage item in ListViewPages.SelectedItems)
+          fDeleting = true;
+
+          while(ListViewPages.SelectedItems.Count > 0)
           {
+            ListViewPage item = (ListViewPage)ListViewPages.SelectedItem;
             fDocument.DeletePage(item.Index);
           }
+
+          fDeleting = false;
         }
       }
     }
