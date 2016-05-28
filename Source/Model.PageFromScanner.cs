@@ -43,7 +43,7 @@ namespace Model
     }
 
     
-    protected override Image CreateImage()
+    public override Image CreateImage()
     {
       return Imaging.LoadImageFromFile(fFilename);
     }

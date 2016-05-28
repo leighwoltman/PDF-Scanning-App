@@ -8,34 +8,22 @@ using Utils;
 
 namespace Model
 {
-  abstract public class Page
+  abstract public class Page : InterfaceImageCreator
   {
-    private Image fSourceThumbnail;
-    private Image fThumbnail;
+    private ImageHandler fImageHandler;
     private Image fLayoutThumbnail;
-    private SizePixels fImageSizePixels;
-    private ResolutionDpi fImageResolutionDpi;
     private BoundsInches fImageBoundsInches;
     private SizeInches fSizeInch;
     private ResolutionDpi fResolutionDpi;
-    private int fOrientation;
-    private bool fIsMirrored;
-    private string fTransformedImagePath;
 
 
     public Page()
     {
-      fSourceThumbnail = null;
-      fThumbnail = null;
+      fImageHandler = new ImageHandler(this);
       fLayoutThumbnail = null;
-      fImageSizePixels = null;
-      fImageResolutionDpi = null;
       fImageBoundsInches = null;
       fSizeInch = null;
       fResolutionDpi = null;
-      fOrientation = 0;
-      fIsMirrored = false;
-      fTransformedImagePath = null;
     }
 
 
@@ -47,40 +35,24 @@ namespace Model
 
     protected void Initialize(SizeInches pageSizeInches, int imageHorizontalDpi, int imageVerticalDpi)
     {
-      using(Image myImage = CreateImage())
-      {
-        fSizeInch = pageSizeInches;
-        fImageSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
-        fImageResolutionDpi = new ResolutionDpi(imageHorizontalDpi, imageVerticalDpi);
-        fSourceThumbnail = Utils.Imaging.CreateThumbnail(myImage, 200);
-      }
-      RefreshImage();
+      fSizeInch = pageSizeInches;
+      fImageHandler.Initialize(imageHorizontalDpi, imageVerticalDpi);
+      RefreshLayout();
     }
 
 
-    abstract protected Image CreateImage();
+    public abstract Image CreateImage();
 
 
     public Image GetImage()
     {
-      Image result;
-
-      if(SameAsSourceImage())
-      {
-        result = CreateImage();
-      }
-      else
-      {
-        result = Imaging.LoadImageFromFile(fTransformedImagePath);
-      }
-
-      return result;
+      return fImageHandler.GetImage();
     }
 
 
     public Image ImageThumbnail
     {
-      get { return fThumbnail; }
+      get { return fImageHandler.Thumbnail; }
     }
 
 
@@ -96,45 +68,21 @@ namespace Model
     }
 
 
-    private void RefreshImage()
+    private void RefreshLayout()
     {
-      if(SameAsSourceImage() == false)
-      {
-        Image image = CreateImage();
-
-        TransformImage(image);
-
-        if(String.IsNullOrEmpty(fTransformedImagePath))
-        {
-          fTransformedImagePath = TempFolder.GetFileName();
-        }
-
-        Utils.Imaging.SaveImageAsJpeg(image, fTransformedImagePath, 90);
-      }
-
-      fThumbnail = (Image)fSourceThumbnail.Clone();
-      TransformImage(fThumbnail);
       CalculateBounds();
-      fLayoutThumbnail = MakeLayoutImage(fThumbnail);
-    }
-
-
-    private bool SameAsSourceImage()
-    {
-      return ((fIsMirrored == false) && (fOrientation == 0));
+      fLayoutThumbnail = MakeLayoutImage(fImageHandler.Thumbnail);
     }
 
 
     private void CalculateBounds()
     {
-      SizePixels imageSizePixels = fImageSizePixels.Transform(IsFlipped);
+      SizePixels imageSizePixels = fImageHandler.SizePixels;
       SizeInches pageSizeInches = fSizeInch;
 
-      if(ImageResolutionIsDefined)
-      {
-        fResolutionDpi = fImageResolutionDpi.Transform(IsFlipped);
-      }
-      else
+      fResolutionDpi = fImageHandler.ResolutionDpi;
+
+      if(fResolutionDpi == null)
       {
         double image_aspect_ratio = imageSizePixels.Width / (double)imageSizePixels.Height;
         double page_aspect_ratio = pageSizeInches.Width / pageSizeInches.Height;
@@ -202,24 +150,9 @@ namespace Model
     }
 
 
-    virtual public void CleanUp()
+    public virtual void CleanUp()
     {
-      if(String.IsNullOrEmpty(fTransformedImagePath) == false)
-      {
-        File.Delete(fTransformedImagePath);
-      }
-
-      if(fSourceThumbnail != null)
-      {
-        fSourceThumbnail.Dispose();
-        fSourceThumbnail = null;
-      }
-
-      if(fThumbnail != null)
-      {
-        fThumbnail.Dispose();
-        fThumbnail = null;
-      }
+      fImageHandler.CleanUp();
 
       if(fLayoutThumbnail != null)
       {
@@ -229,24 +162,6 @@ namespace Model
     }
 
 
-    readonly RotateFlipType[] rf_table =
-    { 
-      RotateFlipType.RotateNoneFlipNone,
-      RotateFlipType.Rotate90FlipNone,
-      RotateFlipType.Rotate180FlipNone,
-      RotateFlipType.Rotate270FlipNone,
-    };
-
-
-    readonly RotateFlipType[] rf_mirrored_table =
-    { 
-      RotateFlipType.RotateNoneFlipX,
-      RotateFlipType.Rotate90FlipY,
-      RotateFlipType.Rotate180FlipX,
-      RotateFlipType.Rotate270FlipY,
-    };
-
-
     public virtual bool CanModify()
     {
       // can normally modify 
@@ -254,81 +169,44 @@ namespace Model
     }
 
 
-    protected void TransformImage(Image image)
-    {
-      if(fIsMirrored)
-      {
-        image.RotateFlip(rf_mirrored_table[fOrientation]);
-      }
-      else
-      {
-        image.RotateFlip(rf_table[fOrientation]);
-      }
-    }
-
-
-    private bool IsFlipped
-    {
-      get { return ((fOrientation & 1) == 1); }
-    }
-
-
-    private bool ImageResolutionIsDefined
-    {
-      get { return ((fImageResolutionDpi.Horizontal != 0) && (fImageResolutionDpi.Vertical != 0)); }
-    }
-
-
     public void ImageRotateClockwise()
     {
-      fOrientation = (fOrientation + 1) % 4;
-      RefreshImage();
+      fImageHandler.ImageRotateClockwise();
+      RefreshLayout();
     }
 
 
     public void ImageRotateCounterClockwise()
     {
-      fOrientation = (fOrientation + 3) % 4;
-      RefreshImage();
+      fImageHandler.ImageRotateCounterClockwise();
+      RefreshLayout();
     }
 
 
     public void ImageMirrorHorizontally()
     {
-      fIsMirrored = !fIsMirrored;
-
-      if(IsFlipped == true)
-      {
-        fOrientation = (fOrientation + 2) % 4;
-      }
-
-      RefreshImage();
+      fImageHandler.ImageMirrorHorizontally();
+      RefreshLayout();
     }
 
 
     public void ImageMirrorVertically()
     {
-      fIsMirrored = !fIsMirrored;
-
-      if(IsFlipped == false)
-      {
-        fOrientation = (fOrientation + 2) % 4;
-      }
-
-      RefreshImage();
+      fImageHandler.ImageMirrorVertically();
+      RefreshLayout();
     }
 
 
     public void RotateSideways()
     {
-      Size = Size.Transform(true);
+      fSizeInch = fSizeInch.Transform(true);
+      RefreshLayout();
     }
 
 
     public SizeInches Size
     {
       get { return fSizeInch; }
-      set { fSizeInch = value; RefreshImage(); }
     }
 
 

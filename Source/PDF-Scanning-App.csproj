@@ -68,6 +68,7 @@
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Model.Document.cs" />
+    <Compile Include="Model.ImageHandler.cs" />
     <Compile Include="Model.ImageLoader.cs" />
     <Compile Include="Model.Page.cs" />
     <Compile Include="Model.PageFromFile.cs" />
