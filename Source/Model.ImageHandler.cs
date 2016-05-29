@@ -101,12 +101,6 @@ namespace Model
     }
 
 
-    private bool SameAsSourceImage()
-    {
-      return ((fIsMirrored == false) && (fOrientation == 0));
-    }
-
-
     public virtual void CleanUp()
     {
       if(String.IsNullOrEmpty(fTemporaryFilePath) == false)
@@ -159,6 +153,12 @@ namespace Model
     }
 
 
+    private bool SameAsSourceImage()
+    {
+      return ((fIsMirrored == false) && (fOrientation == 0));
+    }
+
+
     private bool IsFlipped
     {
       get { return ((fOrientation & 1) == 1); }
@@ -173,17 +173,7 @@ namespace Model
 
     public ResolutionDpi ResolutionDpi
     {
-      get 
-      {
-        ResolutionDpi result = null;
-
-        if((fResolutionDpi.Horizontal != 0) && (fResolutionDpi.Vertical != 0))
-        {
-          result = fResolutionDpi.Transform(IsFlipped);
-        }
-
-        return result; 
-      }
+      get { return fResolutionDpi.Transform(IsFlipped); }
     }
 
 

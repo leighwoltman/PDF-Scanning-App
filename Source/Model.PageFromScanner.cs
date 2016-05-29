@@ -28,7 +28,7 @@ namespace Model
       fFilename = GetTempFileName(fScanNumber);
       fScanNumber++;
 
-      Utils.Imaging.SaveImageAsJpeg(image, fFilename, compressionFactor);
+      Utils.Imaging.EncodeSaveImageToFile(image, fFilename, System.Drawing.Imaging.ImageFormat.Png, null);
 
       double pageWidth = image.Width / (double)dpi;
       double pageHeight = image.Height / (double)dpi;
