@@ -35,10 +35,20 @@ namespace Utils
     }
 
 
-    public static void SaveImageToFile(Image image, string fileName)
+    public static void SaveImageToFile(Image image, string directory, string fileNameNoExtension)
     {
+      string ext = Imaging.GetImageExtension(image);
+      string path = Path.Combine(directory, fileNameNoExtension + ext);
+
       byte[] byteArray = ImageToByteArray(image);
-      File.WriteAllBytes(fileName, byteArray);
+      File.WriteAllBytes(path, byteArray);
+    }
+
+
+    public static string GetImageExtension(Image image)
+    {
+      ImageFormatEnum imageFormat = Imaging.GetImageFormat(image);
+      return Imaging.GetImageFormatExtension(imageFormat);
     }
 
 

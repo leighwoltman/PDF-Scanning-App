@@ -15,13 +15,9 @@ namespace Model
     {
       foreach(int num in pageNumbers)
       {
-        // Get the current page from document
         Page page = document.GetPage(num);
-        System.Drawing.Image image = page.GetImage();
-        ImageFormatEnum imageFormat = Imaging.GetImageFormat(image);
-        string ext = Imaging.GetImageFormatExtension(imageFormat);
-
-        Imaging.SaveImageToFile(image, Path.Combine(directory, page.Name));
+        System.Drawing.Image image = page.GetImageInOriginalFormat();
+        Imaging.SaveImageToFile(image, directory, page.Name);
       }
     }
   }

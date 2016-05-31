@@ -103,6 +103,19 @@ namespace Model
     }
 
 
+    public Image GetImageInOriginalFormat2()
+    {
+      Image image = CreateImage();
+
+      if(SameAsSourceImage() == false)
+      {
+        Transform(image);
+      }
+
+      return image;
+    }
+
+
     public Image GetCompressedImage(int compressionFactor)
     {
       Image image = CreateImage();

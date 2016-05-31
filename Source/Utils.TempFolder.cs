@@ -24,7 +24,17 @@ namespace Utils
           Directory.Delete(fTempFolder, true);
         }
 
+        while(Directory.Exists(fTempFolder))
+        {
+          fCounter++;
+        }
+        
         Directory.CreateDirectory(fTempFolder);
+
+        while(Directory.Exists(fTempFolder) == false)
+        {
+          fCounter++;
+        }
       }
 
       return fTempFolder;
