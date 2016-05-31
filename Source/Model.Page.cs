@@ -50,6 +50,18 @@ namespace Model
     }
 
 
+    public Image GetImageInOriginalFormat()
+    {
+      return fImageHandler.GetImageInOriginalFormat();
+    }
+
+
+    public Image GetCompressedImage(int compressionFactor)
+    {
+      return fImageHandler.GetCompressedImage(compressionFactor);
+    }
+
+    
     public Image ImageThumbnail
     {
       get { return fImageHandler.Thumbnail; }

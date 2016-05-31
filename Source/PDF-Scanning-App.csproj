@@ -70,6 +70,7 @@
     <Compile Include="Model.Document.cs" />
     <Compile Include="Model.ImageHandler.cs" />
     <Compile Include="Model.ImageLoader.cs" />
+    <Compile Include="Model.ImageSaver.cs" />
     <Compile Include="Model.Page.cs" />
     <Compile Include="Model.PageFromFile.cs" />
     <Compile Include="Model.PageFromPdf.cs" />

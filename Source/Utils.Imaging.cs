@@ -44,47 +44,71 @@ namespace Utils
 
     public static ImageFormatEnum GetImageFormat(Image image)
     {
+      return TranslateImageRawFormat(image.RawFormat);
+    }
+
+
+    public static ImageFormatEnum TranslateImageRawFormat(System.Drawing.Imaging.ImageFormat rawFormat)
+    {
       ImageFormatEnum result;
 
-      if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
+      if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
       {
         result = ImageFormatEnum.Jpeg;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
       {
         result = ImageFormatEnum.Bmp;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Png))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Png))
       {
         result = ImageFormatEnum.Png;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Emf))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Emf))
       {
         result = ImageFormatEnum.Emf;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Exif))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Exif))
       {
         result = ImageFormatEnum.Exif;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Gif))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Gif))
       {
         result = ImageFormatEnum.Gif;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Icon))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Icon))
       {
         result = ImageFormatEnum.Icon;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.MemoryBmp))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.MemoryBmp))
       {
         result = ImageFormatEnum.Bmp;
       }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Tiff))
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Tiff))
       {
         result = ImageFormatEnum.Tiff;
       }
       else
       {
         result = ImageFormatEnum.Unknown;
+      }
+
+      return result;
+    }
+
+
+    public static string GetImageFormatExtension(ImageFormatEnum format)
+    {
+      string result;
+
+      switch(format)
+      {
+        case ImageFormatEnum.Bmp: result = ".bmp"; break;
+        case ImageFormatEnum.Gif: result = ".gif"; break;
+        case ImageFormatEnum.Jpeg: result = ".jpg"; break;
+        case ImageFormatEnum.Png: result = ".png"; break;
+        case ImageFormatEnum.Icon: result = ".ico"; break;
+        default: result = ".image"; break;
       }
 
       return result;

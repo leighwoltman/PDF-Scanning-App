@@ -22,6 +22,7 @@ namespace PDFScanningApp
     private PdfExporter fPdfExporter;
     private PdfImporter fPdfImporter;
     private ImageLoader fImageLoader;
+    private ImageSaver fImageSaver;
     private Document fDocument;
     private bool fClosing;
     private bool fDeleting;
@@ -50,6 +51,7 @@ namespace PDFScanningApp
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
       fImageLoader = new ImageLoader();
+      fImageSaver = new ImageSaver();
 
       fDocument = new Document();
       fDocument.OnPageAdded += fDocument_OnPageAdded;
@@ -534,14 +536,7 @@ namespace PDFScanningApp
       if(saveFileDialog1.ShowDialog() == DialogResult.OK)
       {
         string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
-
-        foreach(int num in pageNumbers)
-        {
-          // Get the current page from document
-          Page page = fDocument.GetPage(num);
-          Imaging.SaveImageToFile(page.GetImage(), Path.Combine(savePath, page.Name));
-        }        
-
+        fImageSaver.SaveImages(fDocument, savePath, pageNumbers);
         fAppSettings.LastDirectoryForSaving = savePath;
       }
     }
@@ -607,7 +602,7 @@ namespace PDFScanningApp
       {
         string fileName = saveFileDialog1.FileName;
 
-        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers);
+        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
 
         if(fAppSettings.RemovePagesAfterPdfExport)
         {

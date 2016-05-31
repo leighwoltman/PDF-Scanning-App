@@ -13,7 +13,7 @@ namespace Model
 {
   class PdfExporter
   {
-    public void SaveDocument(Document document, string filename, List<int> pageNumbers)
+    public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool compressImage, int compressionFactor)
     {
       PdfDocument pdfDocument = new PdfDocument();
       pdfDocument.Info.Title = "Created with PDFsharp";
@@ -29,7 +29,7 @@ namespace Model
 
           if(pageFromPdf.SingleImageMode)
           {
-            DrawPage(pdfDocument, pageFromPdf);
+            DrawPage(pdfDocument, pageFromPdf, compressImage, compressionFactor);
           }
           else
           {
@@ -38,7 +38,7 @@ namespace Model
         }
         else
         {
-          DrawPage(pdfDocument, page);
+          DrawPage(pdfDocument, page, compressImage, compressionFactor);
         }
       }
 
@@ -47,7 +47,7 @@ namespace Model
     }
 
 
-    private void DrawPage(PdfDocument pdfDocument, Page page)
+    private void DrawPage(PdfDocument pdfDocument, Page page, bool compressImage, int compressionFactor)
     {
       // Create an empty page
       PdfPage pdfPage = pdfDocument.AddPage();
@@ -67,7 +67,17 @@ namespace Model
       imageRect.Width = (int)(imageBounds.Width * 72);
       imageRect.Height = (int)(imageBounds.Height * 72);
 
-      Image image = page.GetImage();
+      Image image;
+
+      if(compressImage)
+      {
+        image = page.GetCompressedImage(compressionFactor);
+      }
+      else
+      {
+        image = page.GetImageInOriginalFormat();
+      }
+
       XImage ximage = XImage.FromGdiPlusImage(image);
       gfx.DrawImage(ximage, imageRect);
       image.Dispose();

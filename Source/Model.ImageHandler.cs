@@ -4,6 +4,7 @@ using System.Drawing;
 using System.IO;
 using System.Text;
 using Utils;
+using Defines;
 
 
 namespace Model
@@ -71,6 +72,49 @@ namespace Model
       }
 
       return result;
+    }
+
+
+    public Image GetImageInOriginalFormat()
+    {
+      Image image = CreateImage();
+
+      if(SameAsSourceImage() == false)
+      {
+        System.Drawing.Imaging.ImageFormat originalFormat = image.RawFormat;
+
+        Transform(image);
+
+        byte[] byteArray;
+
+        if(originalFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
+        {
+          byteArray = Imaging.EncodeImageAsJpeg(image, 80);
+        }
+        else
+        {
+          byteArray = Imaging.EncodeImage(image, originalFormat, null);
+        }
+
+        image = Imaging.ByteArrayToImage(byteArray);
+      }
+
+      return image;
+    }
+
+
+    public Image GetCompressedImage(int compressionFactor)
+    {
+      Image image = CreateImage();
+
+      Transform(image);
+
+      // Check fow BW picture
+      //byte
+
+      byte[] byteArray = Imaging.EncodeImageAsJpeg(image, 90);
+
+      return Imaging.ByteArrayToImage(byteArray);
     }
 
 

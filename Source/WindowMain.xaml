@@ -68,6 +68,7 @@
         <!-- Output group-->
         <RibbonGroup x:Name="OutputGroup" Header="Output">
           <RibbonButton LargeImageSource="External\Icons8\PDF-96.png" Label="Save As PDF" KeyTip="FP" x:Name="ButtonSavePdf" Click="ButtonSavePdf_Click"/>
+          <RibbonButton LargeImageSource="External\Icons8\Image File-96.png" Label="Save Images" KeyTip="FP" x:Name="ButtonSaveImages" Click="ButtonSaveImages_Click"/>
           <RibbonButton LargeImageSource="External\Icons8\Print-96.png" Label="Print" KeyTip="C" x:Name="ButtonPrint" Click="ButtonPrint_Click" />
         </RibbonGroup>
         <!-- Edit group-->

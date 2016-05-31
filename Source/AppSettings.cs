@@ -122,7 +122,7 @@ namespace PDFScanningApp
       get { return fTable.GetInteger("PdfViewingResolution", 300); }
       set { fTable.SetInteger("PdfViewingResolution", value); }
     }
-    
+
 
     public int PdfExportResolution
     {
@@ -150,7 +150,14 @@ namespace PDFScanningApp
       get { return fTable.GetBool("RemovePagesAfterPdfExport", true); }
       set { fTable.SetBool("RemovePagesAfterPdfExport", value); }
     }
-    
+
+
+    public bool ExportCompressImages
+    {
+      get { return fTable.GetBool("ExportCompressImages", true); }
+      set { fTable.SetBool("ExportCompressImages", value); }
+    }
+
 
     public int ExportCompressionFactor
     {

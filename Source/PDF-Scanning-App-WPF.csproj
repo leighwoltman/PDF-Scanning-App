@@ -96,6 +96,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Model.ImageHandler.cs" />
+    <Compile Include="Model.ImageSaver.cs" />
     <Compile Include="Utils.TempFolder.cs" />
     <Compile Include="Utils.WpfImageConverter.cs" />
     <Compile Include="Defines.cs" />
@@ -217,6 +218,7 @@
     <EmbeddedResource Include="Resources\PdfNotAvailableBanner.png" />
   </ItemGroup>
   <ItemGroup>
+    <Resource Include="External\Icons8\Image File-96.png" />
     <Content Include="External\Pdfium\pdfium.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -34,6 +34,7 @@ namespace PDFScanningApp
     private PdfExporter fPdfExporter;
     private PdfImporter fPdfImporter;
     private ImageLoader fImageLoader;
+    private ImageSaver fImageSaver;
     private Document fDocument;
     private InsertionMark  fInsertionMark;
     private Point fDragStartPosition;
@@ -55,6 +56,7 @@ namespace PDFScanningApp
       fPdfExporter = new PdfExporter();
       fPdfImporter = new PdfImporter();
       fImageLoader = new ImageLoader();
+      fImageSaver = new ImageSaver();
 
       fDocument = new Document();
       fDocument.OnPageAdded += fDocument_OnPageAdded;
@@ -187,6 +189,7 @@ namespace PDFScanningApp
       {
         // we have nothing to save or print
         ButtonSavePdf.IsEnabled = false;
+        ButtonSaveImages.IsEnabled = false;
         ButtonPrint.IsEnabled = false;
 
         Button2Sided.IsEnabled = false;
@@ -196,6 +199,7 @@ namespace PDFScanningApp
       else
       {
         ButtonSavePdf.IsEnabled = true;
+        ButtonSaveImages.IsEnabled = true;
         ButtonPrint.IsEnabled = true;
 
         if (pageCount > 2)
@@ -543,7 +547,7 @@ namespace PDFScanningApp
       {
         string fileName = saveFileDialog1.FileName;
 
-        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers);
+        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
 
         if (fAppSettings.RemovePagesAfterPdfExport)
         {
@@ -551,6 +555,48 @@ namespace PDFScanningApp
         }
 
         fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+      }
+    }
+
+    
+    private void ButtonSaveImages_Click(object sender, RoutedEventArgs e)
+    {
+      List<int> pageNumbers = new List<int>();
+
+      if(ListViewPages.SelectedItems.Count > 0)
+      {
+        if(MessageBoxResult.Yes == MessageBox.Show("Only use selected pages?", "Confirm", MessageBoxButton.YesNo))
+        {
+          foreach(ListViewPage item in ListViewPages.SelectedItems)
+          {
+            pageNumbers.Add(item.Index);
+          }
+        }
+      }
+
+      if(pageNumbers.Count == 0)
+      {
+        for(int i = 0; i < fDocument.NumPages; i++)
+        {
+          pageNumbers.Add(i);
+        }
+      }
+
+      System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
+
+      if(!System.IO.Directory.Exists(fAppSettings.LastDirectoryForSaving))
+      {
+        fAppSettings.LastDirectoryForSaving = "M:\\";
+      }
+
+      saveFileDialog1.FileName = "Save Here";
+      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+
+      if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+      {
+        string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
+        fImageSaver.SaveImages(fDocument, savePath, pageNumbers);
+        fAppSettings.LastDirectoryForSaving = savePath;
       }
     }
 
