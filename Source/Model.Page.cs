@@ -100,7 +100,7 @@ namespace Model
 
       fResolutionDpi = fImageHandler.ResolutionDpi;
 
-      if(fResolutionDpi == null)
+      if(fResolutionDpi.IsDefined == false)
       {
         double image_aspect_ratio = imageSizePixels.Width / (double)imageSizePixels.Height;
         double page_aspect_ratio = pageSizeInches.Width / pageSizeInches.Height;

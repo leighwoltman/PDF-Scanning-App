@@ -30,6 +30,12 @@ namespace Utils
     }
 
 
+    public bool IsDefined
+    {
+      get { return ((fHorizontal != 0) && (fVertical != 0));  }
+    }
+
+
     public ResolutionDpi Transform(bool sideways)
     {
       return sideways ? new ResolutionDpi(fVertical, fHorizontal) : this;

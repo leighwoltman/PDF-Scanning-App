@@ -14,14 +14,14 @@ namespace Utils
     private static readonly ImageConverter fImageConverter = new ImageConverter();
 
 
-    public static byte[] ImageToByteArray(Image image)
+    public static byte[] ByteArrayFromImage(Image image)
     {
       byte[] result = (byte[])fImageConverter.ConvertTo(image, typeof(byte[]));
       return result;
     }
 
 
-    public static Image ByteArrayToImage(byte[] byteArray)
+    public static Image ImageFromByteArray(byte[] byteArray)
     {
       Image result = (Image)fImageConverter.ConvertFrom(byteArray);
       return result;
@@ -43,13 +43,13 @@ namespace Utils
     public static Image LoadImageFromFile(string fileName)
     {
       byte[] byteArray = LoadImageByteArrayFromFile(fileName);
-      return ByteArrayToImage(byteArray);
+      return ImageFromByteArray(byteArray);
     }
 
 
     public static void SaveImageToFile(Image image, string fileName)
     {
-      byte[] byteArray = ImageToByteArray(image);
+      byte[] byteArray = ByteArrayFromImage(image);
       SaveImageByteArrayToFile(fileName, byteArray);
     }
 
@@ -70,7 +70,7 @@ namespace Utils
 
     public static string GetImageExtensionFromByteArray(byte[] byteArray)
     {
-      Image image = ByteArrayToImage(byteArray);
+      Image image = ImageFromByteArray(byteArray);
       return GetImageExtension(image);
     }
 
@@ -288,8 +288,8 @@ namespace Utils
 
     public static Image ImageClone(Image source)
     {
-      byte[] byteArray = ImageToByteArray(source);
-      return ByteArrayToImage(byteArray);
+      byte[] byteArray = ByteArrayFromImage(source);
+      return ImageFromByteArray(byteArray);
     }
   }
 }

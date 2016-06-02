@@ -47,7 +47,7 @@ namespace Scanning
       {
         // Converts the ImageFile to a byte array, then to an Image
         Byte[] imageBytes = (byte[])imageFile.FileData.get_BinaryData();
-        return Imaging.ByteArrayToImage(imageBytes);
+        return Imaging.ImageFromByteArray(imageBytes);
       }
     }
   }

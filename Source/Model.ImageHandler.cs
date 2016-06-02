@@ -87,7 +87,7 @@ namespace Model
 
         byte[] byteArray = Imaging.EncodeImage(image, originalFormat, 80);
 
-        image = Imaging.ByteArrayToImage(byteArray);
+        image = Imaging.ImageFromByteArray(byteArray);
       }
 
       return image;
@@ -109,16 +109,27 @@ namespace Model
 
     public Image GetCompressedImage(int compressionFactor)
     {
-      Image image = CreateImage();
+      Image result;
+      Image image = GetImageFromMemory();
 
-      Transform(image);
+      if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
+      {
+        // Do not compress a Monochome image. 
+        // Because Jpeg format will make the file bigger and lower the quality.
+        result = image;
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
+      {
+        // The original picture is already compressed as Jpeg.
+        result = image;
+      }
+      else
+      {
+        byte[] byteArray = Imaging.EncodeImageAsJpeg(image, compressionFactor);
+        result = Imaging.ImageFromByteArray(byteArray);
+      }
 
-      // Check fow BW picture
-      //byte
-
-      byte[] byteArray = Imaging.EncodeImageAsJpeg(image, 90);
-
-      return Imaging.ByteArrayToImage(byteArray);
+      return result;
     }
 
 

@@ -23,6 +23,9 @@ namespace Model
 
         Image image2 = page.GetImageFromMemory();
         SaveImage(image2, directory, page.Name + "-Mem");
+
+        Image image3 = page.GetCompressedImage(50);
+        SaveImage(image3, directory, page.Name + "-Comp");
       }
     }
 
@@ -33,7 +36,7 @@ namespace Model
       // In some cases the format of the image in memory and the format in the output file differ. 
       // For example MemoryBmp is always saved as PNG by the ImageConverter. Therefore since the 
       // byteArray contains image data converted for output, it has the right output format. 
-      byte[] byteArray = Imaging.ImageToByteArray(image);
+      byte[] byteArray = Imaging.ByteArrayFromImage(image);
       string ext = Imaging.GetImageExtensionFromByteArray(byteArray);
       string fileName = Path.Combine(directory, name + ext);
       Imaging.SaveImageByteArrayToFile(fileName, byteArray);
