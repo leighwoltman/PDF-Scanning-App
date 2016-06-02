@@ -52,7 +52,13 @@ namespace Model
 
     public Image GetImageInOriginalFormat()
     {
-      return fImageHandler.GetImageInOriginalFormat2();
+      return fImageHandler.GetImageInOriginalFormat();
+    }
+
+
+    public Image GetImageFromMemory()
+    {
+      return fImageHandler.GetImageFromMemory();
     }
 
 

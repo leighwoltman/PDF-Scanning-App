@@ -85,16 +85,7 @@ namespace Model
 
         Transform(image);
 
-        byte[] byteArray;
-
-        if(originalFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
-        {
-          byteArray = Imaging.EncodeImageAsJpeg(image, 80);
-        }
-        else
-        {
-          byteArray = Imaging.EncodeImage(image, originalFormat, null);
-        }
+        byte[] byteArray = Imaging.EncodeImage(image, originalFormat, 80);
 
         image = Imaging.ByteArrayToImage(byteArray);
       }
@@ -103,7 +94,7 @@ namespace Model
     }
 
 
-    public Image GetImageInOriginalFormat2()
+    public Image GetImageFromMemory()
     {
       Image image = CreateImage();
 

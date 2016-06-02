@@ -133,6 +133,9 @@
     <Compile Include="Utils.SizeInches.cs" />
     <Compile Include="Utils.SizePixels.cs" />
     <Compile Include="Utils.WpfAssist.cs" />
+    <Compile Include="WindowImageProperties.xaml.cs">
+      <DependentUpon>WindowImageProperties.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSettings.xaml.cs">
       <DependentUpon>WindowSettings.xaml</DependentUpon>
     </Compile>
@@ -182,6 +185,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <Page Include="WindowImageProperties.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowMain.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

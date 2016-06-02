@@ -11,5 +11,5 @@ namespace Defines
 
   public enum PageScalingEnum { UseDpi, ShrinkOnly, StretchShrink };
 
-  public enum ImageFormatEnum { Bmp, Jpeg, Gif, Tiff, Png, Emf, Exif, Icon, Unknown };
+  public enum ImageFormatEnum { Bmp, Jpeg, Gif, Tiff, Png, Emf, Exif, Icon, MemoryBmp, Unknown };
 }

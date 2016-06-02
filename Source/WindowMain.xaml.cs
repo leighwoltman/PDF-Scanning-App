@@ -721,8 +721,61 @@ namespace PDFScanningApp
         fDocument.RemoveAll();
       }
     }
+    
+
+    private void MenuItemCompare_Click(object sender, RoutedEventArgs e)
+    {
+      if(ListViewPages.SelectedItems.Count == 2)
+      {
+        ListViewPage item1 = (ListViewPage)ListViewPages.SelectedItems[0];
+        ListViewPage item2 = (ListViewPage)ListViewPages.SelectedItems[1];
+        Model.Page page1 = fDocument.GetPage(item1.Index);
+        Model.Page page2 = fDocument.GetPage(item2.Index);
+        System.Drawing.Image image1 = page1.GetImageInOriginalFormat();
+        System.Drawing.Image image2 = page2.GetImageInOriginalFormat();
+
+        string message;
+
+        if(Utils.Imaging.ImageEquals(image1, image2))
+        {
+          message = "Images are same";
+        }
+        else
+        {
+          message = "Images are different";
+        }
+
+        MessageBox.Show(message, "Image Compare", MessageBoxButton.OK);
+      }
+    }
 
 
+    private void MenuItemProperties_Click(object sender, RoutedEventArgs e)
+    {
+      if(ListViewPages.SelectedItems.Count == 1)
+      {
+        ListViewPage item1 = (ListViewPage)ListViewPages.SelectedItems[0];
+        Model.Page page1 = fDocument.GetPage(item1.Index);
+        System.Drawing.Image image1 = page1.GetImageInOriginalFormat();
+        System.Drawing.Image image2 = page1.GetImageFromMemory();
+
+        Dictionary<string, string> properties = new Dictionary<string, string>();
+
+        properties.Add("Name", page1.Name);
+        properties.Add("Image Type", Utils.Imaging.GetImageFormatDescription(image1));
+        properties.Add("Height", "" + image1.Height);
+        properties.Add("Width", "" + image1.Width);
+        properties.Add("Pixel Format", "" + image1.PixelFormat);
+        properties.Add("Memory Format", Utils.Imaging.GetImageFormatDescription(image2));
+
+        WindowImageProperties F = new WindowImageProperties(properties);
+        F.Owner = this;
+        F.ShowDialog();
+        RefreshControls();
+      }
+    }
+
+    
     private void ButtonSettings_Click(object sender, RoutedEventArgs e)
     {
       WindowSettings settingsDialog = new WindowSettings(fAppSettings);

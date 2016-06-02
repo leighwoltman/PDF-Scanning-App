@@ -28,97 +28,111 @@ namespace Utils
     }
 
 
+    public static byte[] LoadImageByteArrayFromFile(string fileName)
+    {
+      return File.ReadAllBytes(fileName);
+    }
+
+
+    public static void SaveImageByteArrayToFile(string fileName, byte[] byteArray)
+    {
+      File.WriteAllBytes(fileName, byteArray);
+    }
+
+
     public static Image LoadImageFromFile(string fileName)
     {
-      byte[] byteArray = File.ReadAllBytes(fileName);
+      byte[] byteArray = LoadImageByteArrayFromFile(fileName);
       return ByteArrayToImage(byteArray);
     }
 
 
-    public static void SaveImageToFile(Image image, string directory, string fileNameNoExtension)
+    public static void SaveImageToFile(Image image, string fileName)
     {
-      string ext = Imaging.GetImageExtension(image);
-      string path = Path.Combine(directory, fileNameNoExtension + ext);
-
       byte[] byteArray = ImageToByteArray(image);
-      File.WriteAllBytes(path, byteArray);
+      SaveImageByteArrayToFile(fileName, byteArray);
+    }
+
+
+    public static string GetImageFormatDescription(Image image)
+    {
+      string[] result = GetImageRawFormatDescription(image.RawFormat);
+      return result[0];
     }
 
 
     public static string GetImageExtension(Image image)
     {
-      ImageFormatEnum imageFormat = Imaging.GetImageFormat(image);
-      return Imaging.GetImageFormatExtension(imageFormat);
+      string[] result = GetImageRawFormatDescription(image.RawFormat);
+      return result[1];
     }
 
 
-    public static ImageFormatEnum GetImageFormat(Image image)
+    public static string GetImageExtensionFromByteArray(byte[] byteArray)
     {
-      return TranslateImageRawFormat(image.RawFormat);
+      Image image = ByteArrayToImage(byteArray);
+      return GetImageExtension(image);
     }
 
 
-    public static ImageFormatEnum TranslateImageRawFormat(System.Drawing.Imaging.ImageFormat rawFormat)
+    private static string[] GetImageRawFormatDescription(System.Drawing.Imaging.ImageFormat rawFormat)
     {
-      ImageFormatEnum result;
+      string[] result = new string[2];
 
       if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
       {
-        result = ImageFormatEnum.Jpeg;
+        result[0] = "Jpeg";
+        result[1] = ".jpg";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
       {
-        result = ImageFormatEnum.Bmp;
+        result[0] = "Bmp";
+        result[1] = ".bmp";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Png))
       {
-        result = ImageFormatEnum.Png;
-      }
-      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Emf))
-      {
-        result = ImageFormatEnum.Emf;
-      }
-      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Exif))
-      {
-        result = ImageFormatEnum.Exif;
+        result[0] = "Png";
+        result[1] = ".png";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Gif))
       {
-        result = ImageFormatEnum.Gif;
+        result[0] = "Gif";
+        result[1] = ".gif";
+      }
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Emf))
+      {
+        result[0] = "Emf";
+        result[1] = ".image";
+      }
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Exif))
+      {
+        result[0] = "Exif";
+        result[1] = ".image";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Icon))
       {
-        result = ImageFormatEnum.Icon;
+        result[0] = "Icon";
+        result[1] = ".image";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.MemoryBmp))
       {
-        result = ImageFormatEnum.Bmp;
+        result[0] = "MemoryBmp";
+        result[1] = ".image";
       }
       else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Tiff))
       {
-        result = ImageFormatEnum.Tiff;
+        result[0] = "Tiff";
+        result[1] = ".image";
+      }
+      else if(rawFormat.Equals(System.Drawing.Imaging.ImageFormat.Wmf))
+      {
+        result[0] = "Wmf";
+        result[1] = ".image";
       }
       else
       {
-        result = ImageFormatEnum.Unknown;
-      }
-
-      return result;
-    }
-
-
-    public static string GetImageFormatExtension(ImageFormatEnum format)
-    {
-      string result;
-
-      switch(format)
-      {
-        case ImageFormatEnum.Bmp: result = ".bmp"; break;
-        case ImageFormatEnum.Gif: result = ".gif"; break;
-        case ImageFormatEnum.Jpeg: result = ".jpg"; break;
-        case ImageFormatEnum.Png: result = ".png"; break;
-        case ImageFormatEnum.Icon: result = ".ico"; break;
-        default: result = ".image"; break;
+        result[0] = "Unknown";
+        result[1] = ".image";
       }
 
       return result;
@@ -151,6 +165,15 @@ namespace Utils
     }
 
 
+    public static byte[] EncodeImage(Image image, ImageFormat format, int quality)
+    {
+      // quality is used by Jpeg and probably ignored by other formats
+      EncoderParameters encoderParams = new EncoderParameters(1);
+      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+      return EncodeImage(image, format, encoderParams);
+    }
+
+
     private static ImageCodecInfo GetEncoderInfo(ImageFormat format)
     {
       ImageCodecInfo result = null;
@@ -176,9 +199,7 @@ namespace Utils
 
     public static byte[] EncodeImageAsJpeg(Image image, int quality)
     {
-      EncoderParameters encoderParams = new EncoderParameters(1);
-      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
-      return EncodeImage(image, ImageFormat.Jpeg, encoderParams);
+      return EncodeImage(image, ImageFormat.Jpeg, quality);
     }
 
 
@@ -262,6 +283,13 @@ namespace Utils
       }
 
       return result;
+    }
+
+
+    public static Image ImageClone(Image source)
+    {
+      byte[] byteArray = ImageToByteArray(source);
+      return ByteArrayToImage(byteArray);
     }
   }
 }
