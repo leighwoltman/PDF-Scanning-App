@@ -17,10 +17,27 @@ namespace Model
     }
 
 
-    public void LoadFromFile(Document document, string filename, SizeInches size)
+    public bool LoadFromFile(Document document, string filename, SizeInches size)
     {
-      Page myPage = new PageFromFile(filename, size);
-      document.AddPage(myPage);
+      bool validFile;
+
+      try
+      {
+        System.Drawing.Image image = Imaging.LoadImageFromFile(filename);
+        validFile = true;
+      }
+      catch(Exception x)
+      {
+        validFile = false;
+      }
+
+      if(validFile)
+      {
+        Page myPage = new PageFromFile(filename, size);
+        document.AddPage(myPage);
+      }
+
+      return validFile;
     }
   }
 }
