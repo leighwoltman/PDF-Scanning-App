@@ -56,7 +56,13 @@ namespace Utils
 
     public static string GetImageFormatDescription(Image image)
     {
-      string[] result = GetImageRawFormatDescription(image.RawFormat);
+      return GetFormatDescription(image.RawFormat);
+    }
+
+
+    public static string GetFormatDescription(System.Drawing.Imaging.ImageFormat rawFormat)
+    {
+      string[] result = GetImageRawFormatDescription(rawFormat);
       return result[0];
     }
 
@@ -139,9 +145,9 @@ namespace Utils
     }
 
 
-    public static void EncodeSaveImageToFile(Image image, string fileName, ImageFormat format, EncoderParameters encoderParams)
+    public static void EncodeSaveImageToFile(Image image, string fileName, ImageFormat format, int quality)
     {
-      byte[] byteArray = EncodeImage(image, format, encoderParams);
+      byte[] byteArray = EncodeImage(image, format, quality);
       File.WriteAllBytes(fileName, byteArray);
     }
 
@@ -167,10 +173,35 @@ namespace Utils
 
     public static byte[] EncodeImage(Image image, ImageFormat format, int quality)
     {
-      // quality is used by Jpeg and probably ignored by other formats
-      EncoderParameters encoderParams = new EncoderParameters(1);
-      encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+      EncoderParameters encoderParams = null;
+
+      if(format.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
+      {
+        // quality is used by Jpeg and probably ignored by other formats
+        encoderParams = new EncoderParameters(1);
+        encoderParams.Param[0] = new EncoderParameter(System.Drawing.Imaging.Encoder.Quality, quality);
+      }
+
       return EncodeImage(image, format, encoderParams);
+    }
+
+
+    public static Image ConvertImage(Image image, ImageFormat format, int quality)
+    {
+      Image result;
+
+      if(image.RawFormat.Equals(format))
+      {
+        // No need to do conversion since the image is already in desired format
+        result = image;
+      }
+      else
+      {
+        byte[] byteArray = Imaging.EncodeImage(image, format, quality);
+        result = Imaging.ImageFromByteArray(byteArray);
+      }
+
+      return result;
     }
 
 
@@ -187,19 +218,6 @@ namespace Utils
         }
       }
       return result;
-    }
-
-
-    public static void SaveImageAsJpeg(Image image, string fileName, int quality)
-    {
-      byte[] byteArray = EncodeImageAsJpeg(image, quality);
-      File.WriteAllBytes(fileName, byteArray);
-    }
-
-
-    public static byte[] EncodeImageAsJpeg(Image image, int quality)
-    {
-      return EncodeImage(image, ImageFormat.Jpeg, quality);
     }
 
 

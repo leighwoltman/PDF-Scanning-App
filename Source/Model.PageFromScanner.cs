@@ -28,7 +28,7 @@ namespace Model
       fFilename = GetTempFileName(fScanNumber);
       fScanNumber++;
 
-      Utils.Imaging.EncodeSaveImageToFile(image, fFilename, System.Drawing.Imaging.ImageFormat.Png, null);
+      Utils.Imaging.EncodeSaveImageToFile(image, fFilename, System.Drawing.Imaging.ImageFormat.Png, 0);
 
       double pageWidth = image.Width / (double)dpi;
       double pageHeight = image.Height / (double)dpi;

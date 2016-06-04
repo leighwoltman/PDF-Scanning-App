@@ -25,6 +25,7 @@ namespace Model
     private int fOrientation;
     private bool fIsMirrored;
     private string fTemporaryFilePath;
+    private System.Drawing.Imaging.ImageFormat fOriginalFormat;
 
 
     public ImageHandler(InterfaceImageCreator imageCreator)
@@ -37,6 +38,7 @@ namespace Model
       fOrientation = 0;
       fIsMirrored = false;
       fTemporaryFilePath = null;
+      fOriginalFormat = null;
     }
 
 
@@ -47,6 +49,7 @@ namespace Model
         fSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
         fResolutionDpi = new ResolutionDpi(horizontalDpi, verticalDpi);
         fSourceThumbnail = Utils.Imaging.CreateThumbnail(myImage, 200);
+        fOriginalFormat = myImage.RawFormat;
       }
       RefreshImage();
     }
@@ -66,8 +69,14 @@ namespace Model
       {
         result = CreateImage();
       }
+      else if(String.IsNullOrEmpty(fTemporaryFilePath))
+      {
+        result = CreateImage();
+        Transform(result);
+      }
       else
       {
+        // Transformed image is already stored in a temporary file.
         result = Imaging.LoadImageFromFile(fTemporaryFilePath);
       }
 
@@ -75,58 +84,32 @@ namespace Model
     }
 
 
-    public Image GetImageInOriginalFormat()
+    public System.Drawing.Imaging.ImageFormat ImageOriginalFormat
     {
-      Image image = CreateImage();
-
-      if(SameAsSourceImage() == false)
-      {
-        System.Drawing.Imaging.ImageFormat originalFormat = image.RawFormat;
-
-        Transform(image);
-
-        byte[] byteArray = Imaging.EncodeImage(image, originalFormat, 80);
-
-        image = Imaging.ImageFromByteArray(byteArray);
-      }
-
-      return image;
+      get { return fOriginalFormat; }
     }
 
 
-    public Image GetImageFromMemory()
+    public Image GetImageInOriginalFormat(int compressionFactor)
     {
-      Image image = CreateImage();
-
-      if(SameAsSourceImage() == false)
-      {
-        Transform(image);
-      }
-
-      return image;
+      // Compression factor is needed in case the image needs to be converted to Jpeg
+      return Imaging.ConvertImage(GetImage(), fOriginalFormat, compressionFactor);
     }
 
 
     public Image GetCompressedImage(int compressionFactor)
     {
       Image result;
-      Image image = GetImageFromMemory();
+      Image image = GetImage();
 
       if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
       {
-        // Do not compress a Monochome image. 
-        // Because Jpeg format will make the file bigger and lower the quality.
-        result = image;
-      }
-      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
-      {
-        // The original picture is already compressed as Jpeg.
-        result = image;
+        // Jpeg format will make a Monochome image file bigger and lower the quality; Use PNG instead
+        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
       }
       else
       {
-        byte[] byteArray = Imaging.EncodeImageAsJpeg(image, compressionFactor);
-        result = Imaging.ImageFromByteArray(byteArray);
+        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Jpeg, compressionFactor);
       }
 
       return result;
@@ -141,6 +124,7 @@ namespace Model
 
     private void RefreshImage()
     {
+#if USE_TEMPORARY_FILE_FOR_TRANSFORMED_IMAGE
       if(SameAsSourceImage() == false)
       {
         Image image = CreateImage();
@@ -152,10 +136,10 @@ namespace Model
           fTemporaryFilePath = TempFolder.GetFileName();
         }
 
-        Utils.Imaging.SaveImageAsJpeg(image, fTemporaryFilePath, 90);
+        Utils.Imaging.EncodeSaveImageToFile(image, fTemporaryFilePath, System.Drawing.Imaging.ImageFormat.Png, 0);
       }
-
-      fThumbnail = (Image)fSourceThumbnail.Clone();
+#endif
+      fThumbnail = Imaging.ImageClone(fSourceThumbnail);
       Transform(fThumbnail);
     }
 

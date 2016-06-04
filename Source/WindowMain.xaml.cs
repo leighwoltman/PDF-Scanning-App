@@ -595,7 +595,7 @@ namespace PDFScanningApp
       if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
-        fImageSaver.SaveImages(fDocument, savePath, pageNumbers);
+        fImageSaver.SaveImages(fDocument, savePath, pageNumbers, fAppSettings.ExportCompressionFactor);
         fAppSettings.LastDirectoryForSaving = savePath;
       }
     }
@@ -731,8 +731,8 @@ namespace PDFScanningApp
         ListViewPage item2 = (ListViewPage)ListViewPages.SelectedItems[1];
         Model.Page page1 = fDocument.GetPage(item1.Index);
         Model.Page page2 = fDocument.GetPage(item2.Index);
-        System.Drawing.Image image1 = page1.GetImageInOriginalFormat();
-        System.Drawing.Image image2 = page2.GetImageInOriginalFormat();
+        System.Drawing.Image image1 = page1.GetImage();
+        System.Drawing.Image image2 = page2.GetImage();
 
         string message;
 
@@ -756,8 +756,7 @@ namespace PDFScanningApp
       {
         ListViewPage item1 = (ListViewPage)ListViewPages.SelectedItems[0];
         Model.Page page1 = fDocument.GetPage(item1.Index);
-        System.Drawing.Image image1 = page1.GetImageInOriginalFormat();
-        System.Drawing.Image image2 = page1.GetImageFromMemory();
+        System.Drawing.Image image1 = page1.GetImage();
 
         Dictionary<string, string> properties = new Dictionary<string, string>();
 
@@ -766,7 +765,7 @@ namespace PDFScanningApp
         properties.Add("Height", "" + image1.Height);
         properties.Add("Width", "" + image1.Width);
         properties.Add("Pixel Format", "" + image1.PixelFormat);
-        properties.Add("Memory Format", Utils.Imaging.GetImageFormatDescription(image2));
+        properties.Add("Original Format", Utils.Imaging.GetFormatDescription(page1.ImageOriginalFormat));
 
         WindowImageProperties F = new WindowImageProperties(properties);
         F.Owner = this;

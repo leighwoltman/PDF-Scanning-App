@@ -44,21 +44,21 @@ namespace Model
     public abstract Image CreateImage();
 
 
+    public System.Drawing.Imaging.ImageFormat ImageOriginalFormat
+    {
+      get { return fImageHandler.ImageOriginalFormat; }
+    }
+
+
     public Image GetImage()
     {
       return fImageHandler.GetImage();
     }
 
 
-    public Image GetImageInOriginalFormat()
+    public Image GetImageInOriginalFormat(int compressionFactor)
     {
-      return fImageHandler.GetImageInOriginalFormat();
-    }
-
-
-    public Image GetImageFromMemory()
-    {
-      return fImageHandler.GetImageFromMemory();
+      return fImageHandler.GetImageInOriginalFormat(compressionFactor);
     }
 
 
@@ -67,7 +67,7 @@ namespace Model
       return fImageHandler.GetCompressedImage(compressionFactor);
     }
 
-    
+
     public Image ImageThumbnail
     {
       get { return fImageHandler.Thumbnail; }

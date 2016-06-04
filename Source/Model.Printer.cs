@@ -80,7 +80,7 @@ namespace Model
       imageRect.Width = (int)(imageBounds.Width * e.Graphics.DpiX);
       imageRect.Height = (int)(imageBounds.Height * e.Graphics.DpiY);
 
-      Image image = page.GetImageInOriginalFormat();
+      Image image = page.GetImage();
       e.Graphics.PageUnit = GraphicsUnit.Pixel;
       e.Graphics.DrawImage(image, imageRect);
       image.Dispose();

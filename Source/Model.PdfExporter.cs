@@ -75,7 +75,7 @@ namespace Model
       }
       else
       {
-        image = page.GetImageInOriginalFormat();
+        image = page.GetImageInOriginalFormat(compressionFactor);
       }
 
       XImage ximage = XImage.FromGdiPlusImage(image);
