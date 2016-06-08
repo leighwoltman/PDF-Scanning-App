@@ -2,38 +2,13 @@ using System;
 using System.Collections;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using Imports;
 
 
 namespace Scanning
 {
   partial class TwainDataSourceManager
   {
-    class LibUser32
-    {
-      [DllImport("user32.dll", ExactSpelling = true)]
-      public static extern int GetMessagePos();
-
-      [DllImport("user32.dll", ExactSpelling = true)]
-      public static extern int GetMessageTime();
-    }
-
-
-    class LibKernel32
-    {
-      [DllImport("kernel32.dll", ExactSpelling = true)]
-      public static extern IntPtr GlobalAlloc(int flags, int size);
-
-      [DllImport("kernel32.dll", ExactSpelling = true)]
-      public static extern IntPtr GlobalLock(IntPtr handle);
-
-      [DllImport("kernel32.dll", ExactSpelling = true)]
-      public static extern bool GlobalUnlock(IntPtr handle);
-
-      [DllImport("kernel32.dll", ExactSpelling = true)]
-      public static extern IntPtr GlobalFree(IntPtr handle);
-    }
-
-
     class LibTwain32
     {
       [DllImport("twain_32.dll", EntryPoint = "#1")]

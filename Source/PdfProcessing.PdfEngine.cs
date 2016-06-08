@@ -5,6 +5,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Runtime.InteropServices;
 using System.Text;
+using Imports;
 
 
 namespace PdfProcessing
@@ -27,7 +28,7 @@ namespace PdfProcessing
 
     private PdfEngine()
     {
-      NativeMethods.FPDF_AddRef();
+      LibPdfium.FPDF_AddRef();
     }
 
 
@@ -49,77 +50,77 @@ namespace PdfProcessing
 
       int length = (int)stream.Length;
 
-      SafeHandle mappedHandle = NativeMethods.CreateFileMapping(handle, IntPtr.Zero, NativeMethods.FileMapProtection.PageReadonly, 0, (uint)length, null);
+      SafeHandle mappedHandle = LibKernel32.CreateFileMapping(handle, IntPtr.Zero, LibKernel32.FileMapProtection.PageReadonly, 0, (uint)length, null);
 
       if(mappedHandle.IsInvalid)
       {
         throw new Exception();
       }
 
-      SafeHandle buffer = NativeMethods.MapViewOfFile(mappedHandle, NativeMethods.FileMapAccess.FileMapRead, 0, 0, (uint)length);
+      SafeHandle buffer = LibKernel32.MapViewOfFile(mappedHandle, LibKernel32.FileMapAccess.FileMapRead, 0, 0, (uint)length);
 
       if(buffer.IsInvalid)
       {
         throw new Exception();
       }
 
-      return NativeMethods.FPDF_LoadMemDocument(buffer, length, null);
+      return LibPdfium.FPDF_LoadMemDocument(buffer, length, null);
     }
 
 
     public void CloseDocument(IntPtr document)
     {
-      NativeMethods.FPDF_CloseDocument(document);
+      LibPdfium.FPDF_CloseDocument(document);
     }
 
 
     public IntPtr LoadPage(IntPtr document, int pageNumber)
     {
-      return NativeMethods.FPDF_LoadPage(document, pageNumber);
+      return LibPdfium.FPDF_LoadPage(document, pageNumber);
     }
 
 
     public void ClosePage(IntPtr page)
     {
-      NativeMethods.FPDF_ClosePage(page);
+      LibPdfium.FPDF_ClosePage(page);
     }
 
 
     public int GetPageCount(IntPtr document)
     {
-      return NativeMethods.FPDF_GetPageCount(document);
+      return LibPdfium.FPDF_GetPageCount(document);
     }
 
 
     public bool CopyPage(IntPtr destDoc, IntPtr sourceDoc, int pageNumber)
     {
-      return NativeMethods.FPDF_ImportPages(destDoc, sourceDoc, pageNumber.ToString(), GetPageCount(destDoc));
+      return LibPdfium.FPDF_ImportPages(destDoc, sourceDoc, pageNumber.ToString(), GetPageCount(destDoc));
     }
 
 
     public IntPtr CreateNewDocument()
     {
-      return NativeMethods.FPDF_CreateNewDocument();
+      return LibPdfium.FPDF_CreateNewDocument();
     }
 
 
     public bool SaveDocument(IntPtr document, string filename)
     {
-      return NativeMethods.FPDF_SaveAsFile(document, filename, 0, null, 0, null, 0);
+      return LibPdfium.FPDF_SaveAsFile(document, filename, 0, null, 0, null, 0);
     }
 
 
     public double GetPageWidth(IntPtr page)
     {
       // Convert points to inches
-      return NativeMethods.FPDF_GetPageWidth(page) / 72;
+      return LibPdfium.FPDF_GetPageWidth(page) / 72;
     }
 
 
     public double GetPageHeight(IntPtr page)
     {
       // Convert points to inches
-      return NativeMethods.FPDF_GetPageHeight(page) / 72;
+      return LibPdfium.FPDF_GetPageHeight(page) / 72;
     }
 
 
@@ -132,15 +133,15 @@ namespace PdfProcessing
 
       try
       {
-        IntPtr handle = NativeMethods.FPDFBitmap_CreateEx(pixWidth, pixHeight, 4, data.Scan0, pixWidth * 4);
+        IntPtr handle = LibPdfium.FPDFBitmap_CreateEx(pixWidth, pixHeight, 4, data.Scan0, pixWidth * 4);
 
         try
         {
-          NativeMethods.FPDF_RenderPageBitmap(handle, page, 0, 0, pixWidth, pixHeight, 0, 0);
+          LibPdfium.FPDF_RenderPageBitmap(handle, page, 0, 0, pixWidth, pixHeight, 0, 0);
         }
         finally
         {
-          NativeMethods.FPDFBitmap_Destroy(handle);
+          LibPdfium.FPDFBitmap_Destroy(handle);
         }
       }
       finally

@@ -95,6 +95,10 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Imports.LibDefines.cs" />
+    <Compile Include="Imports.LibGdi32.cs" />
+    <Compile Include="Imports.LibKernel32.cs" />
+    <Compile Include="Imports.LibUser32.cs" />
     <Compile Include="Model.ImageHandler.cs" />
     <Compile Include="Model.ImageSaver.cs" />
     <Compile Include="Utils.TempFolder.cs" />
@@ -110,8 +114,7 @@
     <Compile Include="Model.PdfImporter.cs" />
     <Compile Include="Model.Printer.cs" />
     <Compile Include="Model.Scanner.cs" />
-    <Compile Include="PdfProcessing.NativeMethods.cs" />
-    <Compile Include="PdfProcessing.NativeMethods.Pdfium.cs" />
+    <Compile Include="PdfProcessing.LibPdfium.cs" />
     <Compile Include="PdfProcessing.PdfEngine.cs" />
     <Compile Include="Scanning.Interfaces.cs" />
     <Compile Include="Scanning.TwainCapability.cs" />
