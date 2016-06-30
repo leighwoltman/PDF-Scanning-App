@@ -181,6 +181,9 @@ namespace PDFScanningApp
       else
       {
         ComboBoxScanners.IsEnabled = true;
+
+        ComboBoxScannersGallery.Command = ApplicationCommands.Print;
+        ComboBoxScannersGallery.Command = null;
       }
 
       int pageCount = ListViewPages.Items.Count;
