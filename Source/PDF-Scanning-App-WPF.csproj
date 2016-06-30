@@ -9,13 +9,14 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PDFScanningApp</RootNamespace>
     <AssemblyName>PDF-Scanner-App-WPF</AssemblyName>
-    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <WarningLevel>4</WarningLevel>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x86</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,23 +24,26 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>full</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cyotek.Windows.Forms.ImageBox">
       <HintPath>External\ImageBox\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Windows.Shell, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
-    <Reference Include="PdfSharp">
-      <HintPath>External\PDFsharp\PdfSharp.dll</HintPath>
+    <Reference Include="PdfiumDotNetWrapper">
+      <HintPath>External\Pdfium\PdfiumDotNetWrapper.dll</HintPath>
     </Reference>
     <Reference Include="RibbonControlsLibrary, Version=3.5.41019.1, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -101,6 +105,7 @@
     <Compile Include="Imports.LibUser32.cs" />
     <Compile Include="Model.ImageHandler.cs" />
     <Compile Include="Model.ImageSaver.cs" />
+    <Compile Include="PdfProcessing.LibPdfium.cs" />
     <Compile Include="Utils.TempFolder.cs" />
     <Compile Include="Utils.WpfImageConverter.cs" />
     <Compile Include="Defines.cs" />
@@ -114,8 +119,6 @@
     <Compile Include="Model.PdfImporter.cs" />
     <Compile Include="Model.Printer.cs" />
     <Compile Include="Model.Scanner.cs" />
-    <Compile Include="PdfProcessing.LibPdfium.cs" />
-    <Compile Include="PdfProcessing.PdfEngine.cs" />
     <Compile Include="Scanning.Interfaces.cs" />
     <Compile Include="Scanning.TwainCapability.cs" />
     <Compile Include="Scanning.TwainDataSource.cs" />
@@ -229,11 +232,11 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="External\Icons8\Image File-96.png" />
-    <Content Include="External\Pdfium\pdfium.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /d "$(ProjectDir)\External\Pdfium\pdfium.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

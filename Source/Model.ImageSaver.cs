@@ -53,6 +53,13 @@ namespace Model
         Page page = document.GetPage(num);
 
         Image image = page.GetImage();
+
+        if (format == null)
+        {
+          // Since the format is not specified use the native format from the image
+          format = image.RawFormat;
+        }
+
         SaveImage(image, format, directory, page.Name, compressionRate);
 
         // Alternate methods:
@@ -68,22 +75,10 @@ namespace Model
 
     private void SaveImage(Image image, System.Drawing.Imaging.ImageFormat format, string directory, string name, int compressionRate)
     {
-      byte[] byteArray;
-
-      if(format == null)
-      {
-        // No conversion, use native format to save the image
-        // Use Image->ByteArray then ByteArray->ext because this yields the output format correctly:
-        // In some cases the format of the image in memory and the format in the output file differ. 
-        // For example MemoryBmp is always saved as PNG by the ImageConverter. Therefore since the 
-        // byteArray contains image data converted for output, it has the right output format. 
-        byteArray = Imaging.ByteArrayFromImage(image);
-      }
-      else
-      {
-        byteArray = Imaging.EncodeImage(image, format, compressionRate);
-      }
-
+      byte[] byteArray = Imaging.EncodeImage(image, format, compressionRate);
+      // In some cases the format of the image in memory and the format in the output file differ. 
+      // For example MemoryBmp is always saved as PNG by the ImageConverter. Therefore since the 
+      // byteArray contains image data converted for output, it has the right output format. 
       string ext = Imaging.GetImageExtensionFromByteArray(byteArray);
       string fileName = Path.Combine(directory, name + ext);
       Imaging.SaveImageByteArrayToFile(fileName, byteArray);

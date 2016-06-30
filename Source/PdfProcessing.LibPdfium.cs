@@ -1,8 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
+using System.IO.Compression;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Windows.Forms;
+using Imports;
+using Utils;
+using PdfiumDotNetWrapper;
 
 
 namespace PdfProcessing
@@ -16,684 +22,392 @@ namespace PdfProcessing
     // threads, even when there are multiple AppDomain's in play.
     private static readonly string LockString = String.Intern("e362349b-001d-4cb2-bf55-a71606a3e36f");
 
-    public static void FPDF_AddRef()
+    public static void SampleCode()
     {
       lock(LockString)
       {
-        Imports.FPDF_AddRef();
-      }
-    }
-
-    public static void FPDF_Release()
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_Release();
-      }
-    }
-
-    public static IntPtr FPDF_LoadMemDocument(SafeHandle data_buf, int size, string password)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_LoadMemDocument(data_buf, size, password);
-      }
-    }
-
-    public static IntPtr FPDF_LoadMemDocument(byte[] data_buf, int size, string password)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_LoadMemDocument(data_buf, size, password);
-      }
-    }
-
-    public static void FPDF_CloseDocument(IntPtr document)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_CloseDocument(document);
-      }
-    }
-
-    public static int FPDF_GetPageCount(IntPtr document)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_GetPageCount(document);
-      }
-    }
-
-    public static uint FPDF_GetDocPermissions(IntPtr document)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_GetDocPermissions(document);
-      }
-    }
-
-    public static IntPtr FPDFDOC_InitFormFillEnvironment(IntPtr document, ref FPDF_FORMFILLINFO formInfo)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFDOC_InitFormFillEnvironment(document, ref formInfo);
-      }
-    }
-
-    public static void FPDF_SetFormFieldHighlightColor(IntPtr hHandle, int fieldType, uint color)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_SetFormFieldHighlightColor(hHandle, fieldType, color);
-      }
-    }
-
-    public static void FPDF_SetFormFieldHighlightAlpha(IntPtr hHandle, byte alpha)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_SetFormFieldHighlightAlpha(hHandle, alpha);
-      }
-    }
-
-    public static void FORM_DoDocumentJSAction(IntPtr hHandle)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_DoDocumentJSAction(hHandle);
-      }
-    }
-
-    public static void FORM_DoDocumentOpenAction(IntPtr hHandle)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_DoDocumentOpenAction(hHandle);
-      }
-    }
-
-    public static void FPDFDOC_ExitFormFillEnviroument(IntPtr hHandle)
-    {
-      lock(LockString)
-      {
-        Imports.FPDFDOC_ExitFormFillEnviroument(hHandle);
-      }
-    }
-
-    public static void FORM_DoDocumentAAction(IntPtr hHandle, FPDFDOC_AACTION aaType)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_DoDocumentAAction(hHandle, aaType);
-      }
-    }
-
-    public static IntPtr FPDF_LoadPage(IntPtr document, int page_index)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_LoadPage(document, page_index);
-      }
-    }
-
-    public static IntPtr FPDFText_LoadPage(IntPtr page)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_LoadPage(page);
-      }
-    }
-
-    public static void FORM_OnAfterLoadPage(IntPtr page, IntPtr _form)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_OnAfterLoadPage(page, _form);
-      }
-    }
-
-    public static void FORM_DoPageAAction(IntPtr page, IntPtr _form, FPDFPAGE_AACTION fPDFPAGE_AACTION)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_DoPageAAction(page, _form, fPDFPAGE_AACTION);
-      }
-    }
-
-    public static double FPDF_GetPageWidth(IntPtr page)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_GetPageWidth(page);
-      }
-    }
-
-    public static double FPDF_GetPageHeight(IntPtr page)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_GetPageHeight(page);
-      }
-    }
-
-    public static void FORM_OnBeforeClosePage(IntPtr page, IntPtr _form)
-    {
-      lock(LockString)
-      {
-        Imports.FORM_OnBeforeClosePage(page, _form);
-      }
-    }
-
-    public static void FPDFText_ClosePage(IntPtr text_page)
-    {
-      lock(LockString)
-      {
-        Imports.FPDFText_ClosePage(text_page);
-      }
-    }
-
-    public static void FPDF_ClosePage(IntPtr page)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_ClosePage(page);
-      }
-    }
-
-    public static void FPDF_RenderPage(IntPtr dc, IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, FPDF flags)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_RenderPage(dc, page, start_x, start_y, size_x, size_y, rotate, flags);
-      }
-    }
-
-    public static void FPDF_RenderPageBitmap(IntPtr bitmapHandle, IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, FPDF flags)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_RenderPageBitmap(bitmapHandle, page, start_x, start_y, size_x, size_y, rotate, flags);
-      }
-    }
-
-    public static int FPDF_GetPageSizeByIndex(IntPtr document, int page_index, out double width, out double height)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_GetPageSizeByIndex(document, page_index, out width, out height);
-      }
-    }
-
-    public static IntPtr FPDFBitmap_CreateEx(int width, int height, int format, IntPtr first_scan, int stride)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBitmap_CreateEx(width, height, format, first_scan, stride);
-      }
-    }
-
-    public static void FPDFBitmap_FillRect(IntPtr bitmapHandle, int left, int top, int width, int height, uint color)
-    {
-      lock(LockString)
-      {
-        Imports.FPDFBitmap_FillRect(bitmapHandle, left, top, width, height, color);
-      }
-    }
-
-    public static IntPtr FPDFBitmap_Destroy(IntPtr bitmapHandle)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBitmap_Destroy(bitmapHandle);
-      }
-    }
-
-    public static IntPtr FPDFText_FindStart(IntPtr page, byte[] findWhat, FPDF_SEARCH_FLAGS flags, int start_index)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_FindStart(page, findWhat, flags, start_index);
-      }
-    }
-
-    public static int FPDFText_GetSchResultIndex(IntPtr handle)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_GetSchResultIndex(handle);
-      }
-    }
-
-    public static int FPDFText_GetSchCount(IntPtr handle)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_GetSchCount(handle);
-      }
-    }
-
-    public static int FPDFText_GetText(IntPtr page, int start_index, int count, byte[] result)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_GetText(page, start_index, count, result);
-      }
-    }
-
-    public static void FPDFText_GetCharBox(IntPtr page, int index, out double left, out double right, out double bottom, out double top)
-    {
-      lock(LockString)
-      {
-        Imports.FPDFText_GetCharBox(page, index, out left, out right, out bottom, out top);
-      }
-    }
-
-    public static bool FPDFText_FindNext(IntPtr handle)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFText_FindNext(handle);
-      }
-    }
-
-    public static void FPDFText_FindClose(IntPtr handle)
-    {
-      lock(LockString)
-      {
-        Imports.FPDFText_FindClose(handle);
-      }
-    }
-
-    public static bool FPDFLink_Enumerate(IntPtr page, ref int startPos, out IntPtr linkAnnot)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFLink_Enumerate(page, ref startPos, out linkAnnot);
-      }
-    }
-
-    public static IntPtr FPDFLink_GetDest(IntPtr document, IntPtr link)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFLink_GetDest(document, link);
-      }
-    }
-
-    public static uint FPDFDest_GetPageIndex(IntPtr document, IntPtr dest)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFDest_GetPageIndex(document, dest);
-      }
-    }
-
-    public static bool FPDFLink_GetAnnotRect(IntPtr linkAnnot, FS_RECTF rect)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFLink_GetAnnotRect(linkAnnot, rect);
-      }
-    }
-
-    public static void FPDF_PageToDevice(IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, double page_x, double page_y, out int device_x, out int device_y)
-    {
-      lock(LockString)
-      {
-        Imports.FPDF_PageToDevice(page, start_x, start_y, size_x, size_y, rotate, page_x, page_y, out device_x, out device_y);
-      }
-    }
-
-    public static IntPtr FPDFLink_GetAction(IntPtr link)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFLink_GetAction(link);
-      }
-    }
-
-    public static uint FPDFAction_GetURIPath(IntPtr document, IntPtr action, StringBuilder buffer, uint buflen)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFAction_GetURIPath(document, action, buffer, buflen);
-      }
-    }
-
-    public static IntPtr FPDF_BookmarkGetFirstChild(IntPtr document, IntPtr bookmark)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBookmark_GetFirstChild(document, bookmark);
-      }
-    }
-
-    public static IntPtr FPDF_BookmarkGetNextSibling(IntPtr document, IntPtr bookmark)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBookmark_GetNextSibling(document, bookmark);
-      }
-    }
-
-    public static uint FPDF_BookmarkGetTitle(IntPtr bookmark, byte[] buffer, uint buflen)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBookmark_GetTitle(bookmark, buffer, buflen);
-      }
-    }
-
-    public static IntPtr FPDF_BookmarkGetAction(IntPtr bookmark)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBookmark_GetAction(bookmark);
-      }
-    }
-
-    public static IntPtr FPDF_BookmarkGetDest(IntPtr document, IntPtr bookmark)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFBookmark_GetDest(document, bookmark);
-      }
-    }
-
-    public static uint FPDF_ActionGetType(IntPtr action)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDFAction_GetType(action);
-      }
-    }
-
-    public static bool FPDF_ImportPages(IntPtr destDoc, IntPtr sourceDoc, string pageRange, int index)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_ImportPages(destDoc, sourceDoc, pageRange, index);
-      }
-    }
-
-    public static IntPtr FPDF_CreateNewDocument()
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_CreateNewDocument();
-      }
-    }
-
-    public static bool FPDF_SaveAsFile(IntPtr document, string filename, uint permissions, byte[] userPwd, uint userPwdlen, byte[] ownerPwd, uint ownerPwdlen)
-    {
-      lock(LockString)
-      {
-        return Imports.FPDF_SaveAsFile(document, filename, permissions, userPwd, userPwdlen, ownerPwd, ownerPwdlen);
+        Pdfium.InitLibrary();
       }
     }
 
 
-    private static class Imports
+    private static bool fInitialized = false;
+
+
+    public static void Initialize()
     {
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_AddRef();
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_Release();
-
-      [DllImport("pdfium.dll", CharSet = CharSet.Ansi)]
-      public static extern IntPtr FPDF_LoadMemDocument(SafeHandle data_buf, int size, string password);
-
-      [DllImport("pdfium.dll", CharSet = CharSet.Ansi)]
-      public static extern IntPtr FPDF_LoadMemDocument(byte[] data_buf, int size, string password);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_CloseDocument(IntPtr document);
-
-      [DllImport("pdfium.dll")]
-      public static extern int FPDF_GetPageCount(IntPtr document);
-
-      [DllImport("pdfium.dll")]
-      public static extern uint FPDF_GetDocPermissions(IntPtr document);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFDOC_InitFormFillEnvironment(IntPtr document, ref FPDF_FORMFILLINFO formInfo);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_SetFormFieldHighlightColor(IntPtr hHandle, int fieldType, uint color);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_SetFormFieldHighlightAlpha(IntPtr hHandle, byte alpha);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_DoDocumentJSAction(IntPtr hHandle);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_DoDocumentOpenAction(IntPtr hHandle);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDFDOC_ExitFormFillEnviroument(IntPtr hHandle);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_DoDocumentAAction(IntPtr hHandle, FPDFDOC_AACTION aaType);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDF_LoadPage(IntPtr document, int page_index);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFText_LoadPage(IntPtr page);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_OnAfterLoadPage(IntPtr page, IntPtr _form);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_DoPageAAction(IntPtr page, IntPtr _form, FPDFPAGE_AACTION fPDFPAGE_AACTION);
-
-      [DllImport("pdfium.dll")]
-      public static extern double FPDF_GetPageWidth(IntPtr page);
-
-      [DllImport("pdfium.dll")]
-      public static extern double FPDF_GetPageHeight(IntPtr page);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FORM_OnBeforeClosePage(IntPtr page, IntPtr _form);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDFText_ClosePage(IntPtr text_page);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_ClosePage(IntPtr page);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_RenderPage(IntPtr dc, IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, FPDF flags);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_RenderPageBitmap(IntPtr bitmapHandle, IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, FPDF flags);
-
-      [DllImport("pdfium.dll")]
-      public static extern int FPDF_GetPageSizeByIndex(IntPtr document, int page_index, out double width, out double height);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBitmap_CreateEx(int width, int height, int format, IntPtr first_scan, int stride);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDFBitmap_FillRect(IntPtr bitmapHandle, int left, int top, int width, int height, uint color);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBitmap_Destroy(IntPtr bitmapHandle);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFText_FindStart(IntPtr page, byte[] findWhat, FPDF_SEARCH_FLAGS flags, int start_index);
-
-      [DllImport("pdfium.dll")]
-      public static extern int FPDFText_GetSchResultIndex(IntPtr handle);
-
-      [DllImport("pdfium.dll")]
-      public static extern int FPDFText_GetSchCount(IntPtr handle);
-
-      [DllImport("pdfium.dll")]
-      public static extern int FPDFText_GetText(IntPtr page, int start_index, int count, byte[] result);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDFText_GetCharBox(IntPtr page, int index, out double left, out double right, out double bottom, out double top);
-
-      [DllImport("pdfium.dll")]
-      public static extern bool FPDFText_FindNext(IntPtr handle);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDFText_FindClose(IntPtr handle);
-
-      [DllImport("pdfium.dll")]
-      public static extern bool FPDFLink_Enumerate(IntPtr page, ref int startPos, out IntPtr linkAnnot);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFLink_GetDest(IntPtr document, IntPtr link);
-
-      [DllImport("pdfium.dll")]
-      public static extern uint FPDFDest_GetPageIndex(IntPtr document, IntPtr dest);
-
-      [DllImport("pdfium.dll")]
-      public static extern bool FPDFLink_GetAnnotRect(IntPtr linkAnnot, FS_RECTF rect);
-
-      [DllImport("pdfium.dll")]
-      public static extern void FPDF_PageToDevice(IntPtr page, int start_x, int start_y, int size_x, int size_y, int rotate, double page_x, double page_y, out int device_x, out int device_y);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFLink_GetAction(IntPtr link);
-
-      [DllImport("pdfium.dll")]
-      public static extern uint FPDFAction_GetURIPath(IntPtr document, IntPtr action, StringBuilder buffer, uint buflen);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBookmark_GetFirstChild(IntPtr document, IntPtr bookmark);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBookmark_GetNextSibling(IntPtr document, IntPtr bookmark);
-
-      [DllImport("pdfium.dll")]
-      public static extern uint FPDFBookmark_GetTitle(IntPtr bookmark, byte[] buffer, uint buflen);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBookmark_GetAction(IntPtr bookmark);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDFBookmark_GetDest(IntPtr document, IntPtr bookmark);
-
-      [DllImport("pdfium.dll")]
-      public static extern uint FPDFAction_GetType(IntPtr action);
-
-      [DllImport("pdfium.dll")]
-      public static extern bool FPDF_ImportPages(IntPtr destDoc, IntPtr sourceDoc, string pageRange, int index);
-
-      [DllImport("pdfium.dll")]
-      public static extern IntPtr FPDF_CreateNewDocument();
-
-      [DllImport("pdfium.dll")]
-      public static extern bool FPDF_SaveAsFile(IntPtr document, string filename, uint permissions, byte[] userPwd, uint userPwdlen, byte[] ownerPwd, uint ownerPwdlen);
+      if(fInitialized == false)
+      {
+        Pdfium.InitLibrary();
+        fInitialized = true;
+      }
     }
 
 
-    [StructLayout(LayoutKind.Sequential)]
-    public class FPDF_FORMFILLINFO
+    public static void Close()
     {
-      public int version;
-
-      private IntPtr Release;
-
-      private IntPtr FFI_Invalidate;
-
-      private IntPtr FFI_OutputSelectedRect;
-
-      private IntPtr FFI_SetCursor;
-
-      private IntPtr FFI_SetTimer;
-
-      private IntPtr FFI_KillTimer;
-
-      private IntPtr FFI_GetLocalTime;
-
-      private IntPtr FFI_OnChange;
-
-      private IntPtr FFI_GetPage;
-
-      private IntPtr FFI_GetCurrentPage;
-
-      private IntPtr FFI_GetRotation;
-
-      private IntPtr FFI_ExecuteNamedAction;
-
-      private IntPtr FFI_SetTextFieldFocus;
-
-      private IntPtr FFI_DoURIAction;
-
-      private IntPtr FFI_DoGoToAction;
-
-      private IntPtr m_pJsPlatform;
+      Pdfium.CloseLibrary();
+      fInitialized = false;
     }
 
-    public enum FPDF_UNSP
+
+    public static IntPtr LoadDocument(string path)
     {
-      DOC_XFAFORM = 1,
-      DOC_PORTABLECOLLECTION = 2,
-      DOC_ATTACHMENT = 3,
-      DOC_SECURITY = 4,
-      DOC_SHAREDREVIEW = 5,
-      DOC_SHAREDFORM_ACROBAT = 6,
-      DOC_SHAREDFORM_FILESYSTEM = 7,
-      DOC_SHAREDFORM_EMAIL = 8,
-      ANNOT_3DANNOT = 11,
-      ANNOT_MOVIE = 12,
-      ANNOT_SOUND = 13,
-      ANNOT_SCREEN_MEDIA = 14,
-      ANNOT_SCREEN_RICHMEDIA = 15,
-      ANNOT_ATTACHMENT = 16,
-      ANNOT_SIG = 17
+      IntPtr result = IntPtr.Zero;
+      byte[] bytes = Encoding.ASCII.GetBytes(path);
+
+      unsafe
+      {
+        fixed (byte* p = bytes)
+        {
+          result = Pdfium.LoadDocument((sbyte*)p, null);
+        }
+      }
+
+      return result;
     }
 
-    public enum FPDFDOC_AACTION
+
+    public static bool SaveDocument(IntPtr document, string filename)
     {
-      WC = 0x10,
-      WS = 0x11,
-      DS = 0x12,
-      WP = 0x13,
-      DP = 0x14
+      return Pdfium.SaveDocument(document, filename);
     }
 
-    public enum FPDFPAGE_AACTION
+
+    public static IntPtr CreateNewDocument()
     {
-      OPEN = 0,
-      CLOSE = 1
+      return Pdfium.CreateNewDocument();
     }
 
-    [Flags]
-    public enum FPDF
+
+    public static void CloseDocument(IntPtr document)
     {
-      ANNOT = 0x01,
-      LCD_TEXT = 0x02,
-      NO_NATIVETEXT = 0x04,
-      GRAYSCALE = 0x08,
-      DEBUG_INFO = 0x80,
-      NO_CATCH = 0x100,
-      RENDER_LIMITEDIMAGECACHE = 0x200,
-      RENDER_FORCEHALFTONE = 0x400,
-      PRINTING = 0x800,
-      REVERSE_BYTE_ORDER = 0x10
+      Pdfium.CloseDocument(document);
     }
 
-    [Flags]
-    public enum FPDF_SEARCH_FLAGS
+
+    public static IntPtr LoadPage(IntPtr document, int pageNumber)
     {
-      FPDF_MATCHCASE = 1,
-      FPDF_MATCHWHOLEWORD = 2
+      return Pdfium.LoadPage(document, pageNumber);
     }
 
-    [StructLayout(LayoutKind.Sequential)]
-    public class FS_RECTF
+
+    public static IntPtr CreatePage(IntPtr document, SizeInches size)
     {
-      public float left;
-      public float top;
-      public float right;
-      public float bottom;
+      int pageIndex = GetPageCount(document);
+      double widthInPoints = size.Width * 72;
+      double heightInPoints = size.Height * 72;
+      return Pdfium.CreatePage(document, pageIndex, widthInPoints, heightInPoints);
+    }
+
+
+    public static void AddBitmapToPage(IntPtr document, IntPtr page, Bitmap bitmap, BoundsInches imageBounds)
+    {
+      var bi = bitmap.LockBits(
+          new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+          ImageLockMode.ReadOnly, 
+          bitmap.PixelFormat);
+
+      PixelFormatEnum pf;
+
+      switch (bi.PixelFormat)
+      {
+        case PixelFormat.Format1bppIndexed: pf = PixelFormatEnum.Bits1_BW; break;
+        case PixelFormat.Format8bppIndexed: pf = PixelFormatEnum.Bits8_Gray; break;
+        case PixelFormat.Format24bppRgb: pf = PixelFormatEnum.Bits24_Rgb; break;
+        case PixelFormat.Format32bppRgb: pf = PixelFormatEnum.Bits32_Rgb; break;
+        case PixelFormat.Format32bppArgb: pf = PixelFormatEnum.Bits32_Argb; break;
+        default: pf = PixelFormatEnum.Invalid; break;
+      }
+
+      TransformationMatrix matrix = GetMatrix(imageBounds);
+
+      unsafe
+      {
+        BitmapInfo info = new BitmapInfo();
+        info.Height = bitmap.Height;
+        info.Width = bitmap.Width;
+        info.PixelFormat = pf;
+        info.Data = bi.Scan0;
+        info.Stride = bi.Stride;
+
+        Pdfium.AddBitmapToPage(document, page, &info, &matrix);
+      }
+    }
+
+
+    public static void AddJpegToPage(IntPtr document, IntPtr page, Image image, BoundsInches imageBounds)
+    {
+      byte[] buffer = Utils.Imaging.ByteArrayFromImage(image);
+
+      TransformationMatrix matrix = GetMatrix(imageBounds);
+
+      unsafe
+      {
+        fixed(byte* p = buffer)
+        {
+          JpegInfo info = new JpegInfo();
+          info.Height = image.Height;
+          info.Width = image.Width;
+          info.Data = (IntPtr)p;
+          info.Size = buffer.Length;
+
+          Pdfium.AddJpegImageToPage(document, page, &info, &matrix);
+        }
+      }
+    }
+
+
+    private static TransformationMatrix GetMatrix(BoundsInches imageBounds)
+    {
+      TransformationMatrix result = new TransformationMatrix();
+      // width, 0, 0, height, x-shift, y-shift
+      result.a = imageBounds.Width * 72;
+      result.b = 0;
+      result.c = 0;
+      result.d = imageBounds.Height * 72;
+      result.e = imageBounds.X * 72;
+      result.f = imageBounds.Y * 72;
+      return result;
+    }
+
+
+    public static void ClosePage(IntPtr page)
+    {
+      Pdfium.ClosePage(page);
+    }
+
+
+    public static int GetPageCount(IntPtr document)
+    {
+      return Pdfium.GetPageCount(document);
+    }
+
+
+    public static bool CopyPage(IntPtr destDoc, IntPtr sourceDoc, int pageNumber)
+    {
+      int pageIndex = GetPageCount(destDoc);
+      return Pdfium.CopyPage(destDoc, sourceDoc, pageNumber, pageIndex);
+    }
+
+
+    public static double GetPageWidth(IntPtr page)
+    {
+      // Convert points to inches
+      return Pdfium.GetPageWidth(page) / 72;
+    }
+
+
+    public static double GetPageHeight(IntPtr page)
+    {
+      // Convert points to inches
+      return Pdfium.GetPageHeight(page) / 72;
+    }
+
+
+    private static int GetNumObjectsInPage(IntPtr page)
+    {
+      return Pdfium.GetNumObjectsInPage(page);
+    }
+
+
+    private static IntPtr GetObjectFromPage(IntPtr page, int index)
+    {
+      return Pdfium.GetObjectFromPage(page, index);
+    }
+
+
+    private static PdfImageInfo GetImageInfoFromObject(IntPtr pageObject)
+    {
+      PdfImageInfo info = new PdfImageInfo();
+      
+      unsafe
+      {
+        Pdfium.GetImageFromPageObject(pageObject, &info);
+      }
+      return info;
+    }
+
+
+    public static Bitmap Render(IntPtr page, int pixWidth, int pixHeight)
+    {
+      Bitmap bitmap = new Bitmap(pixWidth, pixHeight, PixelFormat.Format32bppArgb);
+      //bitmap.SetResolution(dpiX, dpiY);
+
+      BitmapData data = bitmap.LockBits(new Rectangle(0, 0, pixWidth, pixHeight), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+
+      try
+      {
+        Pdfium.DoBitmap(page, pixWidth, pixHeight, data.Scan0);
+      }
+      finally
+      {
+        bitmap.UnlockBits(data);
+      }
+
+      return bitmap;
+    }
+
+
+    public static Image GetSingleImageFromPdfDocument(IntPtr docPtr, IntPtr pagePtr)
+    {
+      Image result = null;
+
+      int numObjects = LibPdfium.GetNumObjectsInPage(pagePtr);
+
+      for(int n = 0; (n < numObjects) && (result == null); n++)
+      {
+        IntPtr objPtr = LibPdfium.GetObjectFromPage(pagePtr, n);
+
+        PdfImageInfo imageInfo = LibPdfium.GetImageInfoFromObject(objPtr);
+
+        if((imageInfo.DataSize > 0) && (imageInfo.Height > 0) && (imageInfo.Width > 0))
+        {
+          byte[] byteArray = new byte[imageInfo.DataSize];
+
+          unsafe
+          {
+            IntPtr hData = LibKernel32.GlobalLock((IntPtr)imageInfo.pData);
+            Marshal.Copy(hData, byteArray, 0, imageInfo.DataSize);
+            LibKernel32.GlobalUnlock((IntPtr)imageInfo.pData);
+          }
+
+          if(imageInfo.Filter == 3) // FlateDecode
+          {
+            MemoryStream compressedStream = new MemoryStream(byteArray, 2, byteArray.Length - 6);
+            MemoryStream decompressedStream = new MemoryStream();
+
+            DeflateStream ds = new DeflateStream(compressedStream, CompressionMode.Decompress, true);
+
+            ds.CopyTo(decompressedStream);
+
+            byte[] outputBuffer = decompressedStream.ToArray();
+            result = Utils.Imaging.ImageFromByteArray(outputBuffer);
+          }
+          else if(imageInfo.Filter == 2) // DCTDecode
+          {
+            // JPeg
+            result = Utils.Imaging.ImageFromByteArray(byteArray);
+          }
+          else // Other
+          {
+            result = SaveStreamContents(imageInfo, byteArray);
+          }
+        }
+      }
+
+      return result;
+    }
+
+
+    static private Image SaveStreamContents(PdfImageInfo imageInfo, byte[] byteArray)
+    {
+      Image result = null;
+
+      Int32 BitsPerComponent = imageInfo.BitsPerComponent;
+      Int32 ImageWidth = imageInfo.Width;
+      Int32 ImageHeight = imageInfo.Height;
+
+      if(BitsPerComponent == 8)
+      {
+        ColorSpaceEnum ColorSpace = imageInfo.ColorSpace;
+
+        if((ColorSpace == ColorSpaceEnum.RGB) || (ColorSpace == ColorSpaceEnum.Gray))
+        {
+          // create empty bitmap
+          Bitmap BM = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format24bppRgb);
+
+          // create a new contents array with bmp width
+          Byte[] PixelBuf = new Byte[((3 * ImageWidth + 3) & ~3) * ImageHeight];
+
+          // copy row by row
+          Int32 IPtr = 0;
+          Int32 BPtr = 0;
+
+          if(ColorSpace == ColorSpaceEnum.RGB)
+          {
+            for(Int32 Row = 0; Row < ImageHeight; Row++)
+            {
+              // copy column by column
+              for(Int32 Col = 0; Col < ImageWidth; Col++)
+              {
+                PixelBuf[BPtr + 2] = byteArray[IPtr++];
+                PixelBuf[BPtr + 1] = byteArray[IPtr++];
+                PixelBuf[BPtr] = byteArray[IPtr++];
+                BPtr += 3;
+              }
+              BPtr = (BPtr + 3) & ~3;
+            }
+          }
+          else
+          {
+            for(Int32 Row = 0; Row < ImageHeight; Row++)
+            {
+              // copy column by column
+              for(Int32 Col = 0; Col < ImageWidth; Col++)
+              {
+                PixelBuf[BPtr + 2] = byteArray[IPtr];
+                PixelBuf[BPtr + 1] = byteArray[IPtr];
+                PixelBuf[BPtr] = byteArray[IPtr++]; // Increment only after the last one
+                BPtr += 3;
+              }
+              BPtr = (BPtr + 3) & ~3;
+            }
+          }
+
+          // Lock the bitmap's bits.  
+          Rectangle LockRect = new Rectangle(0, 0, ImageWidth, ImageHeight);
+          BitmapData BmpData = BM.LockBits(LockRect, ImageLockMode.WriteOnly, BM.PixelFormat);
+
+          // Get the address of the first line.
+          IntPtr ImagePtr = BmpData.Scan0;
+
+          // Copy contents into the bitmap
+          Marshal.Copy(PixelBuf, 0, ImagePtr, PixelBuf.Length);
+
+          // unlock the bitmap
+          BM.UnlockBits(BmpData);
+
+          result = BM;
+        }
+      }
+      else if(BitsPerComponent == 1)
+      {
+        // create empty bitmap
+        Bitmap BM = new Bitmap(ImageWidth, ImageHeight, PixelFormat.Format1bppIndexed);
+
+        // Lock the bitmap's bits.  
+        Rectangle LockRect = new Rectangle(0, 0, ImageWidth, ImageHeight);
+        BitmapData BmpData = BM.LockBits(LockRect, ImageLockMode.WriteOnly, PixelFormat.Format1bppIndexed);
+
+        Byte[] PixelBuf = new Byte[BmpData.Stride * BmpData.Height];
+
+        int instride = (ImageWidth + 7) / 8;
+        int outstride = BmpData.Stride;
+        int inpos = 0;
+        int outpos = 0;
+        for(int y = 0; y < BmpData.Height; y++)
+        {
+          Array.Copy(byteArray, inpos, PixelBuf, outpos, instride);
+          inpos += instride;
+          outpos += outstride;
+        }
+
+        // Get the address of the first line.
+        IntPtr ImagePtr = BmpData.Scan0;
+
+        // Copy contents into the bitmap
+        Marshal.Copy(PixelBuf, 0, ImagePtr, PixelBuf.Length);
+
+        // unlock the bitmap
+        BM.UnlockBits(BmpData);
+
+        result = BM;
+      }
+      else
+      { }
+
+      return result;
     }
   }
 }

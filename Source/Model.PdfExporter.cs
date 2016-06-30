@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Text;
-using PdfSharp;
-using PdfSharp.Drawing;
-using PdfSharp.Pdf;
-using PdfSharp.Pdf.IO;
+using System.Runtime.InteropServices;
+using PdfProcessing;
+using Imports;
 using Utils;
 
 
@@ -13,10 +11,15 @@ namespace Model
 {
   class PdfExporter
   {
+    public PdfExporter()
+    {
+      LibPdfium.Initialize();
+    }
+
+
     public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool compressImage, int compressionFactor)
     {
-      PdfDocument pdfDocument = new PdfDocument();
-      pdfDocument.Info.Title = "Created with PDFsharp";
+      IntPtr pdfDocument = LibPdfium.CreateNewDocument();
 
       foreach(int num in pageNumbers)
       {
@@ -43,29 +46,13 @@ namespace Model
       }
 
       // Save the document...
-      pdfDocument.Save(filename);
+      LibPdfium.SaveDocument(pdfDocument, filename);
     }
 
 
-    private void DrawPage(PdfDocument pdfDocument, Page page, bool compressImage, int compressionFactor)
+    private void DrawPage(IntPtr pdfDocument, Page page, bool compressImage, int compressionFactor)
     {
-      // Create an empty page
-      PdfPage pdfPage = pdfDocument.AddPage();
-
-      pdfPage.Width = page.Size.Width * 72; // Inches to Point
-      pdfPage.Height = page.Size.Height * 72; // Inches to Point
-
-      // Get an XGraphics object for drawing
-      XGraphics gfx = XGraphics.FromPdfPage(pdfPage);
-
-      Rectangle imageRect = new Rectangle();
-      BoundsInches imageBounds = page.ImageBoundsInches;
-
-      // Convert the image boundaries to points
-      imageRect.X = (int)(imageBounds.X * 72);
-      imageRect.Y = (int)(imageBounds.Y * 72);
-      imageRect.Width = (int)(imageBounds.Width * 72);
-      imageRect.Height = (int)(imageBounds.Height * 72);
+      IntPtr pdfPage = LibPdfium.CreatePage(pdfDocument, page.Size);
 
       Image image;
 
@@ -78,19 +65,29 @@ namespace Model
         image = page.GetImageInOriginalFormat(compressionFactor);
       }
 
-      XImage ximage = XImage.FromGdiPlusImage(image);
-      gfx.DrawImage(ximage, imageRect);
-      image.Dispose();
+      if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
+      {
+        LibPdfium.AddJpegToPage(pdfDocument, pdfPage, image, page.ImageBoundsInches);
+      }
+      else if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
+      {
+        Bitmap bmp = (Bitmap)image;
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches);
+      }
+      else
+      {
+        Bitmap bmp = (Bitmap)Utils.Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Bmp, 0);
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches);
+      }
     }
 
 
-    public void ImportPage(PdfDocument pdfDocument, PageFromPdf page)
+    public void ImportPage(IntPtr destDoc, PageFromPdf page)
     {
       string filename = page.SourceFilename;
       int pageIndex = page.SourcePageIndex;
-
-      PdfSharp.Pdf.PdfDocument inputDocument = PdfSharp.Pdf.IO.PdfReader.Open(filename, PdfSharp.Pdf.IO.PdfDocumentOpenMode.Import);
-      pdfDocument.AddPage(inputDocument.Pages[pageIndex]);
+      IntPtr sourceDoc = LibPdfium.LoadDocument(filename);
+      LibPdfium.CopyPage(destDoc, sourceDoc, pageIndex + 1);
     }
   }
 }

@@ -158,13 +158,18 @@ namespace Utils
 
       ImageCodecInfo codecInfo = GetEncoderInfo(format);
 
-      if(codecInfo != null)
+      if (codecInfo != null)
       {
-        using(MemoryStream stream = new MemoryStream())
+        using (MemoryStream stream = new MemoryStream())
         {
           image.Save(stream, codecInfo, encoderParams);
           result = stream.ToArray();
         }
+      }
+      else
+      {
+        // Default image native data to byte array without encoding 
+        result = Imaging.ByteArrayFromImage(image);
       }
 
       return result;

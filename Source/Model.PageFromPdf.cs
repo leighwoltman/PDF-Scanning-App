@@ -63,15 +63,27 @@ namespace Model
     {
       Image result;
 
+      IntPtr docPtr = LibPdfium.LoadDocument(fFilename);
+      IntPtr pagePtr = LibPdfium.LoadPage(docPtr, fPageIndex);
+
       if(fSingleImageMode)
       {
-        result = PdfImporter.GetSingleImageFromPdfDocument(fFilename, fPageIndex);
+        result = LibPdfium.GetSingleImageFromPdfDocument(docPtr, pagePtr);
       }
       else
       {
         // TODO: For thumbnail purpose rendering can be made to smaller size
-        result = PdfImporter.RenderPage(fFilename, fPageIndex, (float)fViewingResolution.Horizontal, (float)fViewingResolution.Vertical);
+        double width = LibPdfium.GetPageWidth(pagePtr);
+        double height = LibPdfium.GetPageHeight(pagePtr);
+
+        int pixWidth = (int)(width * fViewingResolution.Horizontal); // width * dpiX
+        int pixHeight = (int)(height * fViewingResolution.Vertical); // height * dpiY
+
+        result = LibPdfium.Render(pagePtr, pixWidth, pixHeight);
       }
+
+      LibPdfium.ClosePage(pagePtr);
+      LibPdfium.CloseDocument(docPtr);
 
       return result;
     }
