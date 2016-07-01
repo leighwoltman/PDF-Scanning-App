@@ -44,9 +44,9 @@ namespace Model
     public abstract Image CreateImage();
 
 
-    public System.Drawing.Imaging.ImageFormat ImageOriginalFormat
+    public int ImageTransformationIndex
     {
-      get { return fImageHandler.ImageOriginalFormat; }
+      get { return fImageHandler.TransformationIndex; }
     }
 
 
@@ -56,15 +56,9 @@ namespace Model
     }
 
 
-    public Image GetImageInOriginalFormat(int compressionFactor)
+    public Image GetSourceImage()
     {
-      return fImageHandler.GetImageInOriginalFormat(compressionFactor);
-    }
-
-
-    public Image GetCompressedImage(int compressionFactor)
-    {
-      return fImageHandler.GetCompressedImage(compressionFactor);
+      return fImageHandler.GetSourceImage();
     }
 
 

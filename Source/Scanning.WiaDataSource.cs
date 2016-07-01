@@ -184,6 +184,7 @@ namespace Scanning
         }
         catch(Exception ex)
         {
+          string msg = ex.Message;
           result = null;
         }
 
@@ -218,6 +219,7 @@ namespace Scanning
         }
         catch(Exception ex)
         {
+          string msg = ex.Message;
           result = false;
         }
 

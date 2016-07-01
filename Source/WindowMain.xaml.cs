@@ -763,7 +763,7 @@ namespace PDFScanningApp
       {
         ListViewPage item1 = (ListViewPage)ListViewPages.SelectedItems[0];
         Model.Page page1 = fDocument.GetPage(item1.Index);
-        System.Drawing.Image image1 = page1.GetImage();
+        System.Drawing.Image image1 = page1.GetSourceImage();
 
         Dictionary<string, string> properties = new Dictionary<string, string>();
 
@@ -772,7 +772,7 @@ namespace PDFScanningApp
         properties.Add("Height", "" + image1.Height);
         properties.Add("Width", "" + image1.Width);
         properties.Add("Pixel Format", "" + image1.PixelFormat);
-        properties.Add("Original Format", Utils.Imaging.GetFormatDescription(page1.ImageOriginalFormat));
+        properties.Add("Original Format", Utils.Imaging.GetFormatDescription(image1.RawFormat));
 
         WindowImageProperties F = new WindowImageProperties(properties);
         F.Owner = this;

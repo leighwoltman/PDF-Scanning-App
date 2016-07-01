@@ -25,7 +25,6 @@ namespace Model
     private int fOrientation;
     private bool fIsMirrored;
     private string fTemporaryFilePath;
-    private System.Drawing.Imaging.ImageFormat fOriginalFormat;
 
 
     public ImageHandler(InterfaceImageCreator imageCreator)
@@ -38,7 +37,6 @@ namespace Model
       fOrientation = 0;
       fIsMirrored = false;
       fTemporaryFilePath = null;
-      fOriginalFormat = null;
     }
 
 
@@ -49,7 +47,6 @@ namespace Model
         fSizePixels = new SizePixels(myImage.Size.Width, myImage.Size.Height);
         fResolutionDpi = new ResolutionDpi(horizontalDpi, verticalDpi);
         fSourceThumbnail = Utils.Imaging.CreateThumbnail(myImage, 200);
-        fOriginalFormat = myImage.RawFormat;
       }
       RefreshImage();
     }
@@ -84,35 +81,9 @@ namespace Model
     }
 
 
-    public System.Drawing.Imaging.ImageFormat ImageOriginalFormat
+    public Image GetSourceImage()
     {
-      get { return fOriginalFormat; }
-    }
-
-
-    public Image GetImageInOriginalFormat(int compressionFactor)
-    {
-      // Compression factor is needed in case the image needs to be converted to Jpeg
-      return Imaging.ConvertImage(GetImage(), fOriginalFormat, compressionFactor);
-    }
-
-
-    public Image GetCompressedImage(int compressionFactor)
-    {
-      Image result;
-      Image image = GetImage();
-
-      if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
-      {
-        // Jpeg format will make a Monochome image file bigger and lower the quality; Use PNG instead
-        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
-      }
-      else
-      {
-        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Jpeg, compressionFactor);
-      }
-
-      return result;
+      return CreateImage();
     }
 
 
@@ -165,46 +136,27 @@ namespace Model
     }
 
 
-    readonly RotateFlipType[] rf_table =
-    { 
-      RotateFlipType.RotateNoneFlipNone,
-      RotateFlipType.Rotate90FlipNone,
-      RotateFlipType.Rotate180FlipNone,
-      RotateFlipType.Rotate270FlipNone,
-    };
-
-
-    readonly RotateFlipType[] rf_mirrored_table =
-    { 
-      RotateFlipType.RotateNoneFlipX,
-      RotateFlipType.Rotate90FlipY,
-      RotateFlipType.Rotate180FlipX,
-      RotateFlipType.Rotate270FlipY,
-    };
-
-
     protected void Transform(Image image)
     {
-      if(fIsMirrored)
-      {
-        image.RotateFlip(rf_mirrored_table[fOrientation]);
-      }
-      else
-      {
-        image.RotateFlip(rf_table[fOrientation]);
-      }
+      Imaging.TransformImage(image, TransformationIndex);
     }
 
 
     private bool SameAsSourceImage()
     {
-      return ((fIsMirrored == false) && (fOrientation == 0));
+      return (TransformationIndex == 0);
     }
 
 
     private bool IsFlipped
     {
       get { return ((fOrientation & 1) == 1); }
+    }
+
+
+    public int TransformationIndex
+    {
+      get { return fOrientation + (fIsMirrored ? 4 : 0);  }
     }
 
 

@@ -314,5 +314,24 @@ namespace Utils
       byte[] byteArray = ByteArrayFromImage(source);
       return ImageFromByteArray(byteArray);
     }
+
+
+    readonly static RotateFlipType[] rf_table =
+    { 
+      RotateFlipType.RotateNoneFlipNone,
+      RotateFlipType.Rotate90FlipNone,
+      RotateFlipType.Rotate180FlipNone,
+      RotateFlipType.Rotate270FlipNone,
+      RotateFlipType.RotateNoneFlipX,
+      RotateFlipType.Rotate90FlipY,
+      RotateFlipType.Rotate180FlipX,
+      RotateFlipType.Rotate270FlipY,
+    };
+
+
+    public static void TransformImage(Image image, int transformationIndex)
+    {
+      image.RotateFlip(rf_table[transformationIndex]);
+    }
   }
 }

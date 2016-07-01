@@ -101,7 +101,7 @@ namespace PdfProcessing
     }
 
 
-    public static void AddBitmapToPage(IntPtr document, IntPtr page, Bitmap bitmap, BoundsInches imageBounds)
+    public static void AddBitmapToPage(IntPtr document, IntPtr page, Bitmap bitmap, BoundsInches imageBounds, int transformationIndex)
     {
       BitmapData bi = bitmap.LockBits(
           new Rectangle(0, 0, bitmap.Width, bitmap.Height),
@@ -110,7 +110,7 @@ namespace PdfProcessing
 
       PixelFormatEnum pf = ConvertPixelFormat_SystemToLibPdfium(bi.PixelFormat);
 
-      TransformationMatrix matrix = GetMatrix(imageBounds);
+      TransformationMatrix matrix = GetMatrix(imageBounds, transformationIndex);
 
       try
       {
@@ -133,11 +133,11 @@ namespace PdfProcessing
     }
 
 
-    public static void AddJpegToPage(IntPtr document, IntPtr page, Image image, BoundsInches imageBounds)
+    public static void AddJpegToPage(IntPtr document, IntPtr page, Image image, BoundsInches imageBounds, int transformationIndex)
     {
       byte[] buffer = Utils.Imaging.ByteArrayFromImage(image);
 
-      TransformationMatrix matrix = GetMatrix(imageBounds);
+      TransformationMatrix matrix = GetMatrix(imageBounds, transformationIndex);
 
       unsafe
       {
@@ -155,16 +155,46 @@ namespace PdfProcessing
     }
 
 
-    private static TransformationMatrix GetMatrix(BoundsInches imageBounds)
+    private static int[,] fTransformationArray = new int[8, 6] 
+    {
+      { 1, 0, 0, 1, 0, 0},
+      { 0,-1, 1, 0, 0, 1},
+      {-1, 0, 0,-1, 1, 1},
+      { 0, 1,-1, 0, 1, 0},
+      {-1, 0, 0, 1, 1, 0},
+      { 0, 1, 1, 0, 0, 0},
+      { 1, 0, 0,-1, 0, 1},
+      { 0,-1,-1, 0, 1, 1}
+    };
+
+
+    private static TransformationMatrix GetMatrix(BoundsInches imageBounds, int transformationIndex)
     {
       TransformationMatrix result = new TransformationMatrix();
-      // width, 0, 0, height, x-shift, y-shift
-      result.a = imageBounds.Width * 72;
-      result.b = 0;
-      result.c = 0;
-      result.d = imageBounds.Height * 72;
-      result.e = imageBounds.X * 72;
-      result.f = imageBounds.Y * 72;
+
+      result.a = fTransformationArray[transformationIndex, 0];
+      result.b = fTransformationArray[transformationIndex, 1];
+      result.c = fTransformationArray[transformationIndex, 2];
+      result.d = fTransformationArray[transformationIndex, 3];
+      result.e = fTransformationArray[transformationIndex, 4];
+      result.f = fTransformationArray[transformationIndex, 5];
+
+      result.a *= imageBounds.Width;
+      result.b *= imageBounds.Height;
+      result.c *= imageBounds.Width;
+      result.d *= imageBounds.Height;
+      result.e *= imageBounds.Width;
+      result.e += imageBounds.X;
+      result.f *= imageBounds.Height;
+      result.f += imageBounds.Y;
+
+      result.a *= 72;
+      result.b *= 72;
+      result.c *= 72;
+      result.d *= 72;
+      result.e *= 72;
+      result.f *= 72;
+
       return result;
     }
 
@@ -268,6 +298,12 @@ namespace PdfProcessing
       {
         int numObjects = LibPdfium.GetNumObjectsInPage(pagePtr);
 
+        // TODO: Temporary code to do the single image only if there is a single object in the page.
+        if(numObjects > 1)
+        {
+          numObjects = 0;
+        }
+
         for(int n = 0; (n < numObjects) && (result == null); n++)
         {
           IntPtr objPtr = LibPdfium.GetObjectFromPage(pagePtr, n);
@@ -309,8 +345,10 @@ namespace PdfProcessing
           }
         }
       }
-      catch
-      { }
+      catch(Exception ex)
+      {
+        string msg = ex.Message;
+      }
 
       return result;
     }

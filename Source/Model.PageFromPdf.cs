@@ -13,22 +13,10 @@ namespace Model
 {
   public class PageFromPdf : Page
   {
-    private bool fSingleImageMode;
     private string fFilename;
     private int fPageIndex;
+    private bool fSingleImageMode;
     private ResolutionDpi fViewingResolution;
-
-
-    public string SourceFilename
-    {
-      get { return fFilename; }
-    }
-
-
-    public int SourcePageIndex
-    {
-      get { return fPageIndex; }
-    }
 
 
     public bool SingleImageMode
@@ -37,31 +25,19 @@ namespace Model
     }
 
 
-    public PageFromPdf(string filename, int pageIndex, SizeInches size, Image image, ResolutionDpi viewingResolution)
+    public PageFromPdf(string filename, int pageIndex, SizeInches size, bool attemptSingleImageMode, ResolutionDpi viewingResolution)
     {
       fFilename = filename;
       fPageIndex = pageIndex;
+      fSingleImageMode = attemptSingleImageMode;
       fViewingResolution = viewingResolution;
-
-      if(image == null)
-      {
-        fSingleImageMode = false;
-      }
-      else
-      {
-        fSingleImageMode = true;
-        // we want to save memory
-        image.Dispose();
-        image = null;
-      }
-      
       Initialize(size, 0, 0);
     }
 
 
     public override Image CreateImage()
     {
-      Image result;
+      Image result = null;
 
       IntPtr docPtr = LibPdfium.LoadDocument(fFilename);
       IntPtr pagePtr = LibPdfium.LoadPage(docPtr, fPageIndex);
@@ -70,14 +46,15 @@ namespace Model
       {
         result = LibPdfium.GetSingleImageFromPdfDocument(docPtr, pagePtr);
       }
-      else
+      
+      if(result == null)
       {
-        // TODO: For thumbnail purpose rendering can be made to smaller size
-        double width = LibPdfium.GetPageWidth(pagePtr);
-        double height = LibPdfium.GetPageHeight(pagePtr);
+        // Was not single image mode, or wan not able to find a single image
+        fSingleImageMode = false;
 
-        int pixWidth = (int)(width * fViewingResolution.Horizontal); // width * dpiX
-        int pixHeight = (int)(height * fViewingResolution.Vertical); // height * dpiY
+        // TODO: For thumbnail purpose rendering can be made to smaller size
+        int pixWidth = (int)(Size.Width * fViewingResolution.Horizontal); // width * dpiX
+        int pixHeight = (int)(Size.Height * fViewingResolution.Vertical); // height * dpiY
 
         result = LibPdfium.Render(pagePtr, pixWidth, pixHeight);
       }
@@ -93,6 +70,14 @@ namespace Model
     {
       // can only modify if we are in image mode
       return fSingleImageMode;
+    }
+
+
+    public void ExportToPdfDocument(IntPtr destDoc)
+    {
+      IntPtr sourceDoc = LibPdfium.LoadDocument(fFilename);
+      LibPdfium.CopyPage(destDoc, sourceDoc, fPageIndex + 1);
+      LibPdfium.CloseDocument(sourceDoc);
     }
   }
 }

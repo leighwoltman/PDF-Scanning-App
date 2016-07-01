@@ -26,8 +26,9 @@ namespace Model
         System.Drawing.Image image = Imaging.LoadImageFromFile(filename);
         validFile = true;
       }
-      catch(Exception x)
+      catch(Exception ex)
       {
+        string msg = ex.Message;
         validFile = false;
       }
 

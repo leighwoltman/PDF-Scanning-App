@@ -36,7 +36,7 @@ namespace Model
           }
           else
           {
-            ImportPage(pdfDocument, pageFromPdf);
+            pageFromPdf.ExportToPdfDocument(pdfDocument);
           }
         }
         else
@@ -54,40 +54,37 @@ namespace Model
     {
       IntPtr pdfPage = LibPdfium.CreatePage(pdfDocument, page.Size);
 
-      Image image;
+      Image image = page.GetSourceImage();
+
+      int transformationIndex = page.ImageTransformationIndex;
 
       if(compressImage)
       {
-        image = page.GetCompressedImage(compressionFactor);
-      }
-      else
-      {
-        image = page.GetImageInOriginalFormat(compressionFactor);
+        if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
+        {
+          // Jpeg format will make a Monochome image file bigger and lower the quality; Use PNG instead
+          image = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
+        }
+        else
+        {
+          image = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Jpeg, compressionFactor);
+        }
       }
 
       if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
       {
-        LibPdfium.AddJpegToPage(pdfDocument, pdfPage, image, page.ImageBoundsInches);
+        LibPdfium.AddJpegToPage(pdfDocument, pdfPage, image, page.ImageBoundsInches, transformationIndex);
       }
       else if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
       {
         Bitmap bmp = (Bitmap)image;
-        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches);
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches, transformationIndex);
       }
       else
       {
         Bitmap bmp = (Bitmap)Utils.Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Bmp, 0);
-        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches);
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches, transformationIndex);
       }
-    }
-
-
-    public void ImportPage(IntPtr destDoc, PageFromPdf page)
-    {
-      string filename = page.SourceFilename;
-      int pageIndex = page.SourcePageIndex;
-      IntPtr sourceDoc = LibPdfium.LoadDocument(filename);
-      LibPdfium.CopyPage(destDoc, sourceDoc, pageIndex + 1);
     }
   }
 }

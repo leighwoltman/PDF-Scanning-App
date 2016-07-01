@@ -38,15 +38,13 @@ namespace Model
           double width = LibPdfium.GetPageWidth(pagePtr);
           SizeInches pageSize = new SizeInches(width, height);
 
-          Image image = null;
-          if(attemptPdfSingleImageImport)
-          {
-            image = LibPdfium.GetSingleImageFromPdfDocument(docPtr, pagePtr);
-          }
-
-          Page myPage = new PageFromPdf(filename, i, pageSize, image, viewingResolution);
+          Page myPage = new PageFromPdf(filename, i, pageSize, attemptPdfSingleImageImport, viewingResolution);
           document.AddPage(myPage);
+
+          LibPdfium.ClosePage(pagePtr);
         }
+
+        LibPdfium.CloseDocument(docPtr);
       }
       catch(Exception ex)
       {
