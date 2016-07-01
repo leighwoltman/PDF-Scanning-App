@@ -58,7 +58,7 @@ namespace PdfProcessing
 
       unsafe
       {
-        fixed (byte* p = bytes)
+        fixed(byte* p = bytes)
         {
           result = Pdfium.LoadDocument((sbyte*)p, null);
         }
@@ -103,35 +103,32 @@ namespace PdfProcessing
 
     public static void AddBitmapToPage(IntPtr document, IntPtr page, Bitmap bitmap, BoundsInches imageBounds)
     {
-      var bi = bitmap.LockBits(
+      BitmapData bi = bitmap.LockBits(
           new Rectangle(0, 0, bitmap.Width, bitmap.Height),
-          ImageLockMode.ReadOnly, 
+          ImageLockMode.ReadOnly,
           bitmap.PixelFormat);
 
-      PixelFormatEnum pf;
-
-      switch (bi.PixelFormat)
-      {
-        case PixelFormat.Format1bppIndexed: pf = PixelFormatEnum.Bits1_BW; break;
-        case PixelFormat.Format8bppIndexed: pf = PixelFormatEnum.Bits8_Gray; break;
-        case PixelFormat.Format24bppRgb: pf = PixelFormatEnum.Bits24_Rgb; break;
-        case PixelFormat.Format32bppRgb: pf = PixelFormatEnum.Bits32_Rgb; break;
-        case PixelFormat.Format32bppArgb: pf = PixelFormatEnum.Bits32_Argb; break;
-        default: pf = PixelFormatEnum.Invalid; break;
-      }
+      PixelFormatEnum pf = ConvertPixelFormat_SystemToLibPdfium(bi.PixelFormat);
 
       TransformationMatrix matrix = GetMatrix(imageBounds);
 
-      unsafe
+      try
       {
-        BitmapInfo info = new BitmapInfo();
-        info.Height = bitmap.Height;
-        info.Width = bitmap.Width;
-        info.PixelFormat = pf;
-        info.Data = bi.Scan0;
-        info.Stride = bi.Stride;
+        unsafe
+        {
+          BitmapInfo info = new BitmapInfo();
+          info.Height = bitmap.Height;
+          info.Width = bitmap.Width;
+          info.PixelFormat = pf;
+          info.Data = bi.Scan0;
+          info.Stride = bi.Stride;
 
-        Pdfium.AddBitmapToPage(document, page, &info, &matrix);
+          Pdfium.AddBitmapToPage(document, page, &info, &matrix);
+        }
+      }
+      finally
+      {
+        bitmap.UnlockBits(bi);
       }
     }
 
@@ -220,7 +217,7 @@ namespace PdfProcessing
     private static PdfImageInfo GetImageInfoFromObject(IntPtr pageObject)
     {
       PdfImageInfo info = new PdfImageInfo();
-      
+
       unsafe
       {
         Pdfium.GetImageFromPageObject(pageObject, &info);
@@ -232,17 +229,31 @@ namespace PdfProcessing
     public static Bitmap Render(IntPtr page, int pixWidth, int pixHeight)
     {
       Bitmap bitmap = new Bitmap(pixWidth, pixHeight, PixelFormat.Format32bppArgb);
-      //bitmap.SetResolution(dpiX, dpiY);
 
-      BitmapData data = bitmap.LockBits(new Rectangle(0, 0, pixWidth, pixHeight), ImageLockMode.ReadWrite, bitmap.PixelFormat);
+      BitmapData bi = bitmap.LockBits(
+          new Rectangle(0, 0, bitmap.Width, bitmap.Height),
+          ImageLockMode.ReadWrite,
+          bitmap.PixelFormat);
+
+      PixelFormatEnum pf = ConvertPixelFormat_SystemToLibPdfium(bi.PixelFormat);
 
       try
       {
-        Pdfium.DoBitmap(page, pixWidth, pixHeight, data.Scan0);
+        unsafe
+        {
+          BitmapInfo info = new BitmapInfo();
+          info.Height = bitmap.Height;
+          info.Width = bitmap.Width;
+          info.PixelFormat = pf;
+          info.Data = bi.Scan0;
+          info.Stride = bi.Stride;
+
+          Pdfium.RenderPageToBitmap(page, &info);
+        }
       }
       finally
       {
-        bitmap.UnlockBits(data);
+        bitmap.UnlockBits(bi);
       }
 
       return bitmap;
@@ -253,48 +264,53 @@ namespace PdfProcessing
     {
       Image result = null;
 
-      int numObjects = LibPdfium.GetNumObjectsInPage(pagePtr);
-
-      for(int n = 0; (n < numObjects) && (result == null); n++)
+      try
       {
-        IntPtr objPtr = LibPdfium.GetObjectFromPage(pagePtr, n);
+        int numObjects = LibPdfium.GetNumObjectsInPage(pagePtr);
 
-        PdfImageInfo imageInfo = LibPdfium.GetImageInfoFromObject(objPtr);
-
-        if((imageInfo.DataSize > 0) && (imageInfo.Height > 0) && (imageInfo.Width > 0))
+        for(int n = 0; (n < numObjects) && (result == null); n++)
         {
-          byte[] byteArray = new byte[imageInfo.DataSize];
+          IntPtr objPtr = LibPdfium.GetObjectFromPage(pagePtr, n);
 
-          unsafe
+          PdfImageInfo imageInfo = LibPdfium.GetImageInfoFromObject(objPtr);
+
+          if((imageInfo.DataSize > 0) && (imageInfo.Height > 0) && (imageInfo.Width > 0))
           {
-            IntPtr hData = LibKernel32.GlobalLock((IntPtr)imageInfo.pData);
-            Marshal.Copy(hData, byteArray, 0, imageInfo.DataSize);
-            LibKernel32.GlobalUnlock((IntPtr)imageInfo.pData);
-          }
+            byte[] byteArray = new byte[imageInfo.DataSize];
 
-          if(imageInfo.Filter == 3) // FlateDecode
-          {
-            MemoryStream compressedStream = new MemoryStream(byteArray, 2, byteArray.Length - 6);
-            MemoryStream decompressedStream = new MemoryStream();
+            unsafe
+            {
+              IntPtr hData = LibKernel32.GlobalLock((IntPtr)imageInfo.pData);
+              Marshal.Copy(hData, byteArray, 0, imageInfo.DataSize);
+              LibKernel32.GlobalUnlock((IntPtr)imageInfo.pData);
+            }
 
-            DeflateStream ds = new DeflateStream(compressedStream, CompressionMode.Decompress, true);
+            if(imageInfo.Filter == 3) // FlateDecode
+            {
+              MemoryStream compressedStream = new MemoryStream(byteArray, 2, byteArray.Length - 6);
+              MemoryStream decompressedStream = new MemoryStream();
 
-            ds.CopyTo(decompressedStream);
+              DeflateStream ds = new DeflateStream(compressedStream, CompressionMode.Decompress, true);
 
-            byte[] outputBuffer = decompressedStream.ToArray();
-            result = Utils.Imaging.ImageFromByteArray(outputBuffer);
-          }
-          else if(imageInfo.Filter == 2) // DCTDecode
-          {
-            // JPeg
-            result = Utils.Imaging.ImageFromByteArray(byteArray);
-          }
-          else // Other
-          {
-            result = SaveStreamContents(imageInfo, byteArray);
+              ds.CopyTo(decompressedStream);
+
+              byte[] outputBuffer = decompressedStream.ToArray();
+              result = Utils.Imaging.ImageFromByteArray(outputBuffer);
+            }
+            else if(imageInfo.Filter == 2) // DCTDecode
+            {
+              // JPeg
+              result = Utils.Imaging.ImageFromByteArray(byteArray);
+            }
+            else // Other
+            {
+              result = SaveStreamContents(imageInfo, byteArray);
+            }
           }
         }
       }
+      catch
+      { }
 
       return result;
     }
@@ -406,6 +422,24 @@ namespace PdfProcessing
       }
       else
       { }
+
+      return result;
+    }
+
+
+    static private PixelFormatEnum ConvertPixelFormat_SystemToLibPdfium(PixelFormat value)
+    {
+      PixelFormatEnum result;
+
+      switch(value)
+      {
+        case PixelFormat.Format1bppIndexed: result = PixelFormatEnum.Bits1_BW; break;
+        case PixelFormat.Format8bppIndexed: result = PixelFormatEnum.Bits8_Gray; break;
+        case PixelFormat.Format24bppRgb: result = PixelFormatEnum.Bits24_Rgb; break;
+        case PixelFormat.Format32bppRgb: result = PixelFormatEnum.Bits32_Rgb; break;
+        case PixelFormat.Format32bppArgb: result = PixelFormatEnum.Bits32_Argb; break;
+        default: result = PixelFormatEnum.Invalid; break;
+      }
 
       return result;
     }
