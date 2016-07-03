@@ -321,7 +321,7 @@ namespace PdfProcessing
               LibKernel32.GlobalUnlock((IntPtr)imageInfo.pData);
             }
 
-            if(imageInfo.Filter == 3) // FlateDecode
+            if(imageInfo.Filter == DecoderEnum.FlateDecode)
             {
               MemoryStream compressedStream = new MemoryStream(byteArray, 2, byteArray.Length - 6);
               MemoryStream decompressedStream = new MemoryStream();
@@ -333,12 +333,12 @@ namespace PdfProcessing
               byte[] outputBuffer = decompressedStream.ToArray();
               result = Utils.Imaging.ImageFromByteArray(outputBuffer);
             }
-            else if(imageInfo.Filter == 2) // DCTDecode
+            else if(imageInfo.Filter == DecoderEnum.DCTDecode)
             {
               // JPeg
               result = Utils.Imaging.ImageFromByteArray(byteArray);
             }
-            else // Other
+            else // Image already decoded
             {
               result = SaveStreamContents(imageInfo, byteArray);
             }
