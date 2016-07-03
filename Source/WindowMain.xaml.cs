@@ -516,25 +516,35 @@ namespace PDFScanningApp
     {
       List<int> pageNumbers = new List<int>();
 
+      WindowPromptSelectedAll.ResultEnum action = WindowPromptSelectedAll.ResultEnum.All;
+
       if((ListViewPages.SelectedItems.Count > 0) && (ListViewPages.SelectedItems.Count < fDocument.NumPages))
       {
-        if(MessageBoxResult.Yes == MessageBox.Show("Only use selected pages?", "Confirm", MessageBoxButton.YesNo))
-        {
-          // Only selected pages
-          foreach(ListViewPage item in ListViewPages.SelectedItems)
-          {
-            pageNumbers.Add(item.Index);
-          }
-        }
+        WindowPromptSelectedAll F = new WindowPromptSelectedAll();
+        F.Owner = this;
+        F.ShowDialog();
+        action = F.Result;
       }
 
-      if(pageNumbers.Count == 0)
+      if(action == WindowPromptSelectedAll.ResultEnum.Selected)
       {
-        // All pages then
+        // Only selected pages
+        foreach(ListViewPage item in ListViewPages.SelectedItems)
+        {
+          pageNumbers.Add(item.Index);
+        }
+      }
+      else if(action == WindowPromptSelectedAll.ResultEnum.All)
+      {
+        // All pages
         for(int i = 0; i < fDocument.NumPages; i++)
         {
           pageNumbers.Add(i);
         }
+      }
+      else
+      {
+        // Cancel, return zero pages
       }
 
       return pageNumbers;
@@ -545,92 +555,84 @@ namespace PDFScanningApp
     {
       List<int> pageNumbers = GetPageNumbersForProcessing();
 
-      System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-
-      //if(!System.IO.Directory.Exists(fAppSettings.LastDirectoryForSaving))
-      //{
-      //  fAppSettings.LastDirectoryForSaving = "M:\\";
-      //}
-
-      saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
-      saveFileDialog1.FilterIndex = 1;
-      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
-      saveFileDialog1.OverwritePrompt = false;
-
-      if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+      if(pageNumbers.Count > 0)
       {
-        string fileName = saveFileDialog1.FileName;
+        System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 
-        bool save = true;
-        bool append = false;
+        saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
+        saveFileDialog1.FilterIndex = 1;
+        saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+        saveFileDialog1.FileName = "Saved_" + pageNumbers.Count + "_Pages";
+        saveFileDialog1.OverwritePrompt = false;
 
-        if(File.Exists(fileName))
-        { 
-          WindowPromptAppendOverwrite F = new WindowPromptAppendOverwrite();
-          F.Owner = this;
-          F.ShowDialog();
-
-          if(F.Result == WindowPromptAppendOverwrite.ResultEnum.Append)
-          {
-            append = true;
-          }
-          else if(F.Result == WindowPromptAppendOverwrite.ResultEnum.Overwrite)
-          {
-            append = false;
-          }
-          else // Cancel
-          {
-            save = false;
-          }
-        }
-
-        if(save)
+        if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
-          fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, append, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
+          string fileName = saveFileDialog1.FileName;
 
-          if(fAppSettings.RemovePagesAfterPdfExport)
+          WindowPromptAppendOverwrite.ResultEnum action = WindowPromptAppendOverwrite.ResultEnum.Overwrite;
+
+          if(File.Exists(fileName))
           {
-            fDocument.RemoveAll();
+            WindowPromptAppendOverwrite F = new WindowPromptAppendOverwrite();
+            F.Owner = this;
+            F.ShowDialog();
+            action = F.Result;
           }
 
-          fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+          if(action != WindowPromptAppendOverwrite.ResultEnum.Cancel)
+          {
+            bool append = false;
+
+            if(action == WindowPromptAppendOverwrite.ResultEnum.Append)
+            {
+              append = true;
+            }
+
+            fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, append, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
+
+            if(fAppSettings.RemovePagesAfterPdfExport)
+            {
+              fDocument.RemoveAll();
+            }
+
+            fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+          }
         }
       }
     }
 
-    
+
     private void ButtonSaveImages_Click(object sender, RoutedEventArgs e)
     {
       List<int> pageNumbers = GetPageNumbersForProcessing();
 
-      System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-
-      //if(!System.IO.Directory.Exists(fAppSettings.LastDirectoryForSaving))
-      //{
-      //  fAppSettings.LastDirectoryForSaving = "M:\\";
-      //}
-
-      saveFileDialog1.Filter = "Default format (*.*)|*.*|Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif|JPEG Image (.jpg)|*.jpg|Png Image (.png)|*.png";
-      saveFileDialog1.FilterIndex = 1;
-
       if(pageNumbers.Count > 0)
       {
-        saveFileDialog1.FileName = "(Multiple files)";
-      }
-      else
-      {
-        saveFileDialog1.FileName = "Save Here";
-      }
+        System.Windows.Forms.SaveFileDialog saveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
 
-      saveFileDialog1.AddExtension = false;
-      saveFileDialog1.OverwritePrompt = false;
-      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+        saveFileDialog1.Filter = "Default format (*.*)|*.*|Bitmap Image (.bmp)|*.bmp|Gif Image (.gif)|*.gif|JPEG Image (.jpg)|*.jpg|Png Image (.png)|*.png";
+        saveFileDialog1.FilterIndex = 1;
 
-      if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
-      {
-        string fileName = saveFileDialog1.FileName;
-        fImageSaver.SaveImages(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressionFactor);
-        fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+        if(pageNumbers.Count > 1)
+        {
+          saveFileDialog1.FileName = "(Multiple files)";
+        }
+        else
+        {
+          Model.Page page = fDocument.GetPage(pageNumbers[0]);
+          saveFileDialog1.FileName = page.Name; // Default page name
+        }
+
+        saveFileDialog1.AddExtension = false;
+        saveFileDialog1.OverwritePrompt = false;
+        saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+
+        if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+        {
+          string fileName = saveFileDialog1.FileName;
+          fImageSaver.SaveImages(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressionFactor);
+          fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+        }
       }
     }
 

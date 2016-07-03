@@ -60,15 +60,14 @@ namespace Model
           format = image.RawFormat;
         }
 
-        SaveImage(image, format, directory, page.Name, compressionRate);
+        string saveName = page.Name;
 
-        // Alternate methods:
+        if(pageNumbers.Count == 1)
+        {
+          saveName = System.IO.Path.GetFileNameWithoutExtension(filename);
+        }
 
-        // Image image1 = page.GetImageInOriginalFormat(compressionRate);
-        // SaveImage(image1, format, directory, page.Name + "-Org", compressionRate);
-
-        // Image image2 = page.GetCompressedImage(compressionRate);
-        // SaveImage(image2, format, directory, page.Name + "-Comp", compressionRate);
+        SaveImage(image, format, directory, saveName, compressionRate);
       }
     }
 

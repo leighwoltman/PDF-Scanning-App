@@ -145,6 +145,9 @@
     <Compile Include="WindowPromptAppendOverwrite.xaml.cs">
       <DependentUpon>WindowPromptAppendOverwrite.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowPromptSelectedAll.xaml.cs">
+      <DependentUpon>WindowPromptSelectedAll.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSettings.xaml.cs">
       <DependentUpon>WindowSettings.xaml</DependentUpon>
     </Compile>
@@ -203,6 +206,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="WindowPromptAppendOverwrite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowPromptSelectedAll.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
