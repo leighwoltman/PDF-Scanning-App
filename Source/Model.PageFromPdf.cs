@@ -35,6 +35,12 @@ namespace Model
     }
 
 
+    public override string Name
+    {
+      get { return System.IO.Path.GetFileNameWithoutExtension(fFilename) + ", p." + fPageIndex; }
+    }
+
+
     public override Image CreateImage()
     {
       Image result = null;
