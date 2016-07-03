@@ -37,7 +37,7 @@ namespace Model
 
     public override string Name
     {
-      get { return System.IO.Path.GetFileNameWithoutExtension(fFilename) + ", p." + fPageIndex; }
+      get { return System.IO.Path.GetFileNameWithoutExtension(fFilename) + ", p." + (fPageIndex + 1); }
     }
 
 

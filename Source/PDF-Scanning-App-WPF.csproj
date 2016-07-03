@@ -142,6 +142,9 @@
     <Compile Include="WindowImageProperties.xaml.cs">
       <DependentUpon>WindowImageProperties.xaml</DependentUpon>
     </Compile>
+    <Compile Include="WindowPromptAppendOverwrite.xaml.cs">
+      <DependentUpon>WindowPromptAppendOverwrite.xaml</DependentUpon>
+    </Compile>
     <Compile Include="WindowSettings.xaml.cs">
       <DependentUpon>WindowSettings.xaml</DependentUpon>
     </Compile>
@@ -199,6 +202,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="WindowPromptAppendOverwrite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="WindowSettings.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -232,6 +239,9 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="External\Icons8\Image File-96.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="External\Icons8\Error-96.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

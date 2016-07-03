@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.IO;
 using System.Runtime.InteropServices;
 using PdfProcessing;
 using Imports;
@@ -17,10 +18,22 @@ namespace Model
     }
 
 
-    public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool compressImage, int compressionFactor)
+    public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool append, bool compressImage, int compressionFactor)
     {
       IntPtr pdfDocument = LibPdfium.CreateNewDocument();
+      
+      if(append && File.Exists(filename))
+      {
+        IntPtr sourceDoc = LibPdfium.LoadDocument(filename);
 
+        for(int i = 0; i < LibPdfium.GetPageCount(sourceDoc); i++)
+        {
+          LibPdfium.CopyPage(pdfDocument, sourceDoc, i + 1);
+        }
+
+        LibPdfium.CloseDocument(sourceDoc);
+      }
+      
       foreach(int num in pageNumbers)
       {
         // Get the current page from document
@@ -77,13 +90,21 @@ namespace Model
       }
       else if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Bmp))
       {
-        Bitmap bmp = (Bitmap)image;
-        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches, transformationIndex);
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, image, page.ImageBoundsInches, transformationIndex);
+      }
+      else if(image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Png))
+      {
+        // Keep PNG because:
+        // -It seems PNG and BMP are both stored the same way.
+        // -Converting to BMP loses the Alpha component of ARGB
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, image, page.ImageBoundsInches, transformationIndex);
       }
       else
       {
-        Bitmap bmp = (Bitmap)Utils.Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Bmp, 0);
-        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, bmp, page.ImageBoundsInches, transformationIndex);
+        // All other types convery to PNG because:
+        // It seems PNG and BMP are both stored the same way.
+        Image storedImage = Utils.Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
+        LibPdfium.AddBitmapToPage(pdfDocument, pdfPage, storedImage, page.ImageBoundsInches, transformationIndex);
       }
     }
   }

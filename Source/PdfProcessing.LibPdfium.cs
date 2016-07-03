@@ -101,8 +101,10 @@ namespace PdfProcessing
     }
 
 
-    public static void AddBitmapToPage(IntPtr document, IntPtr page, Bitmap bitmap, BoundsInches imageBounds, int transformationIndex)
+    public static void AddBitmapToPage(IntPtr document, IntPtr page, Image image, BoundsInches imageBounds, int transformationIndex)
     {
+      Bitmap bitmap = image as Bitmap;
+
       BitmapData bi = bitmap.LockBits(
           new Rectangle(0, 0, bitmap.Width, bitmap.Height),
           ImageLockMode.ReadOnly,

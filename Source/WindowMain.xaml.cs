@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
+using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -555,19 +555,46 @@ namespace PDFScanningApp
       saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
       saveFileDialog1.FilterIndex = 1;
       saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+      saveFileDialog1.OverwritePrompt = false;
 
       if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
         string fileName = saveFileDialog1.FileName;
 
-        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
+        bool save = true;
+        bool append = false;
 
-        if(fAppSettings.RemovePagesAfterPdfExport)
-        {
-          fDocument.RemoveAll();
+        if(File.Exists(fileName))
+        { 
+          WindowPromptAppendOverwrite F = new WindowPromptAppendOverwrite();
+          F.Owner = this;
+          F.ShowDialog();
+
+          if(F.Result == WindowPromptAppendOverwrite.ResultEnum.Append)
+          {
+            append = true;
+          }
+          else if(F.Result == WindowPromptAppendOverwrite.ResultEnum.Overwrite)
+          {
+            append = false;
+          }
+          else // Cancel
+          {
+            save = false;
+          }
         }
 
-        fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+        if(save)
+        {
+          fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, append, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
+
+          if(fAppSettings.RemovePagesAfterPdfExport)
+          {
+            fDocument.RemoveAll();
+          }
+
+          fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+        }
       }
     }
 
