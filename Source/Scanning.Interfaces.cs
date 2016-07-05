@@ -42,7 +42,6 @@ namespace Scanning
     public ColorModeEnum ColorMode;
     public BoundsInches ScanArea;
     public int Resolution;
-    public int CompressionFactor;
     public double Threshold;   // 0 to 1
     public double Brightness;  // 0 to 1
     public double Contrast;    // 0 to 1

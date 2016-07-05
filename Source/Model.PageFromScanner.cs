@@ -22,7 +22,7 @@ namespace Model
     private string fFilename;
 
 
-    public PageFromScanner(Image image, int dpi, int compressionFactor)
+    public PageFromScanner(Image image, int dpi)
     {
       // get a temporary path
       fFilename = GetTempFileName(fScanNumber);

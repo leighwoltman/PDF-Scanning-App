@@ -75,13 +75,6 @@ namespace PDFScanningApp
     }
     
 
-    public int ScannerCompressionFactor
-    {
-      get { return fTable.GetInteger("ScannerCompressionFactor", 80); }
-      set { fTable.SetInteger("ScannerCompressionFactor", value); }
-    }
-
-
     public SizeInches ScannerCustomPageSize
     {
       get

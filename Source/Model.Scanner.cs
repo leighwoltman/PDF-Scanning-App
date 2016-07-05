@@ -190,7 +190,7 @@ namespace Model
     private void fActiveDataSource_OnNewPictureData(object sender, EventArgs e)
     {
       NewPictureEventArgs args = (NewPictureEventArgs)e;
-      Page myPage = new PageFromScanner(args.TheImage, args.TheSettings.Resolution, args.TheSettings.CompressionFactor);
+      Page myPage = new PageFromScanner(args.TheImage, args.TheSettings.Resolution);
       fDocument.AddPage(myPage);
     }
 

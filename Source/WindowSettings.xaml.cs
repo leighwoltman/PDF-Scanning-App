@@ -33,7 +33,6 @@ namespace PDFScanningApp
     private DoubleUpDown UpDownDoubleScannerThreshold;
     private DoubleUpDown UpDownDoubleScannerBrightness;
     private DoubleUpDown UpDownDoubleScannerContrast;
-    private IntegerUpDown UpDownIntegerScannerCompressionFactor;
     private DoubleUpDown UpDownDoubleDefaultPageWidth;
     private DoubleUpDown UpDownDoubleDefaultPageHeight;
     private ComboBox ComboBoxPageScaling;
@@ -91,7 +90,6 @@ namespace PDFScanningApp
       UpDownDoubleScannerThreshold.Value = fAppSettings.ScannerThreshold;
       UpDownDoubleScannerBrightness.Value = fAppSettings.ScannerBrightness;
       UpDownDoubleScannerContrast.Value = fAppSettings.ScannerContrast;
-      UpDownIntegerScannerCompressionFactor.Value = fAppSettings.ScannerCompressionFactor;
 
       switch(fAppSettings.PageScaling)
       {
@@ -131,7 +129,6 @@ namespace PDFScanningApp
       fAppSettings.ScannerThreshold = (double)UpDownDoubleScannerThreshold.Value;
       fAppSettings.ScannerBrightness = (double)UpDownDoubleScannerBrightness.Value;
       fAppSettings.ScannerContrast = (double)UpDownDoubleScannerContrast.Value;
-      fAppSettings.ScannerCompressionFactor = (int)UpDownIntegerScannerCompressionFactor.Value;
 
       switch(ComboBoxPageScaling.SelectedIndex)
       {
@@ -162,7 +159,6 @@ namespace PDFScanningApp
       UpDownDoubleScannerThreshold = AddDouble("Threshold:", "", 0, 1, 0.01, "0.##", "");
       UpDownDoubleScannerBrightness = AddDouble("Brightness:", "", 0, 1, 0.01, "0.##", "");
       UpDownDoubleScannerContrast = AddDouble("Contrast:", "", 0, 1, 0.01, "0.##", "");
-      UpDownIntegerScannerCompressionFactor = AddInteger("Compression Factor:", "", 1, 100, "");
       AddCategory("Program Settings");
       UpDownDoubleDefaultPageWidth = AddDouble("Default Page Size (for image import):", "Width:", 0.1, 100, 0.1, "##.##", "inches");
       UpDownDoubleDefaultPageHeight = AddDouble("", "Height:", 0.1, 100, 0.1, "##.##", "inches");

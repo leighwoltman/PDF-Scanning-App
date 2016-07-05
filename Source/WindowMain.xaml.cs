@@ -305,7 +305,6 @@ namespace PDFScanningApp
       settings.EnableFeeder = fAppSettings.ScannerEnableFeeder;
       settings.ColorMode = fAppSettings.ScannerColorMode;
       settings.Resolution = fAppSettings.ScannerResolution;
-      settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
       settings.Threshold = fAppSettings.ScannerThreshold;
       settings.Brightness = fAppSettings.ScannerBrightness;
       settings.Contrast = fAppSettings.ScannerContrast;
