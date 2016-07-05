@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Settings" 
         Height="600" 
-        Width="500" 
+        Width="550" 
         ResizeMode="NoResize" 
         SizeToContent="Height"
         Icon="External/Icon/Umut-Pulat-Tulliana-2-Scanner.ico" 

@@ -38,6 +38,7 @@ namespace PDFScanningApp
     private ComboBox ComboBoxPageScaling;
     private IntegerUpDown UpDownIntegerDpiPdfRendering;
     private IntegerUpDown UpDownIntegerDpiPdfExport;
+    private CheckBox CheckBoxExportCompressImages;
     private IntegerUpDown UpDownIntegerExportCompressionFactor;
     private ComboBox ComboBoxPdfImportAction;
     private CheckBox CheckBoxPdfImageImport;
@@ -101,6 +102,7 @@ namespace PDFScanningApp
 
       UpDownIntegerDpiPdfRendering.Value = fAppSettings.PdfViewingResolution;
       UpDownIntegerDpiPdfExport.Value = fAppSettings.PdfExportResolution;
+      CheckBoxExportCompressImages.IsChecked = fAppSettings.ExportCompressImages;
       UpDownIntegerExportCompressionFactor.Value = fAppSettings.ExportCompressionFactor;
       ComboBoxPdfImportAction.SelectedIndex = (fAppSettings.AlwaysNativePdfImport) ? 0 : 1;
       CheckBoxPdfImageImport.IsChecked = fAppSettings.AttemptPdfSingleImageImport;
@@ -140,6 +142,7 @@ namespace PDFScanningApp
 
       fAppSettings.PdfViewingResolution = (int)UpDownIntegerDpiPdfRendering.Value;
       fAppSettings.PdfExportResolution = (int)UpDownIntegerDpiPdfExport.Value;
+      fAppSettings.ExportCompressImages = (bool)CheckBoxExportCompressImages.IsChecked;
       fAppSettings.ExportCompressionFactor = (int)UpDownIntegerExportCompressionFactor.Value;
       fAppSettings.AlwaysNativePdfImport = (ComboBoxPdfImportAction.SelectedIndex == 0);
       fAppSettings.AttemptPdfSingleImageImport = (bool)CheckBoxPdfImageImport.IsChecked;
@@ -166,12 +169,13 @@ namespace PDFScanningApp
       ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
       UpDownIntegerDpiPdfRendering = AddInteger("PDF Viewing Resolution:", "", 1, 2400, "DPI");
       UpDownIntegerDpiPdfExport = AddInteger("PDF Export Resolution:", "", 1, 2400, "DPI");
+      CheckBoxExportCompressImages = AddCheck("Compress Images For Exporting:", "");
       UpDownIntegerExportCompressionFactor = AddInteger("Export Compression Factor:", "", 1, 100, "");
       List<string> pdfImportAction = new List<string>() { "Always Native", "Always Render" };
       ComboBoxPdfImportAction = AddList("PDF Import Action:", "", pdfImportAction, "");
-      CheckBoxPdfImageImport = AddCheck("Attempt PDF Image Import:", "", "");
-      CheckBoxRemovePagesPdfExport = AddCheck("Remove Pages on PDF Save:", "", "");
-      CheckBoxShowPrintButton = AddCheck("Show Print Button:", "", "");
+      CheckBoxPdfImageImport = AddCheck("Attempt PDF Image Import:", "");
+      CheckBoxRemovePagesPdfExport = AddCheck("Remove Pages on PDF Save:", "");
+      CheckBoxShowPrintButton = AddCheck("Show Print Button:", "");
     }
 
 
@@ -224,14 +228,14 @@ namespace PDFScanningApp
     }
 
 
-    private CheckBox AddCheck(string title, string subTitle, string unit)
+    private CheckBox AddCheck(string title, string subTitle)
     {
       CheckBox element = new CheckBox();
       element.HorizontalAlignment = System.Windows.HorizontalAlignment.Left;
       element.VerticalAlignment = System.Windows.VerticalAlignment.Center;
       element.Margin = new Thickness(10, 3, 0, 3);
 
-      AddRow(title, subTitle, element, unit);
+      AddRow(title, subTitle, element, "");
       return element;
     }
 
