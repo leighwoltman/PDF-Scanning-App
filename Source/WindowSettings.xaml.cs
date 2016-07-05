@@ -154,23 +154,23 @@ namespace PDFScanningApp
     private void BuildUI()
     {
       AddCategory("Scanner Settings");
-      UpDownDoubleCustomPageWidth = AddDouble("Custom Page Size:", "Width:", 0, 10, "inches");
-      UpDownDoubleCustomPageHeight = AddDouble("", "Height:", 0, 10, "inches");
+      UpDownDoubleCustomPageWidth = AddDouble("Custom Page Size:", "Width:", 0.1, 100, 0.1, "##.##", "inches");
+      UpDownDoubleCustomPageHeight = AddDouble("", "Height:", 0.1, 100, 0.1, "##.##", "inches");
       List<string> colorMode = new List<string>() { "Black/White", "Grayscale", "Color" };
       ComboBoxScannerColorMode = AddList("Color Mode:", "", colorMode, "");
-      UpDownIntegerScannerResolution = AddInteger("Resolution:", "", 0, 10, "DPI");
-      UpDownDoubleScannerThreshold = AddDouble("Threshold:", "", 0, 10, "");
-      UpDownDoubleScannerBrightness = AddDouble("Brightness:", "", 0, 10, "");
-      UpDownDoubleScannerContrast = AddDouble("Contrast:", "", 0, 10, "");
-      UpDownIntegerScannerCompressionFactor = AddInteger("Compression Factor:", "", 0, 10, "");
+      UpDownIntegerScannerResolution = AddInteger("Resolution:", "", 1, 2400, "DPI");
+      UpDownDoubleScannerThreshold = AddDouble("Threshold:", "", 0, 1, 0.01, "0.##", "");
+      UpDownDoubleScannerBrightness = AddDouble("Brightness:", "", 0, 1, 0.01, "0.##", "");
+      UpDownDoubleScannerContrast = AddDouble("Contrast:", "", 0, 1, 0.01, "0.##", "");
+      UpDownIntegerScannerCompressionFactor = AddInteger("Compression Factor:", "", 1, 100, "");
       AddCategory("Program Settings");
-      UpDownDoubleDefaultPageWidth = AddDouble("Default Page Size (for image import):", "Width:", 0, 10, "inches");
-      UpDownDoubleDefaultPageHeight = AddDouble("", "Height:", 0, 10, "inches");
+      UpDownDoubleDefaultPageWidth = AddDouble("Default Page Size (for image import):", "Width:", 0.1, 100, 0.1, "##.##", "inches");
+      UpDownDoubleDefaultPageHeight = AddDouble("", "Height:", 0.1, 100, 0.1, "##.##", "inches");
       List<string> pageScaling = new List<string>() { "Use DPI", "Fit (Only Shrink)", "Fit(Stretch / Shrink)" };
       ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
-      UpDownIntegerDpiPdfRendering = AddInteger("PDF Viewing Resolution:", "", 0, 10, "DPI");
-      UpDownIntegerDpiPdfExport = AddInteger("PDF Export Resolution:", "", 0, 10, "DPI");
-      UpDownIntegerExportCompressionFactor = AddInteger("Export Compression Factor:", null, 0, 10, "");
+      UpDownIntegerDpiPdfRendering = AddInteger("PDF Viewing Resolution:", "", 1, 2400, "DPI");
+      UpDownIntegerDpiPdfExport = AddInteger("PDF Export Resolution:", "", 1, 2400, "DPI");
+      UpDownIntegerExportCompressionFactor = AddInteger("Export Compression Factor:", "", 1, 100, "");
       List<string> pdfImportAction = new List<string>() { "Always Native", "Always Render" };
       ComboBoxPdfImportAction = AddList("PDF Import Action:", "", pdfImportAction, "");
       CheckBoxPdfImageImport = AddCheck("Attempt PDF Image Import:", "", "");
@@ -197,7 +197,7 @@ namespace PDFScanningApp
     }
 
 
-    private DoubleUpDown AddDouble(string title, string subTitle, double min, double max, string unit)
+    private DoubleUpDown AddDouble(string title, string subTitle, double min, double max, double increment, string format, string unit)
     {
       DoubleUpDown element = new DoubleUpDown();
       element.HorizontalAlignment = System.Windows.HorizontalAlignment.Stretch;
@@ -205,8 +205,8 @@ namespace PDFScanningApp
       element.Margin = new Thickness(10, 3, 0, 3);
       element.Minimum = min;
       element.Maximum = max;
-      element.Increment = 0.01;
-      element.FormatString = "0.##";
+      element.Increment = increment;
+      element.FormatString = format;
       element.MouseWheelActiveTrigger = Xceed.Wpf.Toolkit.Primitives.MouseWheelActiveTrigger.Disabled;
 
       AddRow(title, subTitle, element, unit);
