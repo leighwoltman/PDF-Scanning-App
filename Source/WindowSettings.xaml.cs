@@ -92,13 +92,13 @@ namespace PDFScanningApp
       UpDownDoubleScannerBrightness.Value = fAppSettings.ScannerBrightness;
       UpDownDoubleScannerContrast.Value = fAppSettings.ScannerContrast;
 
-      switch(fAppSettings.PageScaling)
-      {
-        default:
-        case Defines.PageScalingEnum.UseDpi: ComboBoxPageScaling.SelectedIndex = 0; break;
-        case Defines.PageScalingEnum.ShrinkOnly: ComboBoxPageScaling.SelectedIndex = 1; break;
-        case Defines.PageScalingEnum.StretchShrink: ComboBoxPageScaling.SelectedIndex = 2; break;
-      }
+      //switch(fAppSettings.PageScaling)
+      //{
+      //  default:
+      //  case Defines.PageScalingEnum.UseDpi: ComboBoxPageScaling.SelectedIndex = 0; break;
+      //  case Defines.PageScalingEnum.ShrinkOnly: ComboBoxPageScaling.SelectedIndex = 1; break;
+      //  case Defines.PageScalingEnum.StretchShrink: ComboBoxPageScaling.SelectedIndex = 2; break;
+      //}
 
       UpDownIntegerDpiPdfRendering.Value = fAppSettings.PdfViewingResolution;
       UpDownIntegerDpiPdfExport.Value = fAppSettings.PdfExportResolution;
@@ -132,13 +132,13 @@ namespace PDFScanningApp
       fAppSettings.ScannerBrightness = (double)UpDownDoubleScannerBrightness.Value;
       fAppSettings.ScannerContrast = (double)UpDownDoubleScannerContrast.Value;
 
-      switch(ComboBoxPageScaling.SelectedIndex)
-      {
-        default:
-        case 0: fAppSettings.PageScaling = Defines.PageScalingEnum.UseDpi; break;
-        case 1: fAppSettings.PageScaling = Defines.PageScalingEnum.ShrinkOnly; break;
-        case 2: fAppSettings.PageScaling = Defines.PageScalingEnum.StretchShrink; break;
-      }
+      //switch(ComboBoxPageScaling.SelectedIndex)
+      //{
+      //  default:
+      //  case 0: fAppSettings.PageScaling = Defines.PageScalingEnum.UseDpi; break;
+      //  case 1: fAppSettings.PageScaling = Defines.PageScalingEnum.ShrinkOnly; break;
+      //  case 2: fAppSettings.PageScaling = Defines.PageScalingEnum.StretchShrink; break;
+      //}
 
       fAppSettings.PdfViewingResolution = (int)UpDownIntegerDpiPdfRendering.Value;
       fAppSettings.PdfExportResolution = (int)UpDownIntegerDpiPdfExport.Value;
@@ -165,8 +165,8 @@ namespace PDFScanningApp
       AddCategory("Program Settings");
       UpDownDoubleDefaultPageWidth = AddDouble("Default Page Size (for image import):", "Width:", 0.1, 100, 0.1, "##.##", "inches");
       UpDownDoubleDefaultPageHeight = AddDouble("", "Height:", 0.1, 100, 0.1, "##.##", "inches");
-      List<string> pageScaling = new List<string>() { "Use DPI", "Fit (Only Shrink)", "Fit(Stretch / Shrink)" };
-      ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
+      // List<string> pageScaling = new List<string>() { "Use DPI", "Fit (Only Shrink)", "Fit(Stretch / Shrink)" };
+      // ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
       UpDownIntegerDpiPdfRendering = AddInteger("PDF Viewing Resolution:", "", 1, 2400, "DPI");
       UpDownIntegerDpiPdfExport = AddInteger("PDF Export Resolution:", "", 1, 2400, "DPI");
       CheckBoxExportCompressImages = AddCheck("Compress Images For Exporting:", "");
