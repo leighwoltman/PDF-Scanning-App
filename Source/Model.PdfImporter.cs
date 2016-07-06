@@ -24,7 +24,7 @@ namespace Model
     }
 
 
-    public void LoadDocument(Document document, string filename, bool attemptPdfSingleImageImport, ResolutionDpi viewingResolution)
+    public void LoadDocument(Document document, string filename, bool attemptSingleImageMode, ResolutionDpi viewingResolution)
     {
       try
       {
@@ -38,7 +38,7 @@ namespace Model
           double width = LibPdfium.GetPageWidth(pagePtr);
           SizeInches pageSize = new SizeInches(width, height);
 
-          Page myPage = new PageFromPdf(filename, i, pageSize, attemptPdfSingleImageImport, viewingResolution);
+          Page myPage = new PageFromPdf(filename, i, pageSize, attemptSingleImageMode, viewingResolution);
           document.AddPage(myPage);
 
           LibPdfium.ClosePage(pagePtr);

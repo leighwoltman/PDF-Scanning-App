@@ -23,6 +23,9 @@ namespace Utils
     }
 
 
+    public ResolutionDpi(double value) : this(value, value)
+    { }
+
     public ResolutionDpi(double horizontal, double vertical)
     {
       fHorizontal = horizontal;

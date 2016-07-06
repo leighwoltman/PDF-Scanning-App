@@ -124,38 +124,38 @@ namespace PDFScanningApp
     }
     
 
-    public bool AlwaysNativePdfImport
+    public bool PdfImportNativePages
     {
-      get { return fTable.GetBool("AlwaysNativePdfImport", true); }
-      set { fTable.SetBool("AlwaysNativePdfImport", value); }
+      get { return fTable.GetBool("PdfImportNativePages", true); }
+      set { fTable.SetBool("PdfImportNativePages", value); }
     }
     
 
-    public bool AttemptPdfSingleImageImport
+    public bool PdfImportSingleImages
     {
-      get { return fTable.GetBool("AttemptPdfSingleImageImport", true); }
-      set { fTable.SetBool("AttemptPdfSingleImageImport", value); }
+      get { return fTable.GetBool("PdfImportSingleImages", true); }
+      set { fTable.SetBool("PdfImportSingleImages", value); }
     }
     
 
-    public bool RemovePagesAfterPdfExport
+    public bool PdfExportRemovePagesAfter
     {
-      get { return fTable.GetBool("RemovePagesAfterPdfExport", true); }
-      set { fTable.SetBool("RemovePagesAfterPdfExport", value); }
+      get { return fTable.GetBool("PdfExportRemovePagesAfter", true); }
+      set { fTable.SetBool("PdfExportRemovePagesAfter", value); }
     }
 
 
-    public bool ExportCompressImages
+    public bool PdfExportCompressedImages
     {
-      get { return fTable.GetBool("ExportCompressImages", true); }
-      set { fTable.SetBool("ExportCompressImages", value); }
+      get { return fTable.GetBool("PdfExportCompressedImages", true); }
+      set { fTable.SetBool("PdfExportCompressedImages", value); }
     }
 
 
-    public int ExportCompressionFactor
+    public int PdfExportCompressionFactor
     {
-      get { return fTable.GetInteger("ExportCompressionFactor", 80); }
-      set { fTable.SetInteger("ExportCompressionFactor", value); }
+      get { return fTable.GetInteger("PdfExportCompressionFactor", 80); }
+      set { fTable.SetInteger("PdfExportCompressionFactor", value); }
     }
 
 

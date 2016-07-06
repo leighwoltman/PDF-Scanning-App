@@ -112,7 +112,7 @@ namespace Model
           res = imageSizePixels.Height / pageSizeInches.Height;
         }
 
-        fResolutionDpi = new ResolutionDpi(res, res);
+        fResolutionDpi = new ResolutionDpi(res);
       }
 
       // Calculate Image Layout

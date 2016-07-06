@@ -18,7 +18,11 @@ namespace Model
     }
 
 
-    public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool append, bool compressImage, int compressionFactor)
+    public void SaveDocument(Document document, string filename, List<int> pageNumbers, bool append, 
+      bool compressImage, 
+      int compressionFactor, 
+      bool importNativePages,
+      ResolutionDpi exportResolution)
     {
       IntPtr pdfDocument = LibPdfium.CreateNewDocument();
       
@@ -39,22 +43,38 @@ namespace Model
         // Get the current page from document
         Page page = document.GetPage(num);
 
+        Image image = null;
+
         if(page is PageFromPdf)
         {
           PageFromPdf pageFromPdf = page as PageFromPdf;
 
           if(pageFromPdf.SingleImageMode)
           {
-            DrawPage(pdfDocument, pageFromPdf, compressImage, compressionFactor);
+            image = pageFromPdf.GetSingleImage();
+          }
+          else if(importNativePages)
+          {
+            pageFromPdf.ExportToPdfDocument(pdfDocument);
           }
           else
           {
-            pageFromPdf.ExportToPdfDocument(pdfDocument);
+            image = pageFromPdf.Render(exportResolution);
           }
         }
         else
         {
-          DrawPage(pdfDocument, page, compressImage, compressionFactor);
+          image = page.GetSourceImage();
+        }
+
+        if(image != null)
+        {
+          if(compressImage)
+          {
+            image = CompressImage(image, compressionFactor, exportResolution);
+          }
+
+          DrawPage(pdfDocument, page, image);
         }
       }
 
@@ -63,26 +83,30 @@ namespace Model
     }
 
 
-    private void DrawPage(IntPtr pdfDocument, Page page, bool compressImage, int compressionFactor)
+    private Image CompressImage(Image image, int compressionFactor, ResolutionDpi maxResolution)
+    {
+      Image result;
+
+      // TODO: Limit to maxResolution
+      if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
+      {
+        // Jpeg format will make a Monochome image file bigger and lower the quality; Use PNG instead
+        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
+      }
+      else
+      {
+        result = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Jpeg, compressionFactor);
+      }
+
+      return result;
+    }
+
+
+    private void DrawPage(IntPtr pdfDocument, Page page, Image image)
     {
       IntPtr pdfPage = LibPdfium.CreatePage(pdfDocument, page.Size);
 
-      Image image = page.GetSourceImage();
-
       int transformationIndex = page.ImageTransformationIndex;
-
-      if(compressImage)
-      {
-        if(image.PixelFormat == System.Drawing.Imaging.PixelFormat.Format1bppIndexed)
-        {
-          // Jpeg format will make a Monochome image file bigger and lower the quality; Use PNG instead
-          image = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
-        }
-        else
-        {
-          image = Imaging.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Jpeg, compressionFactor);
-        }
-      }
 
       if (image.RawFormat.Equals(System.Drawing.Imaging.ImageFormat.Jpeg))
       {

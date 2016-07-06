@@ -503,7 +503,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.PdfImportSingleImages, new ResolutionDpi(fAppSettings.PdfViewingResolution));
         fAppSettings.LastDirectoryForLoading = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
       }
 
@@ -587,9 +587,13 @@ namespace PDFScanningApp
               append = true;
             }
 
-            fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, append, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
+            fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, append, 
+              fAppSettings.PdfExportCompressedImages, 
+              fAppSettings.PdfExportCompressionFactor, 
+              fAppSettings.PdfImportNativePages,
+              new ResolutionDpi(fAppSettings.PdfExportResolution));
 
-            if(fAppSettings.RemovePagesAfterPdfExport)
+            if(fAppSettings.PdfExportRemovePagesAfter)
             {
               fDocument.RemoveAll();
             }
@@ -629,7 +633,9 @@ namespace PDFScanningApp
         if(saveFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
         {
           string fileName = saveFileDialog1.FileName;
-          fImageSaver.SaveImages(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressionFactor);
+
+          // TODO: Compression rate for JPeg should come from a dialog
+          fImageSaver.SaveImages(fDocument, fileName, pageNumbers, fAppSettings.PdfExportCompressionFactor);
           fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
         }
       }
@@ -943,7 +949,7 @@ namespace PDFScanningApp
 
           if(ext == ".PDF")
           {
-            fPdfImporter.LoadDocument(fDocument, filename, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
+            fPdfImporter.LoadDocument(fDocument, filename, fAppSettings.PdfImportSingleImages, new ResolutionDpi(fAppSettings.PdfViewingResolution));
           }
           else
           {

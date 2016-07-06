@@ -79,6 +79,41 @@ namespace Model
     }
 
 
+    public Image GetSingleImage()
+    {
+      Image result = null;
+
+      IntPtr docPtr = LibPdfium.LoadDocument(fFilename);
+      IntPtr pagePtr = LibPdfium.LoadPage(docPtr, fPageIndex);
+
+      result = LibPdfium.GetSingleImageFromPdfDocument(docPtr, pagePtr);
+
+      LibPdfium.ClosePage(pagePtr);
+      LibPdfium.CloseDocument(docPtr);
+
+      return result;
+    }
+
+
+    public Image Render(ResolutionDpi resolution)
+    {
+      Image result = null;
+
+      IntPtr docPtr = LibPdfium.LoadDocument(fFilename);
+      IntPtr pagePtr = LibPdfium.LoadPage(docPtr, fPageIndex);
+
+      int pixWidth = (int)(Size.Width * resolution.Horizontal); // width * dpiX
+      int pixHeight = (int)(Size.Height * resolution.Vertical); // height * dpiY
+
+      result = LibPdfium.Render(pagePtr, pixWidth, pixHeight);
+
+      LibPdfium.ClosePage(pagePtr);
+      LibPdfium.CloseDocument(docPtr);
+
+      return result;
+    }
+
+
     public void ExportToPdfDocument(IntPtr destDoc)
     {
       IntPtr sourceDoc = LibPdfium.LoadDocument(fFilename);

@@ -102,11 +102,11 @@ namespace PDFScanningApp
 
       UpDownIntegerDpiPdfRendering.Value = fAppSettings.PdfViewingResolution;
       UpDownIntegerDpiPdfExport.Value = fAppSettings.PdfExportResolution;
-      CheckBoxExportCompressImages.IsChecked = fAppSettings.ExportCompressImages;
-      UpDownIntegerExportCompressionFactor.Value = fAppSettings.ExportCompressionFactor;
-      ComboBoxPdfImportAction.SelectedIndex = (fAppSettings.AlwaysNativePdfImport) ? 0 : 1;
-      CheckBoxPdfImageImport.IsChecked = fAppSettings.AttemptPdfSingleImageImport;
-      CheckBoxRemovePagesPdfExport.IsChecked = fAppSettings.RemovePagesAfterPdfExport;
+      CheckBoxExportCompressImages.IsChecked = fAppSettings.PdfExportCompressedImages;
+      UpDownIntegerExportCompressionFactor.Value = fAppSettings.PdfExportCompressionFactor;
+      ComboBoxPdfImportAction.SelectedIndex = (fAppSettings.PdfImportNativePages) ? 0 : 1;
+      CheckBoxPdfImageImport.IsChecked = fAppSettings.PdfImportSingleImages;
+      CheckBoxRemovePagesPdfExport.IsChecked = fAppSettings.PdfExportRemovePagesAfter;
       CheckBoxShowPrintButton.IsChecked = fAppSettings.ShowPrintButton;
     }
 
@@ -142,11 +142,11 @@ namespace PDFScanningApp
 
       fAppSettings.PdfViewingResolution = (int)UpDownIntegerDpiPdfRendering.Value;
       fAppSettings.PdfExportResolution = (int)UpDownIntegerDpiPdfExport.Value;
-      fAppSettings.ExportCompressImages = (bool)CheckBoxExportCompressImages.IsChecked;
-      fAppSettings.ExportCompressionFactor = (int)UpDownIntegerExportCompressionFactor.Value;
-      fAppSettings.AlwaysNativePdfImport = (ComboBoxPdfImportAction.SelectedIndex == 0);
-      fAppSettings.AttemptPdfSingleImageImport = (bool)CheckBoxPdfImageImport.IsChecked;
-      fAppSettings.RemovePagesAfterPdfExport = (bool)CheckBoxRemovePagesPdfExport.IsChecked;
+      fAppSettings.PdfExportCompressedImages = (bool)CheckBoxExportCompressImages.IsChecked;
+      fAppSettings.PdfExportCompressionFactor = (int)UpDownIntegerExportCompressionFactor.Value;
+      fAppSettings.PdfImportNativePages = (ComboBoxPdfImportAction.SelectedIndex == 0);
+      fAppSettings.PdfImportSingleImages = (bool)CheckBoxPdfImageImport.IsChecked;
+      fAppSettings.PdfExportRemovePagesAfter = (bool)CheckBoxRemovePagesPdfExport.IsChecked;
       fAppSettings.ShowPrintButton = (bool)CheckBoxShowPrintButton.IsChecked;
     }
 
@@ -165,15 +165,15 @@ namespace PDFScanningApp
       AddCategory("Program Settings");
       UpDownDoubleDefaultPageWidth = AddDouble("Default Page Size (for image import):", "Width:", 0.1, 100, 0.1, "##.##", "inches");
       UpDownDoubleDefaultPageHeight = AddDouble("", "Height:", 0.1, 100, 0.1, "##.##", "inches");
-      // List<string> pageScaling = new List<string>() { "Use DPI", "Fit (Only Shrink)", "Fit(Stretch / Shrink)" };
-      // ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
+//      List<string> pageScaling = new List<string>() { "Use DPI", "Fit (Only Shrink)", "Fit(Stretch / Shrink)" };
+//      ComboBoxPageScaling = AddList("Page Scaling:", "", pageScaling, "");
       UpDownIntegerDpiPdfRendering = AddInteger("PDF Viewing Resolution:", "", 1, 2400, "DPI");
-      UpDownIntegerDpiPdfExport = AddInteger("PDF Export Resolution:", "", 1, 2400, "DPI");
-      CheckBoxExportCompressImages = AddCheck("Compress Images For Exporting:", "");
-      UpDownIntegerExportCompressionFactor = AddInteger("Export Compression Factor:", "", 1, 100, "");
-      List<string> pdfImportAction = new List<string>() { "Always Native", "Always Render" };
-      ComboBoxPdfImportAction = AddList("PDF Import Action:", "", pdfImportAction, "");
+      UpDownIntegerDpiPdfExport = AddInteger("PDF Export (Max) Resolution:", "", 1, 2400, "DPI");
       CheckBoxPdfImageImport = AddCheck("Attempt PDF Image Import:", "");
+      CheckBoxExportCompressImages = AddCheck("Compress Images For PDF Export:", "");
+      UpDownIntegerExportCompressionFactor = AddInteger("PDF Export Compression Factor:", "", 1, 100, "");
+      List<string> pdfImportAction = new List<string>() { "Native", "Render" };
+      ComboBoxPdfImportAction = AddList("PDF Page Import Action:", "", pdfImportAction, "");
       CheckBoxRemovePagesPdfExport = AddCheck("Remove Pages on PDF Save:", "");
       CheckBoxShowPrintButton = AddCheck("Show Print Button:", "");
     }
