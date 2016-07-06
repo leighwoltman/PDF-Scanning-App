@@ -195,7 +195,7 @@ namespace Utils
     {
       Image result;
 
-      if(image.RawFormat.Equals(format))
+      if(image.RawFormat.Equals(format) && (quality == 0))
       {
         // No need to do conversion since the image is already in desired format
         result = image;

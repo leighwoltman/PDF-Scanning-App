@@ -23,8 +23,8 @@
                  Margin="5, 5, 15, 5" 
                  HorizontalAlignment="Right"
                  VerticalAlignment="Bottom">
-      <Button x:Name="ButtonOK" Content="OK" Width="75" Margin="2" IsCancel="True" Click="ButtonOK_Click"/>
-      <Button x:Name="ButtonCancel" Content="Cancel" Width="75" Margin="2" Click="ButtonCancel_Click"/>
+      <Button x:Name="ButtonOK" Content="OK" Width="75" Margin="2" IsDefault="True" Click="ButtonOK_Click"/>
+      <Button x:Name="ButtonCancel" Content="Cancel" Width="75" Margin="2" IsCancel="True" Click="ButtonCancel_Click"/>
     </WrapPanel>
   </DockPanel>
 
