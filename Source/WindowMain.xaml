@@ -122,11 +122,13 @@
                 SelectionMode="Extended"
                 SelectionChanged="ListViewPages_SelectionChanged" 
                 PreviewMouseLeftButtonDown="ListViewPages_PreviewMouseLeftButtonDown"
-                MouseMove="ListViewPages_MouseMove" 
+                PreviewMouseLeftButtonUp="ListViewPages_PreviewMouseLeftButtonUp"
+                PreviewMouseMove="ListViewPages_PreviewMouseMove"
                 DragEnter="ListViewPages_DragEnter" 
                 DragLeave="ListViewPages_DragLeave" 
                 DragOver="ListViewPages_DragOver" 
                 Drop="ListViewPages_Drop"
+                QueryContinueDrag="ListViewPages_QueryContinueDrag"
                 AllowDrop="True">
         <ListView.Resources>
           <med:WpfImageConverter x:Key="imageConverter" />

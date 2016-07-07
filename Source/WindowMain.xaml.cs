@@ -5,6 +5,7 @@ using System.IO;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -37,9 +38,11 @@ namespace PDFScanningApp
     private ImageSaver fImageSaver;
     private Document fDocument;
     private InsertionMark  fInsertionMark;
-    private Point fDragStartPosition;
+    private ListViewItem fDragStartItem;
+    private System.Timers.Timer fScrollTimer;
     private bool fClosing;
     private bool fDeleting;
+
 
     private Cyotek.Windows.Forms.ImageBox PictureBoxPreview;
 
@@ -65,7 +68,10 @@ namespace PDFScanningApp
       fDocument.OnPageMoved += fDocument_OnPageMoved;
        
       fInsertionMark = new InsertionMark();
-      fDragStartPosition = new Point(0, 0);
+      fDragStartItem = null;
+      fScrollTimer = new System.Timers.Timer(150);
+      fScrollTimer.Elapsed += fScrollTimer_Elapsed;
+      fScrollTimer.AutoReset = false;
 
       fClosing = false;
       fDeleting = false;
@@ -410,36 +416,6 @@ namespace PDFScanningApp
       RefreshControls();
     }
     
-
-    private ListViewPage ListViewSelectedItem
-    {
-      get { return (ListViewPage)ListViewPages.SelectedItem; }
-    }
-
-
-    private void ListViewPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
-    {
-      ListViewPage item = fDeleting ? null : ListViewSelectedItem;
-
-      if(item == null)
-      {
-        // No picture is selected
-        PictureBoxPreview.Image = null;
-        RefreshEditingControls(false);
-      }
-      else
-      {
-        Model.Page page = fDocument.GetPage(item.Index);
-        PictureBoxPreview.Image = page.GetLayoutImage();
-        PictureBoxPreview.ZoomToFit();
-
-        lblDragDropInfo.Text = "" + item.PageNumber;
-
-        RefreshControls();
-        RefreshEditingControls(page.CanModify());
-      }
-    }
-
 
     private void ButtonScan_Click(object sender, RoutedEventArgs e)
     {
@@ -825,23 +801,85 @@ namespace PDFScanningApp
     }
 
 
-    private void ListViewPages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    private ListViewPage ListViewSelectedItem
     {
-      fDragStartPosition = e.GetPosition(null);
+      get { return (ListViewPage)ListViewPages.SelectedItem; }
     }
 
-    
-    private void ListViewPages_MouseMove(object sender, System.Windows.Input.MouseEventArgs e)
-    {
-      System.Windows.Controls.ListView listView = sender as System.Windows.Controls.ListView;
-      if((listView != null) && (listView.SelectedItem != null) && (e.LeftButton == MouseButtonState.Pressed))
-      {
-        Point mousePos = e.GetPosition(null);
-        Vector diff = fDragStartPosition - mousePos;
 
-        if(diff.Length > 15)
+    private void ListViewPages_SelectionChanged(object sender, SelectionChangedEventArgs e)
+    {
+      // This prevents the selection to change while dragging the mouse
+      ListViewPages.ReleaseMouseCapture();
+
+      ListViewPage item = fDeleting ? null : ListViewSelectedItem;
+
+      if(item == null)
+      {
+        // No picture is selected
+        PictureBoxPreview.Image = null;
+        RefreshEditingControls(false);
+      }
+      else
+      {
+        Model.Page page = fDocument.GetPage(item.Index);
+        PictureBoxPreview.Image = page.GetLayoutImage();
+        PictureBoxPreview.ZoomToFit();
+
+        RefreshControls();
+        RefreshEditingControls(page.CanModify());
+      }
+    }
+
+
+    private void ListViewPages_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+    {
+      // This prevents the selection to change while dragging the mouse
+      ListViewPages.ReleaseMouseCapture();
+
+      Point pt = e.GetPosition(ListViewPages);
+      fDragStartItem = WpfAssist.GetListViewItemAtPoint(ListViewPages, pt);
+
+      if(fDragStartItem != null)
+      {
+        if(fDragStartItem.Content == ListViewSelectedItem)
         {
-          DragDrop.DoDragDrop(listView, listView.SelectedItem, DragDropEffects.All);
+          // We clicked the selected item again. We make sure that this goes no further because
+          // otherwise when we drag the item over to the next spot then that item gets selected,
+          // creating an undesirable visual effect.
+          e.Handled = true;
+        }
+        else
+        {
+          // We clicked on another item. By not setting Handled to true, 
+          // we let the system to select this new item.
+        }
+      }
+    }
+    
+
+    private void ListViewPages_PreviewMouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+    {
+      fDragStartItem = null;
+      lblDragDropInfo.Text = "";
+    }
+    
+
+    private void ListViewPages_PreviewMouseMove(object sender, MouseEventArgs e)
+    {
+      if(ListViewPages.SelectedItems.Count == 1)
+      {
+        if((fDragStartItem != null) && (e.LeftButton == MouseButtonState.Pressed))
+        {
+          Point pt = e.GetPosition(ListViewPages);
+
+          if(fDragStartItem != WpfAssist.GetListViewItemAtPoint(ListViewPages, pt))
+          {
+            lblDragDropInfo.Text = "" + ((ListViewPage)fDragStartItem.Content).PageNumber;
+            DragDrop.DoDragDrop(ListViewPages, fDragStartItem.Content, DragDropEffects.All);
+            fInsertionMark.Hide();
+            lblDragDropInfo.Text = "";
+          }
         }
       }
     }
@@ -875,40 +913,77 @@ namespace PDFScanningApp
 
     private void ListViewPages_DragLeave(object sender, System.Windows.DragEventArgs e)
     {
-      fInsertionMark.Hide();
+      e.Handled = true;
+    }
+
+
+    void fScrollTimer_Elapsed(object sender, ElapsedEventArgs e)
+    {
+      fScrollTimer.Enabled = false;
     }
 
 
     private void ListViewPages_DragOver(object sender, System.Windows.DragEventArgs e)
     {
       // Auto-scroll list view
-      ListView li = sender as ListView;
-      ScrollViewer sv = WpfAssist.FindVisualChild<ScrollViewer>(ListViewPages);
-
-      double tolerance = 10;
-      double verticalPos = e.GetPosition(li).Y;
-      double offset = 3;
-
-      if(verticalPos < tolerance) // Top of visible list?
+      if(fScrollTimer.Enabled == false)
       {
-        sv.ScrollToVerticalOffset(sv.VerticalOffset - offset); //Scroll up.
-      }
-      else if(verticalPos > li.ActualHeight - tolerance) //Bottom of visible list?
-      {
-        sv.ScrollToVerticalOffset(sv.VerticalOffset + offset); //Scroll down.    
-      }
+        Point pt = e.GetPosition(ListViewPages);
+        ListViewItem item = WpfAssist.GetListViewItemAtPoint(ListViewPages, pt);
 
+        if(item != null)
+        {
+          int index = ((ListViewPage)item.Content).Index;
+          int targetIndex = index;
+
+          if(pt.Y < item.ActualHeight)
+          {
+            if(targetIndex > 0)
+            {
+              targetIndex--;
+            }
+          }
+          else if(pt.Y > (ListViewPages.ActualHeight - item.ActualHeight))
+          {
+            if(targetIndex < (ListViewPages.Items.Count - 1))
+            {
+              targetIndex++;
+            }
+          }
+
+          if(targetIndex != index)
+          {
+            fInsertionMark.Hide();
+            ListViewPages.ScrollIntoView(ListViewPages.Items[targetIndex]);
+            fScrollTimer.Enabled = true;
+          }
+        }
+
+        //// Alternate method, not using
+        //// ---------------------------
+        //ScrollViewer sv = WpfAssist.FindVisualChild<ScrollViewer>(ListViewPages);
+
+        //double tolerance = 30;
+        //double verticalPos = e.GetPosition(ListViewPages).Y;
+        //double offset = 1;
+
+        //lblDragDropInfo.Text = (verticalPos + ":" + ListViewPages.Height);
+        //if(verticalPos < tolerance) // Top of visible list?
+        //{
+        //  sv.ScrollToVerticalOffset(sv.VerticalOffset - offset); //Scroll up.
+        //}
+        //else if(verticalPos > ListViewPages.ActualHeight - tolerance) //Bottom of visible list?
+        //{
+        //  sv.ScrollToVerticalOffset(sv.VerticalOffset + offset); //Scroll down.    
+        //}
+
+        //fScrollTimer.Enabled = true;
+      }
+      
       // Enable/disable drop
       if(e.Data.GetDataPresent(typeof(ListViewPage)))
       {
-        if(fInsertionMark.IsVisible)
-        {
-          e.Effects = DragDropEffects.Move;
-        }
-        else 
-        {
-          e.Effects = DragDropEffects.None;
-        }
+        e.Effects = DragDropEffects.Move;
       }
       else if(e.Data.GetDataPresent(DataFormats.FileDrop, false))
       {
@@ -918,12 +993,14 @@ namespace PDFScanningApp
       {
         e.Effects = DragDropEffects.None;
       }
+
       e.Handled = true;
     }
 
 
     private void ListViewPages_Drop(object sender, System.Windows.DragEventArgs e)
     {
+      // Check for dragged ListViewPage ----
       int targetIndex = fInsertionMark.Index;
 
       if(targetIndex >= 0)
@@ -937,8 +1014,7 @@ namespace PDFScanningApp
         }
       }
 
-      fInsertionMark.Hide();
-
+      // Check for dragged files from another application -----
       string[] fileNames = (string[])e.Data.GetData(DataFormats.FileDrop, false);
 
       if(fileNames != null)
@@ -956,6 +1032,17 @@ namespace PDFScanningApp
             fImageLoader.LoadFromFile(fDocument, filename, fAppSettings.DefaultPageSize);
           }
         }
+      }
+
+      e.Handled = true;
+    }
+
+
+    private void ListViewPages_QueryContinueDrag(object sender, QueryContinueDragEventArgs e)
+    {
+      if(e.EscapePressed)
+      {
+        e.Action = DragAction.Cancel;
       }
     }
   }
