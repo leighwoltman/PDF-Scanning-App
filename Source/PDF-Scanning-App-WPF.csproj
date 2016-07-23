@@ -37,6 +37,9 @@
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Cyotek.Windows.Forms.ImageBox">
       <HintPath>External\ImageBox\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
