@@ -229,7 +229,6 @@ namespace PDFScanningApp
       settings.EnableFeeder = fAppSettings.ScannerEnableFeeder;
       settings.ColorMode = fAppSettings.ScannerColorMode;
       settings.Resolution = fAppSettings.ScannerResolution;
-      settings.CompressionFactor = fAppSettings.ScannerCompressionFactor;
       settings.Threshold = fAppSettings.ScannerThreshold;
       settings.Brightness = fAppSettings.ScannerBrightness;
       settings.Contrast = fAppSettings.ScannerContrast;
@@ -502,42 +501,23 @@ namespace PDFScanningApp
 
     private void ButtonSaveImages_Click(object sender, EventArgs e)
     {
-      List<int> pageNumbers = new List<int>();
+      List<int> pageNumbers = GetPageNumbersForProcessing();
 
-      if(ListViewPages.SelectedItems.Count > 0)
+      if(pageNumbers.Count > 0)
       {
-        if(DialogResult.Yes == MessageBox.Show("Only use selected pages?", "Confirm", MessageBoxButtons.YesNo))
+        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+
+        saveFileDialog1.FileName = "Save Here";
+        saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+
+        if(saveFileDialog1.ShowDialog() == DialogResult.OK)
         {
-          foreach(ListViewItem item in ListViewPages.SelectedItems)
-          {
-            pageNumbers.Add(item.Index);
-          }
+          string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
+
+          // TODO: Compression rate for JPeg should come from a dialog
+          fImageSaver.SaveImages(fDocument, savePath, pageNumbers, fAppSettings.PdfExportCompressionFactor);
+          fAppSettings.LastDirectoryForSaving = savePath;
         }
-      }
-
-      if(pageNumbers.Count == 0)
-      {
-        for(int i = 0; i < fDocument.NumPages; i++)
-        {
-          pageNumbers.Add(i);
-        }
-      }
-
-      SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-
-      if(!Directory.Exists(fAppSettings.LastDirectoryForSaving))
-      {
-        fAppSettings.LastDirectoryForSaving = "M:\\";
-      }
-
-      saveFileDialog1.FileName = "Save Here"; 
-      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
-
-      if(saveFileDialog1.ShowDialog() == DialogResult.OK)
-      {
-        string savePath = System.IO.Path.GetDirectoryName(saveFileDialog1.FileName);
-        fImageSaver.SaveImages(fDocument, savePath, pageNumbers);
-        fAppSettings.LastDirectoryForSaving = savePath;
       }
     }
 
@@ -556,7 +536,7 @@ namespace PDFScanningApp
 
       if(openFileDialog1.ShowDialog() == System.Windows.Forms.DialogResult.OK)
       {
-        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.AttemptPdfSingleImageImport, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
+        fPdfImporter.LoadDocument(fDocument, openFileDialog1.FileName, fAppSettings.PdfImportSingleImages, new ResolutionDpi(fAppSettings.PdfViewingResolution, fAppSettings.PdfViewingResolution));
         fAppSettings.LastDirectoryForLoading = System.IO.Path.GetDirectoryName(openFileDialog1.FileName);
       }
 
@@ -564,7 +544,7 @@ namespace PDFScanningApp
     }
 
 
-    private void ButtonSavePdf_Click(object sender, EventArgs e)
+    private List<int> GetPageNumbersForProcessing()
     {
       List<int> pageNumbers = new List<int>();
 
@@ -587,29 +567,40 @@ namespace PDFScanningApp
         }
       }
 
-      SaveFileDialog saveFileDialog1 = new SaveFileDialog();
+      return pageNumbers;
+    }
 
-      if(!Directory.Exists(fAppSettings.LastDirectoryForSaving))
+
+    private void ButtonSavePdf_Click(object sender, EventArgs e)
+    {
+      List<int> pageNumbers = GetPageNumbersForProcessing();
+
+      if(pageNumbers.Count > 0)
       {
-        fAppSettings.LastDirectoryForSaving = "M:\\";
-      }
+        SaveFileDialog saveFileDialog1 = new SaveFileDialog();
 
-      saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
-      saveFileDialog1.FilterIndex = 1;
-      saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+        saveFileDialog1.Filter = "PDF files (*.pdf)|*.pdf";
+        saveFileDialog1.FilterIndex = 1;
+        saveFileDialog1.InitialDirectory = fAppSettings.LastDirectoryForSaving;
+        saveFileDialog1.FileName = "Saved_" + pageNumbers.Count + "_Pages";
 
-      if(saveFileDialog1.ShowDialog() == DialogResult.OK)
-      {
-        string fileName = saveFileDialog1.FileName;
-
-        fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, fAppSettings.ExportCompressImages, fAppSettings.ExportCompressionFactor);
-
-        if(fAppSettings.RemovePagesAfterPdfExport)
+        if(saveFileDialog1.ShowDialog() == DialogResult.OK)
         {
-          fDocument.RemoveAll();
-        }
+          string fileName = saveFileDialog1.FileName;
 
-        fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+          fPdfExporter.SaveDocument(fDocument, fileName, pageNumbers, false,
+            fAppSettings.PdfExportCompressedImages,
+            fAppSettings.PdfExportCompressionFactor,
+            fAppSettings.PdfImportNativePages,
+            new ResolutionDpi(fAppSettings.PdfExportResolution));
+
+          if(fAppSettings.PdfExportRemovePagesAfter)
+          {
+            fDocument.RemoveAll();
+          }
+
+          fAppSettings.LastDirectoryForSaving = System.IO.Path.GetDirectoryName(fileName);
+        }
       }
     }
 

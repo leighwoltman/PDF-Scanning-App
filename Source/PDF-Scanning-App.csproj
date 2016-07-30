@@ -24,6 +24,7 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <UseVSHostingProcess>false</UseVSHostingProcess>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <ApplicationIcon>External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico</ApplicationIcon>
@@ -31,6 +32,10 @@
   <ItemGroup>
     <Reference Include="Cyotek.Windows.Forms.ImageBox">
       <HintPath>External\ImageBox\Cyotek.Windows.Forms.ImageBox.dll</HintPath>
+    </Reference>
+    <Reference Include="PdfiumDotNetWrapper, Version=1.0.6052.39597, Culture=neutral, processorArchitecture=x86">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>External\Pdfium\PdfiumDotNetWrapper.dll</HintPath>
     </Reference>
     <Reference Include="PdfSharp">
       <HintPath>External\PDFsharp\PdfSharp.dll</HintPath>
@@ -67,6 +72,10 @@
     <Compile Include="FormMain.Designer.cs">
       <DependentUpon>FormMain.cs</DependentUpon>
     </Compile>
+    <Compile Include="Imports.LibDefines.cs" />
+    <Compile Include="Imports.LibGdi32.cs" />
+    <Compile Include="Imports.LibKernel32.cs" />
+    <Compile Include="Imports.LibUser32.cs" />
     <Compile Include="Model.Document.cs" />
     <Compile Include="Model.ImageHandler.cs" />
     <Compile Include="Model.ImageLoader.cs" />
@@ -79,9 +88,7 @@
     <Compile Include="Model.PdfImporter.cs" />
     <Compile Include="Model.Printer.cs" />
     <Compile Include="Model.Scanner.cs" />
-    <Compile Include="PdfProcessing.NativeMethods.cs" />
-    <Compile Include="PdfProcessing.NativeMethods.Pdfium.cs" />
-    <Compile Include="PdfProcessing.PdfEngine.cs" />
+    <Compile Include="PdfProcessing.LibPdfium.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Scanning.Interfaces.cs" />
@@ -149,12 +156,10 @@
   <ItemGroup>
     <None Include="External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico" />
   </ItemGroup>
-  <ItemGroup>
-    <Content Include="External\Pdfium\pdfium.dll" />
-  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>xcopy /d "$(ProjectDir)\External\Pdfium\pdfium.dll" "$(TargetDir)"</PostBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
   </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
