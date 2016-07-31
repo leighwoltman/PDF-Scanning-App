@@ -1096,7 +1096,33 @@ namespace PDFScanningApp
       get
       {
         Model.Page page = fPage.GetPage(fIndex);
-        return page.Name;
+        string result = page.Name;
+
+        if(page is PageFromPdf)
+        {
+          if((page as PageFromPdf).SingleImageMode)
+          {
+            result += "\nPDF-Single Image";
+          }
+          else
+          {
+            result += "\nPDF";
+          }
+        }
+        else if(page is PageFromScanner)
+        {
+          result += "\nSCAN";
+        }
+        else if(page is PageFromFile)
+        {
+          result += "\nFILE";
+        }
+        else
+        {
+          // Invalid
+        }
+
+        return result;
       }
     }
 
