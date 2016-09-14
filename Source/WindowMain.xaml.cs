@@ -728,6 +728,7 @@ namespace PDFScanningApp
         if(MessageBoxResult.OK == MessageBox.Show(question, "Delete?", MessageBoxButton.OKCancel))
         {
           fDeleting = true;
+          int savedSelectedIndex = ListViewPages.SelectedIndex;
 
           while(ListViewPages.SelectedItems.Count > 0)
           {
@@ -736,6 +737,15 @@ namespace PDFScanningApp
           }
 
           fDeleting = false;
+
+          try
+          {
+            ListViewPages.SelectedIndex = savedSelectedIndex;
+          }
+          catch(Exception)
+          {
+            // do nothing
+          }
         }
       }
     }
