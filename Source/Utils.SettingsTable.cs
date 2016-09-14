@@ -35,21 +35,28 @@ namespace Utils
 
     public void Load(string filename)
     {
-      if(String.IsNullOrEmpty(filename) == false)
+      try
       {
-        if(File.Exists(filename))
+        if (String.IsNullOrEmpty(filename) == false)
         {
-          XmlDocument xmlDoc = new XmlDocument();
-          xmlDoc.Load(filename);
-          XmlNode xmlRoot = xmlDoc.ChildNodes[1];
-
-          foreach(XmlNode xmlItem in xmlRoot.ChildNodes)
+          if (File.Exists(filename))
           {
-            fItems.Add(xmlItem.Name, xmlItem.InnerText);
-          }
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.Load(filename);
+            XmlNode xmlRoot = xmlDoc.ChildNodes[1];
 
-          fHasChanges = false;
+            foreach (XmlNode xmlItem in xmlRoot.ChildNodes)
+            {
+              fItems.Add(xmlItem.Name, xmlItem.InnerText);
+            }
+
+            fHasChanges = false;
+          }
         }
+      }
+      catch(Exception)
+      {
+        // do nothing
       }
     }
 

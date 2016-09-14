@@ -73,8 +73,18 @@ namespace PDFScanningApp
       fScrollTimer.Elapsed += fScrollTimer_Elapsed;
       fScrollTimer.AutoReset = false;
 
+      this.KeyUp += WindowMain_KeyUp;
+
       fClosing = false;
       fDeleting = false;
+    }
+
+    void WindowMain_KeyUp(object sender, KeyEventArgs e)
+    {
+      if (e.Key == Key.Delete)
+      {
+        this.ButtonDelete_Click(this, EventArgs.Empty);
+      }
     }
 
 
