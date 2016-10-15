@@ -112,7 +112,7 @@ namespace PdfProcessing
 
       PixelFormatEnum pf = ConvertPixelFormat_SystemToLibPdfium(bi.PixelFormat);
 
-      TransformationMatrix matrix = GetMatrix(imageBounds, transformationIndex);
+      TransformationMatrix matrix = GetTransformationMatrix(imageBounds, transformationIndex);
 
       try
       {
@@ -139,7 +139,8 @@ namespace PdfProcessing
     {
       byte[] buffer = Utils.Imaging.ByteArrayFromImage(image);
 
-      TransformationMatrix matrix = GetMatrix(imageBounds, transformationIndex);
+      // imageBounds are dimensions of transformed image (as displayed)
+      TransformationMatrix matrix = GetTransformationMatrix(imageBounds, transformationIndex);
 
       unsafe
       {
@@ -170,7 +171,7 @@ namespace PdfProcessing
     };
 
 
-    private static TransformationMatrix GetMatrix(BoundsInches imageBounds, int transformationIndex)
+    private static TransformationMatrix GetTransformationMatrix(BoundsInches imageBounds, int transformationIndex)
     {
       TransformationMatrix result = new TransformationMatrix();
 
@@ -196,6 +197,63 @@ namespace PdfProcessing
       result.d *= 72;
       result.e *= 72;
       result.f *= 72;
+
+      return result;
+    }
+
+
+    private static int GetSignOrZero(double value)
+    {
+      int result;
+
+      if(value < 0)
+      {
+        result = -1;
+      }
+      else if(value > 0)
+      {
+        result = 1;
+      }
+      else
+      {
+        result = 0;
+      }
+
+      return result;
+    }
+
+
+    private static int GetTransformationIndex(TransformationMatrix transformationMatrix, BoundsInches imageBounds)
+    {
+      int[] vector = new int[4];
+
+      vector[0] = GetSignOrZero(transformationMatrix.a);
+      vector[1] = GetSignOrZero(transformationMatrix.b);
+      vector[2] = GetSignOrZero(transformationMatrix.c);
+      vector[3] = GetSignOrZero(transformationMatrix.d);
+
+      int result = 0; // Default is to use the original picture
+
+      for(int i = 0; i < 8; i++)
+      {
+        bool match = true;
+
+        for(int j = 0; j < 4; j++)
+        {
+          if(fTransformationArray[i, j] != vector[j])
+          {
+            match = false;
+          }
+        }
+
+        if(match)
+        {
+          result = i;
+        }
+      }
+
+      // TODO: Calculate imageBounds
+      imageBounds = null;
 
       return result;
     }
@@ -315,6 +373,8 @@ namespace PdfProcessing
           if((imageInfo.DataSize > 0) && (imageInfo.Height > 0) && (imageInfo.Width > 0))
           {
             byte[] byteArray = new byte[imageInfo.DataSize];
+
+            // TODO: transformationIndex = GetTransformationIndex(imageInfo.Matrix, imageBounds);
 
             unsafe
             {
