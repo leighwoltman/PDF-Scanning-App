@@ -1,0 +1,3 @@
+[submodule "Source/HouseLibs"]
+	path = Source/HouseLibs
+	url = https://github.com/tocaner/HouseLibs.git

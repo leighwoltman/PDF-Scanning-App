@@ -1,0 +1,217 @@
+﻿<Window x:Class="ScanApp.WindowMain"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:ScanApp"
+        xmlns:hc="clr-namespace:HouseControls;assembly=HouseControls"
+        mc:Ignorable="d"
+        Title="Main Window" Height="450" Width="650"
+        Icon="Icons\Umut-Pulat-Tulliana-2-Scanner.ico"
+        Loaded="Window_Loaded"
+        Closed="Window_Closed">
+  <Window.Resources>
+    <ResourceDictionary>
+      <BitmapImage x:Key="ImageScanner" UriSource="Icons\Scanner-96.png"/>
+      <BitmapImage x:Key="ImageOpenFile" UriSource="Icons\icons8-image-file-add.png"/>
+      <BitmapImage x:Key="ImageOpenPdf" UriSource="Icons\icons8-pdf-add.png"/>
+      <BitmapImage x:Key="ImageSaveToPdf" UriSource="Icons\icons8-pdf-ok.png"/>
+      <BitmapImage x:Key="ImageSaveImages" UriSource="Icons\icons8-image-file-ok.png"/>
+      <BitmapImage x:Key="ImagePrint" UriSource="Icons\Print-96.png"/>
+      <BitmapImage x:Key="ImageInfo" UriSource="Icons\icons8-image-file-info.png"/>
+      <BitmapImage x:Key="ImageCompare" UriSource="Icons\Compare-96.png"/>
+      <BitmapImage x:Key="ImageFlipVertical" UriSource="Icons\Flip Horizontal-96.png"/>
+      <BitmapImage x:Key="ImageFlipHorizontal" UriSource="Icons\Flip Vertical-96.png"/>
+      <BitmapImage x:Key="ImageRotateLeft" UriSource="Icons\Rotate Left-96.png"/>
+      <BitmapImage x:Key="ImageRotateRight" UriSource="Icons\Rotate Right-96.png"/>
+      <BitmapImage x:Key="ImageLandscape" UriSource="Icons\Rotate to Landscape-96.png"/>
+      <BitmapImage x:Key="ImageTwoSidedShuffle" UriSource="Icons\Literature-96.png"/>
+      <BitmapImage x:Key="ImageDelete" UriSource="Icons\Delete-96.png"/>
+      <BitmapImage x:Key="ImageDeleteAll" UriSource="Icons\icons8-uncheck-all-100 (delete).png"/>
+      <BitmapImage x:Key="ImageSelectAll" UriSource="Icons\icons8-uncheck-all-100 (select).png"/>
+      <BitmapImage x:Key="ImageSettings" UriSource="Icons\Settings-96.png"/>
+      <BitmapImage x:Key="ImageBlankPage" UriSource="Icons\icons8-image-file-100.png"/>
+      <l:StringToBoolConverter x:Key="StringToBoolConverter" />
+      <l:BoolToVisibleCollapsed x:Key="BoolToVisibleCollapsed" />
+      <l:BoolInverter x:Key="BoolInverter" />
+      <l:FileNameFromPath x:Key="FileNameFromPath" />
+      <l:ScanPageTypeToButtonLabel x:Key="ScanPageTypeToButtonLabel" />
+    </ResourceDictionary>
+  </Window.Resources>
+  <DockPanel LastChildFill="True">
+    <Ribbon DockPanel.Dock="Top" Loaded="RibbonWin_Loaded">
+      <Ribbon.QuickAccessToolBar>
+        <RibbonQuickAccessToolBar Visibility="Collapsed"/>
+      </Ribbon.QuickAccessToolBar>
+      <Ribbon.ApplicationMenu>
+        <RibbonApplicationMenu Visibility="Collapsed"/>
+      </Ribbon.ApplicationMenu>
+      <RibbonTab Header="File" KeyTip="F">
+        <RibbonGroup Header="Import">
+          <RibbonButton LargeImageSource="{StaticResource ImageOpenFile}" Label="Add Images" Command="{Binding Command_LoadImages}"/>
+          <RibbonButton LargeImageSource="{StaticResource ImageOpenPdf}" Label="Add PDF" Command="{Binding Command_OpenPdf}"/>
+        </RibbonGroup>
+        <RibbonGroup Header="Export">
+          <RibbonButton LargeImageSource="{StaticResource ImageSaveImages}" Label="Save Images" Command="{Binding Command_SaveImages}"/>
+          <RibbonButton LargeImageSource="{StaticResource ImageSaveToPdf}" Label="Save To PDF" Command="{Binding Command_SaveToPdf}"/>
+          <RibbonButton LargeImageSource="{StaticResource ImagePrint}" Label="Print" Command="{Binding Command_Print}" Visibility="{Binding PrintEnabled, Converter={StaticResource BoolToVisibleCollapsed}}"/>
+        </RibbonGroup>
+        <RibbonGroup Header="Options">
+          <RibbonButton LargeImageSource="{StaticResource ImageSettings}" Label="Preferences" Command="{Binding Command_Settings}"/>
+        </RibbonGroup>
+      </RibbonTab>
+      <RibbonTab Header="Scanning" KeyTip="S" >
+        <RibbonGroup Header="Pages">
+          <RibbonSplitButton Label="{Binding ScanPageType, Converter={StaticResource ScanPageTypeToButtonLabel}}" 
+                             LargeImageSource="{StaticResource ImageScanner}" 
+                             SmallImageSource="{StaticResource ImageScanner}" 
+                             Padding="10,0,10,0"
+                             Command="{Binding Command_Scan}">
+            <RibbonGallery SelectedValue="{Binding ScanPageType}"
+                           MaxColumnCount="1" 
+                           Command="{Binding Command_ScanPageType}"
+                           ScrollViewer.VerticalScrollBarVisibility="Hidden">
+              <RibbonGalleryCategory ItemsSource="{Binding PageTypes}">
+              </RibbonGalleryCategory>
+            </RibbonGallery>
+          </RibbonSplitButton>        
+        </RibbonGroup>
+        <RibbonGroup Header="Device">
+          <ComboBox Margin="0,10,0,0"
+                    Width="250"
+                    VerticalAlignment="Center" 
+                    IsEditable="False"
+                    ItemsSource="{Binding ScannerNames}" 
+                    SelectedItem="{Binding SelectedScanner, Mode=TwoWay}">
+          </ComboBox>
+        </RibbonGroup>
+        <RibbonGroup Header="Profiles">
+          <ComboBox Margin="0,10,0,0"
+                    Width="150"
+                    VerticalAlignment="Center" 
+                    IsEditable="False"
+                    ItemsSource="{Binding ScanProfiles}" 
+                    SelectedItem="{Binding SelectedScanProfile, Mode=TwoWay}">
+          </ComboBox>
+          <StackPanel Orientation="Horizontal">
+            <RibbonButton Label="Add" Command="{Binding Command_ProfileAdd}" />
+            <RibbonButton Label="Remove" Command="{Binding Command_ProfileRemove}" IsEnabled="{Binding SelectedScanProfile, Converter={StaticResource StringToBoolConverter}}"/>
+            <RibbonButton Label="Edit" Command="{Binding Command_ProfileEdit}" IsEnabled="{Binding SelectedScanProfile, Converter={StaticResource StringToBoolConverter}}"/>
+          </StackPanel>
+        </RibbonGroup>
+        <RibbonGroup Header="Other">
+          <CheckBox Margin="0,10,0,0" VerticalAlignment="Center" IsChecked="{Binding DuplexScanEnabled}">Two-sided scan
+          </CheckBox>
+        </RibbonGroup>
+      </RibbonTab>
+      <RibbonTab Header="Edit" KeyTip="E">
+        <RibbonGroup Header="Info">
+          <RibbonButton LargeImageSource="{StaticResource ImageInfo}" Label="Info" Command="{Binding Command_ImageInfo}"/>
+          <RibbonButton LargeImageSource="{StaticResource ImageCompare}" Label="Compare" Command="{Binding Command_CompareImages}"/>
+        </RibbonGroup>
+        <RibbonGroup Header="Edit">
+          <RibbonButton SmallImageSource="{StaticResource ImageFlipHorizontal}" Label="Flip Horizontal" Command="{Binding Command_MirrorHorizontally}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageFlipVertical}" Label="Flip Vertical" Command="{Binding Command_MirrorVertically}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageRotateLeft}" Label="Rotate Counterclockwise" Command="{Binding Command_RotateCounterClockwise}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageRotateRight}" Label="Rotate Clockwise" Command="{Binding Command_RotateClockwise}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageLandscape}" Label="Landscape" Command="{Binding Command_Landscape}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageTwoSidedShuffle}" Label="Two Sided Shuffle" Command="{Binding Command_Shuffle2Sided}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageDelete}" Label="Remove Page" Command="{Binding Command_Delete}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageDeleteAll}" Label="Remove All" Command="{Binding Command_DeleteAll}"/>
+          <RibbonButton SmallImageSource="{StaticResource ImageSelectAll}" Label="Select All" Command="{Binding Command_SelectAll}"/>
+        </RibbonGroup>
+      </RibbonTab>
+      <RibbonTab Header="Info">
+        <RibbonGroup Header="Application">
+          <Border Margin="10" BorderThickness="1" BorderBrush="Black" >
+            <TextBlock Padding="10,5,10,5">
+              <Run Text="{Binding VersionText}"/>
+            </TextBlock>
+          </Border>
+        </RibbonGroup>
+      </RibbonTab>
+    </Ribbon>
+    <StatusBar DockPanel.Dock="Bottom">
+      <StatusBarItem Margin="0,0,20,0">
+        <TextBlock Text="{Binding CurrentFilePath, Converter={StaticResource FileNameFromPath}}" />
+      </StatusBarItem>
+      <StatusBarItem Margin="0,0,20,0">
+        <TextBlock Text="{Binding StatusText}" />
+      </StatusBarItem>
+      <StatusBarItem Margin="0,0,20,0">
+        <TextBlock Text="{Binding ExportText}" />
+      </StatusBarItem>
+      <StatusBarItem Margin="10,0,0,0" VerticalContentAlignment="Stretch" Padding="5">
+        <ProgressBar Visibility="{Binding Scanning, Converter={StaticResource BoolToVisibleCollapsed}}" Width="100" IsIndeterminate="True"/>
+      </StatusBarItem>
+      <StatusBarItem HorizontalAlignment="Right">
+        <TextBlock Text="{Binding LayoutText}" />
+      </StatusBarItem>
+    </StatusBar>
+    <Grid>
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="2*"/>
+        <ColumnDefinition Width="3"/>
+        <ColumnDefinition Width="5*"/>
+      </Grid.ColumnDefinitions>
+      <ListView x:Name="ListViewPages" Grid.Column="0"
+                ItemsSource="{Binding PageItems}"
+                SelectionMode="Extended"
+                SelectedItem="{Binding SelectedPageItem}"
+                SelectionChanged="ListViewPages_SelectionChanged"
+                PreviewMouseLeftButtonDown="ListViewPages_PreviewMouseLeftButtonDown"
+                PreviewMouseLeftButtonUp="ListViewPages_PreviewMouseLeftButtonUp"
+                PreviewMouseMove="ListViewPages_PreviewMouseMove"
+                DragOver="ListViewPages_DragOver" 
+                Drop="ListViewPages_Drop"
+                QueryContinueDrag="ListViewPages_QueryContinueDrag" 
+                VirtualizingPanel.IsVirtualizing="False"
+                AllowDrop="True">
+        <ListView.ItemTemplate>
+          <DataTemplate>
+            <Grid Margin="5" Height="80">
+              <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"/>
+                <ColumnDefinition Width="Auto"/>
+              </Grid.ColumnDefinitions>
+              <Border BorderBrush="Black" BorderThickness="1" HorizontalAlignment="Center" VerticalAlignment="Center">
+                <Image Grid.Column="0" Source="{Binding Thumbnail}"/>
+              </Border>
+              <TextBlock Grid.Column="1" Text="{Binding PageNumber}" VerticalAlignment="Top" Margin="10,0,0,0"/>
+              <TextBlock Grid.Column="1" Text="{Binding Info}" VerticalAlignment="Center" Margin="10,0,0,0"/>
+            </Grid>
+          </DataTemplate>
+        </ListView.ItemTemplate>
+        <ListView.ItemContainerStyle>
+          <Style TargetType="ListViewItem">
+            <Setter Property="IsSelected" Value="{Binding IsSelected}"/>
+          </Style>
+        </ListView.ItemContainerStyle>
+        <ListView.ContextMenu>
+          <ContextMenu>
+            <MenuItem Header="Info" Command="{Binding Command_ImageInfo}"/>
+            <MenuItem Header="Compare" Command="{Binding Command_CompareImages}"/>
+            <Separator />
+            <MenuItem Header="Mirror Horizontally" Command="{Binding Command_MirrorHorizontally}"/>
+            <MenuItem Header="Mirror Vertically" Command="{Binding Command_MirrorVertically}"/>
+            <MenuItem Header="Rotate Counter Clockwise" Command="{Binding Command_RotateCounterClockwise}"/>
+            <MenuItem Header="Rotate Clockwise" Command="{Binding Command_RotateClockwise}"/>
+            <MenuItem Header="Landscape" Command="{Binding Command_Landscape}"/>
+            <Separator />
+            <MenuItem Header="Save To PDF" Command="{Binding Command_SaveToPdf}"/>
+            <MenuItem Header="Remove" Command="{Binding Command_Delete}"/>
+            <Separator />
+            <MenuItem Header="Remove All" Command="{Binding Command_DeleteAll}"/>
+            <MenuItem Header="Select All" Command="{Binding Command_SelectAll}"/>
+            <MenuItem Header="Shuffle 2 Sided" Command="{Binding Command_Shuffle2Sided}"/>
+          </ContextMenu>
+        </ListView.ContextMenu>
+      </ListView>
+      <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+      <hc:ControlImagePanZoom Grid.Column="2"
+                              LayoutChanged="Image_LayoutChanged"
+                              DisplayedImage="{Binding SelectedPageItem.Image}">
+      </hc:ControlImagePanZoom>
+    </Grid>
+  </DockPanel>
+</Window>
