@@ -1,0 +1,85 @@
+﻿<Window x:Class="ScanApp.WindowScanSettingsDialog"
+        Name="ScanDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:ScanApp"
+        xmlns:hc="clr-namespace:HouseControls;assembly=HouseControls"
+        mc:Ignorable="d"
+        Title="Scan Settings" 
+        WindowStyle="ToolWindow" 
+        SizeToContent="WidthAndHeight">
+  <Window.Resources>
+    <ResourceDictionary>
+      <l:ItemCountToEnabledConverter x:Key="ItemCountToEnabledConverter" />
+    </ResourceDictionary>
+  </Window.Resources>
+  <Grid Margin="10" Width="300">
+    <Grid.Resources>
+      <Style TargetType="{x:Type hc:ControlNumericUpDown}">
+        <Setter Property = "BorderBrush" Value="Aquamarine"/>
+        <Setter Property = "TextAlignment" Value="Left"/>
+        <Setter Property = "Height" Value="23"/>
+        <Setter Property = "Foreground" Value="Blue"/>
+        <Setter Property = "VerticalAlignment" Value="Center"/>
+        <Setter Property = "DecimalPlaces" Value="0"/>
+        <Setter Property = "Step" Value="1"/>
+      </Style>
+      <Style x:Key="Header" TargetType="{x:Type TextBlock}">
+        <Setter Property = "VerticalAlignment" Value="Center"/>
+        <Setter Property = "Margin" Value="0,7,0,7"/>
+      </Style>
+    </Grid.Resources>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Grid Grid.Row="0">
+      <Grid.ColumnDefinitions>
+        <ColumnDefinition Width="*"/>
+        <ColumnDefinition Width="*"/>
+      </Grid.ColumnDefinitions>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+        <RowDefinition Height="Auto"/>
+      </Grid.RowDefinitions>
+      <TextBlock Grid.Row="0" Style="{StaticResource Header}" Text="Profile name:"/>
+      <TextBox Grid.Row="0" Grid.Column="1" Height="23" Text="{Binding DataContext.ProfileName, Mode=TwoWay}"/>
+      <Border Grid.Row="1" Grid.ColumnSpan="2" BorderBrush="Gray" BorderThickness="0,2,0,0" Margin="0,5,0,5"/>
+      <TextBlock Grid.Row="2" Style="{StaticResource Header}" Text="Color Mode:"/>
+      <ComboBox Grid.Row="2" Grid.Column="1"
+                Height="23"
+                VerticalAlignment="Center" 
+                IsEditable="False"
+                IsEnabled="{Binding ColorModes.Count, Converter={StaticResource ItemCountToEnabledConverter}}"
+                ItemsSource="{Binding ColorModes}" 
+                SelectedItem="{Binding Settings.ColorMode, Mode=TwoWay}">
+      </ComboBox>
+      <TextBlock Grid.Row="3" Style="{StaticResource Header}" Text="Resolution (dpi):"/>
+      <ComboBox Grid.Row="3" Grid.Column="1"
+                Height="23"
+                VerticalAlignment="Center" 
+                IsEditable="False"
+                IsEnabled="{Binding Resolutions.Count, Converter={StaticResource ItemCountToEnabledConverter}}"
+                ItemsSource="{Binding Resolutions}" 
+                SelectedItem="{Binding Settings.Resolution, Mode=TwoWay}">
+      </ComboBox>
+      <TextBlock Grid.Row="4" Style="{StaticResource Header}" Text="Brightness (%):"/>
+      <hc:ControlNumericUpDown Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Settings.Brightness, ElementName=ScanDialog, Mode=TwoWay}"/>
+      <TextBlock Grid.Row="5" Style="{StaticResource Header}" Text="Contrast (%):"/>
+      <hc:ControlNumericUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Settings.Contrast, ElementName=ScanDialog, Mode=TwoWay}"/>
+      <TextBlock Grid.Row="6" Style="{StaticResource Header}" Text="Threshold (%):"/>
+      <hc:ControlNumericUpDown Grid.Row="6" Grid.Column="1" Minimum="0" Maximum="100" Value="{Binding Settings.Threshold, ElementName=ScanDialog, Mode=TwoWay}"/>
+    </Grid>
+    <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,10">
+      <Button Width="70" Content="OK" Margin="0,0,10,0" IsDefault="True" Click="ButtonOK_Click"/>
+      <Button Width="70" Content="Cancel" IsCancel="True"/>
+    </StackPanel>
+  </Grid>
+</Window>

@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{73BE5DF1-28E8-4FF9-A9CB-FDC7E36FFED7}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>ScanApp</RootNamespace>
+    <AssemblyName>ScanApp</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WarningLevel>4</WarningLevel>
+    <BaseOutputPath>$(SolutionDir)Output\bin\</BaseOutputPath>
+    <BaseIntermediateOutputPath>$(SolutionDir)Output\obj\</BaseIntermediateOutputPath>
+    <OutputPath>$(BaseOutputPath)\$(Configuration)\</OutputPath>
+    <IntermediateOutputPath>$(BaseIntermediateOutputPath)\$(MSBuildProjectName)\$(Configuration)\</IntermediateOutputPath>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>x86</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>..\External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico</ApplicationIcon>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Web.Extensions" />
+    <Reference Include="System.Windows.Controls.Ribbon" />
+    <Reference Include="System.Xml" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xaml">
+      <RequiredTargetFramework>4.0</RequiredTargetFramework>
+    </Reference>
+    <Reference Include="WindowsBase" />
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="Documents.PageFromImageFile.cs" />
+    <Compile Include="Documents.PageFromPdf.cs" />
+    <Compile Include="Main.AppProcessing.cs" />
+    <Compile Include="Main.Printing.cs" />
+    <Compile Include="DispatcherScanner.cs" />
+    <Compile Include="UiValueConverters.cs" />
+    <Compile Include="WindowAppSettings.xaml.cs">
+      <DependentUpon>WindowAppSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowCustomPageDialog.xaml.cs">
+      <DependentUpon>WindowCustomPageDialog.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowImageProperties.xaml.cs">
+      <DependentUpon>WindowImageProperties.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowPromptAppendOverwrite.xaml.cs">
+      <DependentUpon>WindowPromptAppendOverwrite.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowPromptSelectedAll.xaml.cs">
+      <DependentUpon>WindowPromptSelectedAll.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="WindowScanSettingsDialog.xaml.cs">
+      <DependentUpon>WindowScanSettingsDialog.xaml</DependentUpon>
+    </Compile>
+    <Page Include="WindowAppSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowCustomPageDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowImageProperties.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WindowMain.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Main.AppSettings.cs" />
+    <Compile Include="Documents.Page.cs" />
+    <Compile Include="Documents.PageFromScanner.cs" />
+    <Compile Include="Main.ScanPortal.cs" />
+    <Compile Include="Main.AppModel.cs" />
+    <Compile Include="WindowMain.xaml.cs">
+      <DependentUpon>WindowMain.xaml</DependentUpon>
+      <SubType>Code</SubType>
+    </Compile>
+    <Page Include="WindowPromptAppendOverwrite.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="WindowPromptSelectedAll.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="WindowScanSettingsDialog.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Properties\AssemblyInfo.cs">
+      <SubType>Code</SubType>
+    </Compile>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\Settings.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Settings.settings</DependentUpon>
+      <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <None Include="Properties\Settings.settings">
+      <Generator>SettingsSingleFileGenerator</Generator>
+      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
+    </None>
+    <AppDesigner Include="Properties\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\HouseLibs\Source\HouseControls\HouseControls.csproj">
+      <Project>{f39df7cc-9f9f-4aee-9763-e6c997ff3e4f}</Project>
+      <Name>HouseControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HouseLibs\Source\HouseImaging\HouseImaging.csproj">
+      <Project>{8d2146a2-1213-4b70-8bdc-e73c298b2c72}</Project>
+      <Name>HouseImaging</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\HouseLibs\Source\HouseUtils\HouseUtils.csproj">
+      <Project>{e9c57c07-1587-4d1a-b800-5e73ce5e0beb}</Project>
+      <Name>HouseUtils</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\PdfProcessing\PdfProcessing.csproj">
+      <Project>{16ea59f3-52a9-4fb8-89e5-af082e91fc77}</Project>
+      <Name>PdfProcessing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Scanning\Scanning.csproj">
+      <Project>{66c345fd-dce0-42f5-937d-61ecdffdcb4a}</Project>
+      <Name>Scanning</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Twain\Twain.csproj">
+      <Project>{b570fd78-4afd-4d01-8cfa-60ba9a6c1bb5}</Project>
+      <Name>Twain</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icons8\Compare-96.png">
+      <Link>Icons\Compare-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Delete File-96.png">
+      <Link>Icons\Delete File-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Delete-96.png">
+      <Link>Icons\Delete-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Edit Image-96.png">
+      <Link>Icons\Edit Image-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Error-96.png">
+      <Link>Icons\Error-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Flip Horizontal-96.png">
+      <Link>Icons\Flip Horizontal-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Flip Vertical-96.png">
+      <Link>Icons\Flip Vertical-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Image File-96.png">
+      <Link>Icons\Image File-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Literature-96.png">
+      <Link>Icons\Literature-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\PDF 2-100.png">
+      <Link>Icons\PDF 2-100.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\PDF-96.png">
+      <Link>Icons\PDF-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Print-96.png">
+      <Link>Icons\Print-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Rotate Left-96.png">
+      <Link>Icons\Rotate Left-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Rotate Right-96.png">
+      <Link>Icons\Rotate Right-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Rotate to Landscape-96.png">
+      <Link>Icons\Rotate to Landscape-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Scanner-96.png">
+      <Link>Icons\Scanner-96.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\Settings-96.png">
+      <Link>Icons\Settings-96.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icons8\icons8-image-file-add.png">
+      <Link>Icons\icons8-image-file-add.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\icons8-image-file-ok.png">
+      <Link>Icons\icons8-image-file-ok.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\icons8-pdf-add.png">
+      <Link>Icons\icons8-pdf-add.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\icons8-pdf-ok.png">
+      <Link>Icons\icons8-pdf-ok.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icons8\icons8-image-file-info.png">
+      <Link>Icons\icons8-image-file-info.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icons8\icons8-image-file-100.png">
+      <Link>Icons\icons8-image-file-100.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icons8\icons8-uncheck-all-100 %28delete%29.png">
+      <Link>Icons\icons8-uncheck-all-100 %28delete%29.png</Link>
+    </Resource>
+    <Resource Include="..\External\Icons8\icons8-uncheck-all-100 %28select%29.png">
+      <Link>Icons\icons8-uncheck-all-100 %28select%29.png</Link>
+    </Resource>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="..\External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico">
+      <Link>Icons\Umut-Pulat-Tulliana-2-Scanner.ico</Link>
+    </Resource>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

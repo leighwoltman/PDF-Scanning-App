@@ -1,0 +1,120 @@
+﻿<Window x:Class="ScanApp.WindowAppSettings"
+        x:Name="SettingsDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:l="clr-namespace:ScanApp"
+        xmlns:hc="clr-namespace:HouseControls;assembly=HouseControls"
+        mc:Ignorable="d"
+        Title="Preferences" 
+        WindowStyle="ToolWindow" 
+        SizeToContent="WidthAndHeight">
+  <Window.Resources>
+    <ResourceDictionary>
+      <l:ItemCountToEnabledConverter x:Key="ItemCountToEnabledConverter" />
+    </ResourceDictionary>
+  </Window.Resources>  
+  <Grid Margin="20,10,20,10" Width="400">
+    <Grid.Resources>
+      <Style TargetType="{x:Type hc:ControlNumericUpDown}">
+        <Setter Property = "BorderBrush" Value="Aquamarine"/>
+        <Setter Property = "TextAlignment" Value="Left"/>
+        <Setter Property = "Height" Value="23"/>
+        <Setter Property = "Foreground" Value="Blue"/>
+        <Setter Property = "VerticalAlignment" Value="Center"/>
+        <Setter Property = "DecimalPlaces" Value="0"/>
+        <Setter Property = "Step" Value="1"/>
+      </Style>
+      <Style x:Key="Header" TargetType="{x:Type TextBlock}">
+        <Setter Property = "VerticalAlignment" Value="Center"/>
+        <Setter Property = "HorizontalAlignment" Value="Right"/>
+        <Setter Property = "Margin" Value="0,7,20,7"/>
+        <Setter Property = "Opacity" Value="1"/>
+        <Style.Triggers>
+          <Trigger Property="IsEnabled" Value="False">
+            <Setter Property = "Opacity" Value="0.5"/>
+          </Trigger>
+        </Style.Triggers>
+      </Style>
+      <Style TargetType="{x:Type Label}">
+        <Setter Property = "Margin" Value="0,10,0,5"/>
+        <Setter Property = "FontWeight" Value="Bold"/>
+        <Setter Property = "FontStyle" Value="Italic"/>
+        <Setter Property = "BorderBrush" Value="Gray"/>
+        <Setter Property = "BorderThickness" Value="0,0,0,2"/>
+      </Style>
+    </Grid.Resources>
+    <Grid.ColumnDefinitions>
+      <ColumnDefinition Width="6*"/>
+      <ColumnDefinition Width="3*"/>
+      <ColumnDefinition Width="*"/>
+    </Grid.ColumnDefinitions>
+    <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
+    </Grid.RowDefinitions>
+    <Label Grid.Row="0" Grid.ColumnSpan="3">General</Label>
+    <TextBlock Grid.Row="1" Style="{StaticResource Header}" Text="Show print button:"/>
+    <CheckBox Grid.Row="1" Grid.Column="1" VerticalAlignment="Center" 
+              IsChecked="{Binding ShowPrintButton, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="2" Style="{StaticResource Header}" Text="Remove pages on PDF save:"/>
+    <CheckBox Grid.Row="2" Grid.Column="1" VerticalAlignment="Center" 
+              IsChecked="{Binding Export_RemovePages, Mode=TwoWay}"/>
+
+    <Label Grid.Row="3" Grid.ColumnSpan="3">Pages</Label>
+    <TextBlock Grid.Row="4" Style="{StaticResource Header}" Text="Custom page - Height:"/>
+    <hc:ControlNumericUpDown Grid.Row="4" Grid.Column="1" Minimum="0" Maximum="100" DecimalPlaces="2"
+                             Value="{Binding DataContext.CustomPageSize.Height, ElementName=SettingsDialog, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="5" Style="{StaticResource Header}" Text="- Width:"/>
+    <hc:ControlNumericUpDown Grid.Row="5" Grid.Column="1" Minimum="0" Maximum="100" DecimalPlaces="2"
+                             Value="{Binding DataContext.CustomPageSize.Width, ElementName=SettingsDialog, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="6" Style="{StaticResource Header}" Text="Default page type:"/>
+    <ComboBox Grid.Row="6" Grid.Column="1"
+                Height="23"
+                VerticalAlignment="Center" 
+                IsEditable="False"
+                IsEnabled="{Binding PageTypes.Count, Converter={StaticResource ItemCountToEnabledConverter}}"
+                ItemsSource="{Binding PageTypes}"  
+                SelectedItem="{Binding DefaultPageType, Mode=TwoWay}"/>
+
+    <Label Grid.Row="7" Grid.ColumnSpan="3">PDF Import</Label>
+    <TextBlock Grid.Row="8" Style="{StaticResource Header}" Text="Attempt image import:"/>
+    <CheckBox Grid.Row="8" Grid.Column="1" VerticalAlignment="Center" 
+              IsChecked="{Binding Pdf_AttemptSingleImageMode, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="9" Style="{StaticResource Header}" Text="Import native pages:"/>
+    <CheckBox Grid.Row="9" Grid.Column="1" VerticalAlignment="Center" 
+              IsChecked="{Binding Pdf_ImportNativePages, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="10" Style="{StaticResource Header}" Text="Render resolution:"/>
+    <hc:ControlNumericUpDown Grid.Row="10" Grid.Column="1" Minimum="0" Maximum="4000" 
+                             Value="{Binding DataContext.Pdf_RenderResolution, ElementName=SettingsDialog, Mode=TwoWay}"/>
+    
+    <Label Grid.Row="11" Grid.ColumnSpan="3">Export Settings</Label>
+    <TextBlock Grid.Row="12" Style="{StaticResource Header}" Text="Compress images for PDF export:"/>
+    <CheckBox x:Name="CompressCheck" Grid.Row="12" Grid.Column="1" VerticalAlignment="Center" 
+              IsChecked="{Binding Export_CompressImages, Mode=TwoWay}"/>
+    <TextBlock Grid.Row="13" Style="{StaticResource Header}" Text="Jpeg compression rate:"/>
+    <hc:ControlNumericUpDown Grid.Row="13" Grid.Column="1" Minimum="1" Maximum="100" 
+                             Value="{Binding DataContext.Export_CompressionFactor, ElementName=SettingsDialog, Mode=TwoWay}"/>
+    
+    <Border Grid.Row="14" Height="25" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0,0,0,2"></Border>
+    <StackPanel Grid.Row="15" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,10">
+      <Button Width="70" Content="OK" Margin="0,0,10,0" IsDefault="True" Click="ButtonOK_Click"/>
+      <Button Width="70" Content="Cancel" IsCancel="True"/>
+    </StackPanel>
+  </Grid>
+</Window>
