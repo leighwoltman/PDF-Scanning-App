@@ -1,0 +1,1 @@
+Created the ico file using: https://icoconvert.com/
