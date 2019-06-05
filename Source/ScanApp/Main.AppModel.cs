@@ -131,6 +131,8 @@ namespace ScanApp
     public CommandHandler Command_OpenPdf { get; set; }
     public CommandHandler Command_SaveImages { get; set; }
     public CommandHandler Command_SaveToPdf { get; set; }
+    public CommandHandler Command_SaveAllToPdf { get; set; }
+    public CommandHandler Command_AppendAllToPdf { get; set; }
     public CommandHandler Command_Print { get; set; }
     public CommandHandler Command_Settings { get; set; }
     public CommandHandler Command_Scan { get; set; }

@@ -38,6 +38,11 @@
       <l:ScanPageTypeToButtonLabel x:Key="ScanPageTypeToButtonLabel" />
     </ResourceDictionary>
   </Window.Resources>
+  <Window.InputBindings>
+    <KeyBinding Key="Space" Command="{Binding Command_Scan}"/>
+    <KeyBinding Key="S" Command="{Binding Command_SaveAllToPdf}"/>
+    <KeyBinding Key="A" Command="{Binding Command_AppendAllToPdf}"/>
+  </Window.InputBindings>  
   <DockPanel LastChildFill="True">
     <Ribbon DockPanel.Dock="Top" Loaded="RibbonWin_Loaded">
       <Ribbon.QuickAccessToolBar>
