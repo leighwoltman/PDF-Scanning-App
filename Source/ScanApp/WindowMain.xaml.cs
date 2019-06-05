@@ -22,8 +22,7 @@ namespace ScanApp
     private AppModel fModel;
     private AppProcessing fProcessing;
     private ScanPortal fScanPortal;
-
-    private string lastSavedPdfFileName = "";
+    private string fLastSavedPdfFileName = string.Empty;
 
 
     public WindowMain()
@@ -203,7 +202,7 @@ namespace ScanApp
     private void Handle_AppendAllToPdf()
     {
       // do nothing right now
-      this.SaveToPdf(WindowPromptSelectedAll.ResultEnum.All, this.lastSavedPdfFileName);
+      this.SaveToPdf(WindowPromptSelectedAll.ResultEnum.All, this.fLastSavedPdfFileName);
     }
 
 
@@ -215,7 +214,7 @@ namespace ScanApp
       {
         string fileName = fileNameToAppendTo;
 
-        if (fileName == "")
+        if (string.IsNullOrEmpty(fileName))
         {
           string filter = "PDF files (*.pdf)|*.pdf";
           string initDirectory = fAppSettings.LastDirectoryForSaving;
@@ -233,12 +232,29 @@ namespace ScanApp
           fileName = HouseUtils.Dialogs.SelectWhereToSave(filter, "Save PDF As", initDirectory, initFilename, false);
         }
 
-        if (string.IsNullOrEmpty(fileName) == false)
+        if (string.IsNullOrEmpty(fileName))
+        {
+          // User cancelled the operation on the file select dialog, do nothing further 
+        }
+        else
         {
           WindowPromptAppendOverwrite.ResultEnum action = WindowPromptAppendOverwrite.ResultEnum.Overwrite;
 
-          if(fileNameToAppendTo != "")
+          if(string.IsNullOrEmpty(fileNameToAppendTo))
           {
+            if (File.Exists(fileName))
+            {
+              WindowPromptAppendOverwrite F = new WindowPromptAppendOverwrite();
+              F.Owner = this;
+              F.WindowStartupLocation = WindowStartupLocation.CenterOwner;
+              F.ShowDialog();
+              action = F.Result;
+            }
+          }
+          else
+          {
+            // append is implied through fileNameToAppendTo parameter
+
             if (File.Exists(fileName))
             {
               if (Dialogs.Confirm("This will append to: " + Path.GetFileName(fileName)))
@@ -255,17 +271,6 @@ namespace ScanApp
               action = WindowPromptAppendOverwrite.ResultEnum.Cancel;
             }
           }
-          else
-          {
-            if (File.Exists(fileName))
-            {
-              WindowPromptAppendOverwrite F = new WindowPromptAppendOverwrite();
-              F.Owner = this;
-              F.WindowStartupLocation = WindowStartupLocation.CenterOwner;
-              F.ShowDialog();
-              action = F.Result;
-            }
-          }
 
           if (action != WindowPromptAppendOverwrite.ResultEnum.Cancel)
           {
@@ -278,7 +283,7 @@ namespace ScanApp
 
             fProcessing.ExportToPdf(fileName, pageItems, append, fAppSettings.ExportSettings.Copy());
             fAppSettings.LastDirectoryForSaving = Path.GetDirectoryName(fileName);
-            this.lastSavedPdfFileName = fileName;
+            this.fLastSavedPdfFileName = fileName;
           }
         }
       }
