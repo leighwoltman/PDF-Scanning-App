@@ -36,7 +36,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>..\External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico</ApplicationIcon>
+    <ApplicationIcon>..\Resources\Icon\ScanAppIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -267,8 +267,8 @@
     </Resource>
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="..\External\Icon\Umut-Pulat-Tulliana-2-Scanner.ico">
-      <Link>Icons\Umut-Pulat-Tulliana-2-Scanner.ico</Link>
+    <Resource Include="..\Resources\Icon\ScanAppIcon.ico">
+      <Link>Icons\ScanAppIcon.ico</Link>
     </Resource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

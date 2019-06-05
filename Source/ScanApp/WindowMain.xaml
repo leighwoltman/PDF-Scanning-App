@@ -1,4 +1,4 @@
-﻿<Window x:Class="ScanApp.WindowMain"
+<Window x:Class="ScanApp.WindowMain"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -6,8 +6,8 @@
         xmlns:l="clr-namespace:ScanApp"
         xmlns:hc="clr-namespace:HouseControls;assembly=HouseControls"
         mc:Ignorable="d"
-        Title="Main Window" Height="450" Width="650"
-        Icon="Icons\Umut-Pulat-Tulliana-2-Scanner.ico"
+        Title="PDF Scanning App" Height="450" Width="650"
+        Icon="Icons\ScanAppIcon.ico"
         Loaded="Window_Loaded"
         Closed="Window_Closed">
   <Window.Resources>
