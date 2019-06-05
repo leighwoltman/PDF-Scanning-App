@@ -187,6 +187,11 @@ namespace ScanApp
         result.PageSizes.Add("Legal", new Size2D(8.5, 14));
       }
 
+      if (result.PageSizes.ContainsKey("A4") == false)
+      {
+        result.PageSizes.Add("A4", new Size2D(8.27, 11.69));
+      }
+
       if (result.PageSizes.ContainsKey("Custom") == false)
       {
         result.PageSizes.Add("Custom", result.GetDefaultPageSize());

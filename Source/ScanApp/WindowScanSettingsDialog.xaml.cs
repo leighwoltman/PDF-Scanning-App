@@ -57,11 +57,14 @@ namespace ScanApp
         ColorModes.Add(item);
       }
 
-      Resolutions.Clear();
-
-      foreach (var item in capabilities.Resolutions)
+      if(capabilities.Resolutions.Count > 0)
       {
-        Resolutions.Add(item);
+        Resolutions.Clear();
+
+        foreach (var item in capabilities.Resolutions)
+        {
+          Resolutions.Add(item);
+        }
       }
 
       RaisePropertyChanged("Settings");
@@ -85,7 +88,11 @@ namespace ScanApp
 
       if (Resolutions.Count == 0)
       {
-        Resolutions.Add(Settings.Resolution);
+        Resolutions.Add(100);
+        Resolutions.Add(150);
+        Resolutions.Add(200);
+        Resolutions.Add(300);
+        Resolutions.Add(600);
       }
 
       // These need to be raised once, for initialization, since the values only change by UI, and not programmatically
