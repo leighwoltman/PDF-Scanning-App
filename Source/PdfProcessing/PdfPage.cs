@@ -120,7 +120,7 @@ namespace PdfProcessing
     }
 
 
-    public void DrawImage(ImageInfo sourceImage, ImageTransformer transform, Bounds imageBounds)
+    public void DrawImage(ImageInfo sourceImage, Orientation orientation, Bounds imageBounds)
     {
       if (Open())
       {
@@ -131,13 +131,13 @@ namespace PdfProcessing
         {
           case ImageFormatEnum.Jpeg:
             {
-              LibPdfium.AddJpegToPage(Document.Ptr, this.Ptr, image, imageBounds, transform.Value);
+              LibPdfium.AddJpegToPage(Document.Ptr, this.Ptr, image, imageBounds, orientation.Value);
             }
             break;
 
           case ImageFormatEnum.Bmp:
             {
-              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, image, imageBounds, transform.Value);
+              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, image, imageBounds, orientation.Value);
             }
             break;
 
@@ -146,7 +146,7 @@ namespace PdfProcessing
               // Keep PNG because:
               // -It seems PNG and BMP are both stored the same way
               // -Converting to BMP loses the Alpha component of ARGB
-              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, image, imageBounds, transform.Value);
+              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, image, imageBounds, orientation.Value);
             }
             break;
 
@@ -154,7 +154,7 @@ namespace PdfProcessing
             {
               // All other types convert to PNG
               System.Drawing.Image storedImage = ImageTools.ConvertImage(image, System.Drawing.Imaging.ImageFormat.Png, 0);
-              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, storedImage, imageBounds, transform.Value);
+              LibPdfium.AddBitmapToPage(Document.Ptr, this.Ptr, storedImage, imageBounds, orientation.Value);
             }
             break;
         }

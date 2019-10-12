@@ -12,7 +12,7 @@ namespace Documents
 {
   public abstract class Page
   {
-    private ImageTransformer fTransform = new ImageTransformer();
+    private Orientation fOrientation = new Orientation();
 
 
     public Page(Size2D pageSize, int dpi = 0)
@@ -58,7 +58,7 @@ namespace Documents
     public ImageInfo GetTransformedImage()
     {
       ImageInfo result = GetSourceImage();
-      result.Transform(fTransform);
+      result.Transform(fOrientation);
       return result;
     }
 
@@ -95,7 +95,7 @@ namespace Documents
 
       using (ImageInfo miniImage = GetSourceThumbnail(width, height))
       {
-        miniImage.Transform(fTransform);
+        miniImage.Transform(fOrientation);
         result = MakeLayout(miniImage);
       }
 
@@ -105,25 +105,25 @@ namespace Documents
 
     public void ImageRotateClockwise()
     {
-      fTransform.RotateClockwise();
+      fOrientation.RotateClockwise();
     }
 
 
     public void ImageRotateCounterClockwise()
     {
-      fTransform.RotateCounterClockwise();
+      fOrientation.RotateCounterClockwise();
     }
 
 
     public void ImageMirrorHorizontally()
     {
-      fTransform.MirrorHorizontally();
+      fOrientation.MirrorHorizontally();
     }
 
 
     public void ImageMirrorVertically()
     {
-      fTransform.MirrorVertically();
+      fOrientation.MirrorVertically();
     }
 
 
@@ -138,7 +138,7 @@ namespace Documents
       using (ImageInfo sourceImage = GetSourceImage())
       {
         PdfPage page = new PdfPage(pdf, Size);
-        SizePixels imageSizePixels = fTransform.IsFlipped ? sourceImage.SizePixels.Flip() : sourceImage.SizePixels;
+        SizePixels imageSizePixels = fOrientation.IsFlipped ? sourceImage.SizePixels.Flip() : sourceImage.SizePixels;
 
         if (exportSettings.CompressImagesForPdfExport)
         {
@@ -156,7 +156,7 @@ namespace Documents
           }
         }
 
-        page.DrawImage(sourceImage, fTransform, GetImageBounds(imageSizePixels));
+        page.DrawImage(sourceImage, fOrientation, GetImageBounds(imageSizePixels));
       }
     }
 
