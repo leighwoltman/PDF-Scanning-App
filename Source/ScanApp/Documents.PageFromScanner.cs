@@ -49,7 +49,7 @@ namespace Documents
 
     public override ImageInfo GetSourceImage()
     {
-      return ImageInfo.CreateImageInfo(fFilename);
+      return ImageInfo.FromFile(fFilename);
     }
 
 
