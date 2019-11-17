@@ -82,7 +82,7 @@ namespace Documents
 
       using (ImageInfo myImage = GetSourceImage())
       {
-        result = myImage.CreateThumbnail(width, height);
+        result = myImage.GetThumbnail(width, height);
       }
 
       return result;
