@@ -44,6 +44,9 @@
         <Setter Property = "BorderBrush" Value="Gray"/>
         <Setter Property = "BorderThickness" Value="0,0,0,2"/>
       </Style>
+      <Style TargetType="{x:Type ListBox}">
+        <Setter Property = "BorderThickness" Value="0,0,0,0"/>
+      </Style>
     </Grid.Resources>
     <Grid.ColumnDefinitions>
       <ColumnDefinition Width="6*"/>
@@ -51,6 +54,8 @@
       <ColumnDefinition Width="*"/>
     </Grid.ColumnDefinitions>
     <Grid.RowDefinitions>
+      <RowDefinition Height="Auto"/>
+      <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
       <RowDefinition Height="Auto"/>
@@ -110,9 +115,18 @@
     <TextBlock Grid.Row="13" Style="{StaticResource Header}" Text="Jpeg compression rate:"/>
     <hc:ControlNumericUpDown Grid.Row="13" Grid.Column="1" Minimum="1" Maximum="100" 
                              Value="{Binding DataContext.Export_CompressionFactor, ElementName=SettingsDialog, Mode=TwoWay}"/>
-    
-    <Border Grid.Row="14" Height="25" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0,0,0,2"></Border>
-    <StackPanel Grid.Row="15" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,10">
+
+    <Label Grid.Row="14" Grid.ColumnSpan="3">Excluded Scanners</Label>
+    <ListBox Grid.Row="15" Grid.ColumnSpan="3" ItemsSource="{Binding ExcludedScanners}" MaxHeight="50">
+      <ListBox.ItemTemplate>
+        <DataTemplate>
+          <CheckBox IsChecked="{Binding IsSelected}" Content="{Binding TheText}"/>
+        </DataTemplate>
+      </ListBox.ItemTemplate>
+    </ListBox>
+
+    <Border Grid.Row="16" Height="25" Grid.ColumnSpan="3" BorderBrush="Gray" BorderThickness="0,0,0,2"></Border>
+    <StackPanel Grid.Row="17" Grid.ColumnSpan="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,15,0,10">
       <Button Width="70" Content="OK" Margin="0,0,10,0" IsDefault="True" Click="ButtonOK_Click"/>
       <Button Width="70" Content="Cancel" IsCancel="True"/>
     </StackPanel>

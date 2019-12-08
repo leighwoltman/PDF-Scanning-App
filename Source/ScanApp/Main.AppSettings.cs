@@ -28,6 +28,8 @@ namespace ScanApp
 
     public bool ShowPrintButton { get; set; } = false;
 
+    public List<string> ExcludedScanners { get; set; } = new List<string>();
+
     #endregion
 
 
@@ -195,6 +197,13 @@ namespace ScanApp
       if (result.PageSizes.ContainsKey("Custom") == false)
       {
         result.PageSizes.Add("Custom", result.GetDefaultPageSize());
+      }
+
+      // if we didn't previously have an Excluded Scanners field
+      if(result.ExcludedScanners == null)
+      {
+        // populate it with an empty list
+        result.ExcludedScanners = new List<string>();
       }
 
       return result;
