@@ -82,13 +82,10 @@ namespace ScanApp
         {
           foreach (var item in list)
           {
-            fModel.ScannerNames.Add(item);
+            fModel.AllScannerNames.Add(item);
           }
 
-          if (fModel.ScannerNames.Count > 0)
-          {
-            fModel.SelectedScanner = fModel.ScannerNames[0];
-          }
+          this.RefreshAvailableScanners();
         }
       });
 
@@ -100,6 +97,11 @@ namespace ScanApp
     {
       fScanPortal.Terminate();
       fProcessing.Terminate();
+      // save the current scanner if it isn't empty
+      if(fModel.SelectedScanner != String.Empty)
+      {
+        fAppSettings.CurrentScanner = fModel.SelectedScanner;
+      }
       fAppSettings.Save();
     }
 
@@ -348,6 +350,29 @@ namespace ScanApp
       F.DefaultPageType = fAppSettings.DefaultPageType;
       F.CustomPageSize = fAppSettings.GetCustomPageSize();
 
+      // add the current scanners to the list of excluded scanner possibilities
+      var scanners = new List<BoolStringClass>();
+
+      foreach (var item in fAppSettings.ExcludedScanners)
+      {
+        var scannerEntry = new BoolStringClass();
+        scannerEntry.TheText = item;
+        scannerEntry.IsSelected = true;
+        scanners.Add(scannerEntry);
+      }
+
+      foreach (var item in fModel.AllScannerNames)
+      {
+        if (!fAppSettings.ExcludedScanners.Contains(item))
+        {
+          var scannerEntry = new BoolStringClass();
+          scannerEntry.TheText = item;
+          scanners.Add(scannerEntry);
+        }        
+      }
+
+      F.ExcludedScanners = scanners;
+
       if (F.ExecuteDialog())
       {
         fAppSettings.ShowPrintButton = F.ShowPrintButton;
@@ -355,9 +380,52 @@ namespace ScanApp
         fAppSettings.ExportSettings = F.ExportSettings;
         fAppSettings.DefaultPageType = F.DefaultPageType;
         fAppSettings.SetCustomPageSize(F.CustomPageSize);
+        fAppSettings.ExcludedScanners = new List<string>();
+        foreach (var item in F.ExcludedScanners)
+        {
+          if(item.IsSelected)
+          {
+            fAppSettings.ExcludedScanners.Add(item.TheText);
+          }
+        }
+        this.RefreshAvailableScanners();
+      }
+      
+      fModel.RefreshEnables();
+    }
+
+
+    private void RefreshAvailableScanners()
+    {
+      // add all the scanners to the list
+      foreach (var item in fModel.AllScannerNames)
+      {
+        if(!fModel.ScannerNames.Contains(item))
+        {
+          fModel.ScannerNames.Add(item);
+        }
       }
 
-      fModel.RefreshEnables();
+      // limit the scanners to the ones not excluded
+      foreach (var item in fAppSettings.ExcludedScanners)
+      {
+        fModel.ScannerNames.Remove(item);
+      }
+
+      // if our current selected scanner is empty, let's see if we can
+      // choose one in the list by what we last used, otherwise grab the first
+      // in the list
+      if (!fModel.ScannerNames.Contains(fModel.SelectedScanner) && fModel.ScannerNames.Count > 0)
+      {
+        if(fModel.ScannerNames.Contains(fAppSettings.CurrentScanner))
+        {
+          fModel.SelectedScanner = fAppSettings.CurrentScanner;
+        }
+        else
+        {
+          fModel.SelectedScanner = fModel.ScannerNames[0];
+        }
+      }
     }
 
 

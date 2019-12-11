@@ -14,7 +14,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
 using HouseUtils;
 using Documents;
-
+using System.Collections.ObjectModel;
 
 namespace ScanApp
 {
@@ -38,6 +38,7 @@ namespace ScanApp
         RaisePropertyChanged("Export_CompressionFactor");
         RaisePropertyChanged("Export_RemovePages");
         RaisePropertyChanged("ShowPrintButton");
+        RaisePropertyChanged("ExcludedScanners");
       }
 
       public bool ShowPrintButton { get; set; }
@@ -59,6 +60,8 @@ namespace ScanApp
       public bool Export_RemovePages { get; set; }
 
       public int Export_CompressionFactor { get; set; }
+
+      public ObservableCollection<BoolStringClass> ExcludedScanners { get; set; } = new ObservableCollection<BoolStringClass>();
     }
 
 
@@ -68,6 +71,7 @@ namespace ScanApp
     public WindowAppSettings()
     {
       InitializeComponent();
+
       DataContext = fModel;
     }
 
@@ -94,6 +98,27 @@ namespace ScanApp
     {
       get { return fModel.CustomPageSize.Copy(); }
       set { fModel.CustomPageSize = value.Copy(); }
+    }
+
+    public List<BoolStringClass> ExcludedScanners
+    {
+      get
+      {
+        var retval = new List<BoolStringClass>();
+        foreach (var l in fModel.ExcludedScanners)
+        {
+          retval.Add(l.Copy());
+        }
+        return retval;
+      }
+      set
+      {
+        fModel.ExcludedScanners = new ObservableCollection<BoolStringClass>();
+        foreach(var l in value)
+        {
+          fModel.ExcludedScanners.Add(l.Copy());
+        }
+      }
     }
 
     public PdfSettings PdfSettings
@@ -146,6 +171,19 @@ namespace ScanApp
     private void ButtonOK_Click(object sender, RoutedEventArgs e)
     {
       DialogResult = true;
+    }
+  }
+
+  public class BoolStringClass
+  {
+    public string TheText { get; set; }
+    public bool IsSelected { get; set; }
+    public BoolStringClass Copy()
+    {
+      var retval = new BoolStringClass();
+      retval.TheText = this.TheText;
+      retval.IsSelected = this.IsSelected;
+      return retval;
     }
   }
 }

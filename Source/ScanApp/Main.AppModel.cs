@@ -28,6 +28,8 @@ namespace ScanApp
 
     public ObservableCollection<string> ScannerNames { get; private set; } = new ObservableCollection<string>();
 
+    public ObservableCollection<string> AllScannerNames { get; private set; } = new ObservableCollection<string>();
+
     private string _selectedScanner = null;
     public string SelectedScanner
     {
